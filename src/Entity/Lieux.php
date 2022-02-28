@@ -8,7 +8,9 @@ use Doctrine\ORM\Mapping as ORM;
  * Lieux
  *
  * @ORM\Table(name="lieux", indexes={@ORM\Index(name="lieux_villes_fk", columns={"villes_no_ville"})})
+ *
  * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\LieuxRepository")
  */
 class Lieux
 {
@@ -58,6 +60,71 @@ class Lieux
      * })
      */
     private $villesNoVille;
+
+    public function getNoLieu(): ?int
+    {
+        return $this->noLieu;
+    }
+
+    public function getNomLieu(): ?string
+    {
+        return $this->nomLieu;
+    }
+
+    public function setNomLieu(string $nomLieu): self
+    {
+        $this->nomLieu = $nomLieu;
+
+        return $this;
+    }
+
+    public function getRue(): ?string
+    {
+        return $this->rue;
+    }
+
+    public function setRue(?string $rue): self
+    {
+        $this->rue = $rue;
+
+        return $this;
+    }
+
+    public function getLatitude(): ?float
+    {
+        return $this->latitude;
+    }
+
+    public function setLatitude(?float $latitude): self
+    {
+        $this->latitude = $latitude;
+
+        return $this;
+    }
+
+    public function getLongitude(): ?float
+    {
+        return $this->longitude;
+    }
+
+    public function setLongitude(?float $longitude): self
+    {
+        $this->longitude = $longitude;
+
+        return $this;
+    }
+
+    public function getVillesNoVille(): ?Villes
+    {
+        return $this->villesNoVille;
+    }
+
+    public function setVillesNoVille(?Villes $villesNoVille): self
+    {
+        $this->villesNoVille = $villesNoVille;
+
+        return $this;
+    }
 
 
 }
