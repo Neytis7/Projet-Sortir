@@ -83,6 +83,9 @@
     "symfony/deprecation-contracts": {
         "version": "v3.0.0"
     },
+    "symfony/doctrine-bridge": {
+        "version": "v5.4.5"
+    },
     "symfony/dotenv": {
         "version": "v5.4.5"
     },
@@ -141,21 +144,6 @@
     "symfony/http-kernel": {
         "version": "v5.4.5"
     },
-    "symfony/maker-bundle": {
-        "version": "1.38",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "1.0",
-            "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
-        }
-    },
-    "symfony/options-resolver": {
-        "version": "v5.4.3"
-    },
-    "symfony/password-hasher": {
-        "version": "v5.4.3"
-    },
     "symfony/polyfill-intl-grapheme": {
         "version": "v1.24.0"
     },
@@ -176,12 +164,6 @@
     },
     "symfony/polyfill-php81": {
         "version": "v1.24.0"
-    },
-    "symfony/property-access": {
-        "version": "v5.4.5"
-    },
-    "symfony/property-info": {
-        "version": "v5.4.3"
     },
     "symfony/routing": {
         "version": "5.4",
@@ -207,6 +189,9 @@
     },
     "symfony/service-contracts": {
         "version": "v2.4.1"
+    },
+    "symfony/stopwatch": {
+        "version": "v5.4.5"
     },
     "symfony/string": {
         "version": "v5.4.3"
