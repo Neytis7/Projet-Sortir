@@ -9,8 +9,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class MainController extends AbstractController
 {
 
-    const ROUTE_MAIN = "main";
-    const ROUTE_MAIN2 = "main2";
+    const ROUTE_MAIN = "app_main";
+    const ROUTE_MAIN2 = "app_main2";
 
     #[Route('/main', name: self::ROUTE_MAIN)]
     public function index(): Response
