@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use DateTime;
 
 /**
  * Sorties
@@ -32,7 +33,7 @@ class Sorties
     private $nom;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="datedebut", type="datetime", nullable=false)
      */
@@ -46,7 +47,7 @@ class Sorties
     private $duree;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="datecloture", type="datetime", nullable=false)
      */
@@ -81,7 +82,7 @@ class Sorties
     private $urlphoto;
 
     /**
-     * @var \Etats
+     * @var Etats
      *
      * @ORM\ManyToOne(targetEntity="Etats")
      * @ORM\JoinColumns({
@@ -91,7 +92,7 @@ class Sorties
     private $etatsNoEtat;
 
     /**
-     * @var \Participants
+     * @var Participants
      *
      * @ORM\ManyToOne(targetEntity="Participants")
      * @ORM\JoinColumns({
@@ -101,7 +102,7 @@ class Sorties
     private $organisateur;
 
     /**
-     * @var \Lieux
+     * @var Lieux
      *
      * @ORM\ManyToOne(targetEntity="Lieux")
      * @ORM\JoinColumns({
@@ -150,12 +151,12 @@ class Sorties
         return $this;
     }
 
-    public function getDatedebut(): ?\DateTimeInterface
+    public function getDatedebut(): ?DateTime
     {
         return $this->datedebut;
     }
 
-    public function setDatedebut(\DateTimeInterface $datedebut): self
+    public function setDatedebut(DateTime $datedebut): self
     {
         $this->datedebut = $datedebut;
 
@@ -174,12 +175,12 @@ class Sorties
         return $this;
     }
 
-    public function getDatecloture(): ?\DateTimeInterface
+    public function getDatecloture(): ?DateTime
     {
         return $this->datecloture;
     }
 
-    public function setDatecloture(\DateTimeInterface $datecloture): self
+    public function setDatecloture(DateTime $datecloture): self
     {
         $this->datecloture = $datecloture;
 
