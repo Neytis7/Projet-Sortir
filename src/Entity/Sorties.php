@@ -259,7 +259,7 @@ class Sorties
     /**
      * @return Participants
      */
-    public function getOrganisateur(): Participants
+    public function getOrganisateur(): ?Participants
     {
         return $this->organisateur;
     }
