@@ -1,7 +1,9 @@
 
 {% set route = app.request.get('_route') %}
 
+{% set routeMain = constant('App\\Controller\\MainController::ROUTE_MAIN') %}
 {% set routeSortie = constant('App\\Controller\\SortieController::ROUTE_SORTIE') %}
+{% set routeModiferProfil = constant('App\\Controller\\ProfilController::ROUTE_MODIFIER_PROFIL') %}
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container-fluid">
@@ -16,16 +18,36 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <div class="navbar-nav ms-auto">
+            <div class="navbar-nav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
                         <a class="nav-link 
-                            {% if route == routeSortie %}
+                            {% if route == routeMain %}
                                 active 
                             {% endif %}"
                             aria-current="page"
-                            href="{{ path(routeSortie) }}">
+                            href="{{ path(routeMain) }}">
                             Accueil
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link 
+                            {% if route == routeSortie %}
+                                active
+                            {% endif %}"
+                            aria-current="page"
+                            href="{{ path(routeSortie) }}">
+                            Sorties
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link
+                            {% if route == routeModiferProfil %}
+                                active
+                            {% endif %}"
+                           aria-current="page"
+                           href="{{ path(routeModiferProfil) }}">
+                            {{ constant('App\\Controller\\ProfilController::ROUTE_NAME_MODIFIER_PROFIL') }}
                         </a>
                     </li>
                 </ul>
