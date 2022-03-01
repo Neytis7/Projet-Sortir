@@ -53,7 +53,8 @@
                 <td>nombre inscrit à faire/{{sortie.nbinscriptionsmax}}</td>
                 <td>{{sortie.etatsNoEtat.libelle}}</td>
                 <td>si inscrit à faire</td>
-                <td>{{sortie.organisateur.prenom}}</td>
+                
+                <td><a href="{{path('afficherProfile', {'id':sortie.organisateur.noParticipant}) }}">{{sortie.organisateur.prenom}}</a></td>
                 <td>action à faire</td>
            </tr> 
         {% endfor %}

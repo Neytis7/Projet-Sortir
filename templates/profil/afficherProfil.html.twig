@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{leParticipant.pseudo}}{% endblock %}
+
+{% block body %}
+{% set routeSortie = constant('App\\Controller\\SortieController::ROUTE_SORTIE') %}
+<div class="container">
+
+   <h1 class="display-1 text-center">{{leParticipant.pseudo}}</h1>
+
+   <div class="align-items-center">
+
+         <div class="form-group">  
+               
+                <label for="Nom">Nom</label>
+                <input type="text" name="Nom" id="Nom" class="form-control" disabled value="{{leParticipant.nom}}"></input>
+         </div>
+         <div class="form-group">
+               <label for="Prenom">Prenom</label>
+               <input type="text" name="Prenom" id="Prenom" class="form-control" disabled value="{{leParticipant.prenom}}"></input>
+         </div>
+         <div class="form-group">
+              <label for="Telephone">Telephone</label>
+               <input type="text" name="Telephone" id="Telephone" class="form-control" disabled value="{{leParticipant.telephone}}"></input>
+         </div>
+         <div class="form-group">
+               <label for="Mail">Mail</label>
+               <input type="text" name="Mail" id="Mail" class="form-control" disabled value="{{leParticipant.mail}}"></input>
+         </div>
+         <div class="form-group">
+               <label for="Sites_no_site">Sites no site</label>
+               <input type="text" name="Sites_no_site" id="Sites_no_site" class="form-control" disabled value="{{leParticipant.sitesNoSite}}"></input>
+         </div>
+        
+         <div class="d-flex justify-content-between mt-2">
+            
+            <a type="button" class="btn btn-primary" href="{{path(routeSortie)}}">Annuler</a>
+         </div>
+
+   </div>
+</div>
+{% endblock %}

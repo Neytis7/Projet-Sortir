@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\ParticipantsRepository;
 use App\Entity\Participants;
 use App\Form\ProfilType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -81,6 +82,15 @@ class ProfilController extends AbstractController
         ]);
     }
 
+    #[Route('afficher/profil/{id}', name: 'afficherProfile')]
+    public function voirProfil(Request $request, ParticipantsRepository $participantsRepository, int $id): Response
+    {
+        $leParticipant=$participantsRepository->find($id);
+        return $this->render('profil/afficherProfil.html.twig', [
+            'leParticipant' => $leParticipant
+        ]);
+    }
+
     /**
      * @Route("/", name="accueil")
      */
@@ -88,4 +98,5 @@ class ProfilController extends AbstractController
     {
         return $this->render('base.html.twig');
     }
+    
 }
