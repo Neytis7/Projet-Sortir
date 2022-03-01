@@ -25,6 +25,13 @@ class Sorties
     private $noSortie;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="motifAnnulation", type="string", length=500, nullable=true)
+     */
+    private $motifAnnulation;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="nom", type="string", length=30, nullable=false)
@@ -318,6 +325,38 @@ class Sorties
         $this->participantsNoParticipant->removeElement($participantsNoParticipant);
 
         return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getMotifAnnulation(): ?string
+    {
+        return $this->motifAnnulation;
+    }
+
+    /**
+     * @param string|null $motifAnnulation
+     */
+    public function setMotifAnnulation(?string $motifAnnulation): void
+    {
+        $this->motifAnnulation = $motifAnnulation;
+    }
+
+    /**
+     * @return Etats
+     */
+    public function getUrlphoto(): Etats
+    {
+        return $this->urlphoto;
+    }
+
+    /**
+     * @param Etats $urlphoto
+     */
+    public function setUrlphoto(Etats $urlphoto): void
+    {
+        $this->urlphoto = $urlphoto;
     }
 
 
