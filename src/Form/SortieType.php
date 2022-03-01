@@ -20,7 +20,6 @@ class SortieType extends AbstractType
             ->add('nbinscriptionsmax',null,['label'=>'Nombre de places : '])
             ->add('descriptioninfos',null,['label'=>'Description et infos : '])
             ->add('lieuxNoLieu',null,['label'=>'Lieux : '])
-            ->add('etatsNoEtat',null,['label'=>'Etat de la sortie : '])
         ;
     }
 

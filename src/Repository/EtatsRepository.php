@@ -45,32 +45,21 @@ class EtatsRepository extends ServiceEntityRepository
         }
     }
 
-    // /**
-    //  * @return Etats[] Returns an array of Etats objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('e')
-            ->andWhere('e.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('e.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+    public function findAnnulee() {
+        //QueryBuilder
+        $qb = $this->createQueryBuilder('e');
+        $s = 'e.libelle = '."'Annulée'";
+        $qb->andWhere($s);
+        $query = $qb->getQuery();
+        return $query->getResult();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Etats
-    {
-        return $this->createQueryBuilder('e')
-            ->andWhere('e.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+    public function findCree() {
+        //QueryBuilder
+        $qb = $this->createQueryBuilder('e');
+        $s = 'e.libelle = '."'Créée'";
+        $qb->andWhere($s);
+        $query = $qb->getQuery();
+        return $query->getResult();
     }
-    */
 }
