@@ -1,7 +1,6 @@
-
 {% set route = app.request.get('_route') %}
-
 {% set routeSortie = constant('App\\Controller\\SortieController::ROUTE_SORTIE') %}
+{% set routeAdmin = constant('App\\Controller\\AdministrationController::ROUTE_ADMIN') %}
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container-fluid">
@@ -26,6 +25,17 @@
                             aria-current="page"
                             href="{{ path(routeSortie) }}">
                             Accueil
+                        </a>
+                    </li> 
+
+                    <li class="nav-item">
+                        <a class="nav-link 
+                            {% if route == routeAdmin %}
+                                active 
+                            {% endif %}"
+                            aria-current="page"
+                            href="{{ path(routeAdmin) }}">
+                            Administration
                         </a>
                     </li>
                 </ul>
