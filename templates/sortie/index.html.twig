@@ -1,81 +1,59 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Filtrer les sorties{% endblock %}
+{% block subtitle %}Filtrer les sorties{% endblock %}
 
 {% block body %}
 
-    <h1>Filtrer les sorties</h1>
-        {# {{ form_start(formView) }}
-        <div class="row">
-            <div class="col-4">
-                {{ form_row(formView.lieuxNoLieu) }}
-            </div>
-            <div class="col-4">
-                {{ form_row(formView.nom) }}
-            </div>
-            <div class="col-4">
-            </div>
+    <div class="row">
+        <div class="col-sm d-flex justify-content-center">
+            <table id="table_id" class="display table table-border">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Date début</th>
+                        <th>Date clôture</th>
+                        <th>Nombre inscrit/nombre max</th>
+                        <th>Etat sortie</th>
+                        <th>Inscrit</th>
+                        <th>Organisateur</th>
+                        <th>Action</th>
+                    </tr>
+                
+                </thead>
+                <tbody>
+                {% for sortie in lesSorties %}
+                <tr>        
+                    <td>{{sortie.nom}}</td>
+                    <td>{{sortie.datedebut|date("d/m/Y")}}</td>
+                    <td>{{sortie.datecloture|date("d/m/Y")}}</td>
+                    <td>nombre inscrit à faire/{{sortie.nbinscriptionsmax}}</td>
+                    <td>{{sortie.etatsNoEtat.libelle}}</td>
+                    <td>si inscrit à faire</td>
+                    <td>{{sortie.organisateur.prenom}}</td>
+                    <td>action à faire</td>
+                </tr> 
+                {% endfor %}
+
+                </tbody>
+                <tfoot>
+                    <tr id="research">
+                        <th>Nom</th>
+                        <th>Date début</th>
+                        <th>Date clôture</th>
+                        <th>Nombre inscrit/nombre max</th>
+                        <th>Etat sortie</th>
+                        <th>Inscrit</th>
+                        <th>Organisateur</th>
+                        <th>Action</th>
+                    </tr>
+                </tfoot>
+            </table>
         </div>
-        <div class="row">
-            <div class="col-4">
-            {{ form_row(formView.datedebut) }}
-            </div>
-            <div class="col-4">
-            {{ form_row(formView.datecloture) }}
-            </div>
-        <input type="submit" value="Rechercher">
+    </div>
 
-        {{ form_end(formView) }} #}
 
-    <table id="table_id" class="display">
-    <thead>
-        <tr>
-            <th>Nom</th>
-            <th>Date début</th>
-            <th>Date clôture</th>
-            <th>Nombre inscrit/nombre max</th>
-            <th>Etat sortie</th>
-            <th>Inscrit</th>
-            <th>Organisateur</th>
-            <th>Action</th>
-        </tr>
-      
-    </thead>
-    <tbody>
-        {% for sortie in lesSorties %}
-           <tr>
-           
-                <td>{{sortie.nom}}</td>
-                {# <td>{{sortie.datedebut}}</td>
-                <td>{{sortie.datecloture}}</td> #}
-                <td>{{sortie.datedebut|date("d/m/Y")}}</td>
-                <td>{{sortie.datecloture|date("d/m/Y")}}</td>
-                <td>nombre inscrit à faire/{{sortie.nbinscriptionsmax}}</td>
-                <td>{{sortie.etatsNoEtat.libelle}}</td>
-                <td>si inscrit à faire</td>
-                <td>{{sortie.organisateur.prenom}}</td>
-                <td>action à faire</td>
-           </tr> 
-        {% endfor %}
-
-    </tbody>
-    <tfoot>
-        <tr id="research">
-            <th>Nom</th>
-            <th>Date début</th>
-            <th>Date clôture</th>
-            <th>Nombre inscrit/nombre max</th>
-            <th>Etat sortie</th>
-            <th>Inscrit</th>
-            <th>Organisateur</th>
-            <th>Action</th>
-        </tr>
-    </tfoot>
-</table>
  <script>
-{# $(document).ready( function () {
-    $('#table_id').DataTable();
-} ); #}
 
 $(document).ready(function() {
     // Setup - add a text input to each footer cell
@@ -117,9 +95,15 @@ $(document).ready(function() {
                     select.append( '<option value="'+d+'">'+d+'</option>' )
                 } );
             });
-        }
+        },
+        "responsive": true,
+        "info": false,
+        "autoWidth": true,
     });
- 
+
+    $('#TableauRapport').DataTable().columns.adjust().draw();
 } );
- </script>       
+ </script>  
+ 
+      
 {% endblock %}
