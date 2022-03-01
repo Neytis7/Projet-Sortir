@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Form\RechercheSortieType;
 use App\Entity\Sorties;
 use App\Form\SortieType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -45,12 +46,23 @@ class SortieController extends AbstractController
     }
 
     #[Route('/sortie', name: self::ROUTE_SORTIE)]
-    public function index(SortiesRepository $SortiesRepository): Response
+    public function index(Request $request, SortiesRepository $SortiesRepository): Response
     {
         $lesSorties=$SortiesRepository->findAll();
+
+        $sorties = new Sorties();
+        $form = $this->createForm(RechercheSortieType::class, $sorties);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // encode the plain password
+        }
+
+        $formView = $form->createView();
         
         return $this->render('sortie/index.html.twig', [
             'lesSorties' => $lesSorties,
+            'formView'=>$formView
         ]);
     }
 }
