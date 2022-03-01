@@ -1,8 +1,6 @@
 
 {% set route = app.request.get('_route') %}
 
-{% set routeMain = constant('App\\Controller\\MainController::ROUTE_MAIN') %}
-{% set routeMain2 = constant('App\\Controller\\MainController::ROUTE_MAIN2') %}
 {% set routeSortie = constant('App\\Controller\\SortieController::ROUTE_SORTIE') %}
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -18,7 +16,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <div class="navbar-nav">
+            <div class="navbar-nav ms-auto">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
                         <a class="nav-link 
@@ -26,27 +24,8 @@
                                 active 
                             {% endif %}"
                             aria-current="page"
-                            href="{{ path(routeMain) }}">
-                            Accueil
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link 
-                            {% if route == routeMain2 %}
-                                active
-                            {% endif %}" 
-                            href="{{ path(routeMain2) }}">
-                            Encore accueil
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link 
-                            {% if route == routeSortie %}
-                                active 
-                            {% endif %}"
-                            aria-current="page"
                             href="{{ path(routeSortie) }}">
-                            Sorties
+                            Accueil
                         </a>
                     </li>
                 </ul>
