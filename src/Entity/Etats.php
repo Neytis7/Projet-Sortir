@@ -8,7 +8,9 @@ use Doctrine\ORM\Mapping as ORM;
  * Etats
  *
  * @ORM\Table(name="etats")
+ *
  * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\EtatsRepository")
  */
 class Etats
 {
@@ -27,6 +29,23 @@ class Etats
      * @ORM\Column(name="libelle", type="string", length=30, nullable=false)
      */
     private $libelle;
+
+    public function getNoEtat(): ?int
+    {
+        return $this->noEtat;
+    }
+
+    public function getLibelle(): ?string
+    {
+        return $this->libelle;
+    }
+
+    public function setLibelle(string $libelle): self
+    {
+        $this->libelle = $libelle;
+
+        return $this;
+    }
 
 
 }

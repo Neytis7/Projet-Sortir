@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="villes")
  * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\VillesRepository")
  */
 class Villes
 {
@@ -34,6 +35,35 @@ class Villes
      * @ORM\Column(name="code_postal", type="string", length=10, nullable=false)
      */
     private $codePostal;
+
+    public function getNoVille(): ?int
+    {
+        return $this->noVille;
+    }
+
+    public function getNomVille(): ?string
+    {
+        return $this->nomVille;
+    }
+
+    public function setNomVille(string $nomVille): self
+    {
+        $this->nomVille = $nomVille;
+
+        return $this;
+    }
+
+    public function getCodePostal(): ?string
+    {
+        return $this->codePostal;
+    }
+
+    public function setCodePostal(string $codePostal): self
+    {
+        $this->codePostal = $codePostal;
+
+        return $this;
+    }
 
 
 }
