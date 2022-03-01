@@ -7,7 +7,7 @@
 
     <div class="row">
         <div class="col-sm d-flex justify-content-center">
-            <table id="table_id" class="display table table-border">
+            <table id="table_id" class="display">
                 <thead>
                     <tr>
                         <th>Nom</th>
@@ -22,18 +22,22 @@
                 
                 </thead>
                 <tbody>
-                {% for sortie in lesSorties %}
-                <tr>        
-                    <td>{{sortie.nom}}</td>
-                    <td>{{sortie.datedebut|date("d/m/Y")}}</td>
-                    <td>{{sortie.datecloture|date("d/m/Y")}}</td>
-                    <td>nombre inscrit à faire/{{sortie.nbinscriptionsmax}}</td>
-                    <td>{{sortie.etatsNoEtat.libelle}}</td>
-                    <td>si inscrit à faire</td>
-                    <td>{{sortie.organisateur.prenom}}</td>
-                    <td>action à faire</td>
-                </tr> 
-                {% endfor %}
+                    {% for sortie in lesSorties %}
+                    <tr>
+                    
+                            <td>{{sortie.nom}}</td>
+                            {# <td>{{sortie.datedebut}}</td>
+                            <td>{{sortie.datecloture}}</td> #}
+                            <td>{{sortie.datedebut|date("d/m/Y")}}</td>
+                            <td>{{sortie.datecloture|date("d/m/Y")}}</td>
+                            <td>nombre inscrit à faire/{{sortie.nbinscriptionsmax}}</td>
+                            <td>{{sortie.etatsNoEtat.libelle}}</td>
+                            <td>si inscrit à faire</td>
+                            
+                            <td><a href="{{path('afficherProfile', {'id':sortie.organisateur.noParticipant}) }}">{{sortie.organisateur.prenom}}</a></td>
+                            <td>action à faire</td>
+                    </tr> 
+                    {% endfor %}
 
                 </tbody>
                 <tfoot>
@@ -51,7 +55,6 @@
             </table>
         </div>
     </div>
-
 
  <script>
 
