@@ -11,7 +11,6 @@ use DateTime;
  * Sorties
  *
  * @ORM\Table(name="sorties", indexes={@ORM\Index(name="sorties_lieux_fk", columns={"lieux_no_lieu"}), @ORM\Index(name="sorties_etats_fk", columns={"etats_no_etat"}), @ORM\Index(name="sorties_participants_fk", columns={"organisateur"})})
- * @ORM\Entity
  * @ORM\Entity(repositoryClass="App\Repository\SortiesRepository")
  */
 class Sorties
@@ -67,15 +66,9 @@ class Sorties
      */
     private $descriptioninfos;
 
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(name="etatsortie", type="integer", nullable=true)
-     */
-    private $etatsortie;
 
     /**
-     * @var string|null
+     * @var Etats
      *
      * @ORM\Column(name="urlPhoto", type="string", length=250, nullable=true)
      */
@@ -112,7 +105,7 @@ class Sorties
     private $lieuxNoLieu;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @var Collection
      *
      * @ORM\ManyToMany(targetEntity="Participants", inversedBy="sortiesNoSortie")
      * @ORM\JoinTable(name="inscriptions",
@@ -131,152 +124,184 @@ class Sorties
      */
     public function __construct()
     {
-        $this->participantsNoParticipant = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->participantsNoParticipant = new ArrayCollection();
     }
 
-    public function getNoSortie(): ?int
+    /**
+     * @return int
+     */
+    public function getNoSortie(): int
     {
         return $this->noSortie;
     }
 
-    public function getNom(): ?string
+    /**
+     * @param int $noSortie
+     */
+    public function setNoSortie(int $noSortie): void
+    {
+        $this->noSortie = $noSortie;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNom(): string
     {
         return $this->nom;
     }
 
-    public function setNom(string $nom): self
+    /**
+     * @param string $nom
+     */
+    public function setNom(string $nom): void
     {
         $this->nom = $nom;
-
-        return $this;
     }
 
-    public function getDatedebut(): ?DateTime
+    /**
+     * @return DateTime
+     */
+    public function getDatedebut(): DateTime
     {
         return $this->datedebut;
     }
 
-    public function setDatedebut(DateTime $datedebut): self
+    /**
+     * @param DateTime $datedebut
+     */
+    public function setDatedebut(DateTime $datedebut): void
     {
         $this->datedebut = $datedebut;
-
-        return $this;
     }
 
+    /**
+     * @return int|null
+     */
     public function getDuree(): ?int
     {
         return $this->duree;
     }
 
-    public function setDuree(?int $duree): self
+    /**
+     * @param int|null $duree
+     */
+    public function setDuree(?int $duree): void
     {
         $this->duree = $duree;
-
-        return $this;
     }
 
-    public function getDatecloture(): ?DateTime
+    /**
+     * @return DateTime
+     */
+    public function getDatecloture(): DateTime
     {
         return $this->datecloture;
     }
 
-    public function setDatecloture(DateTime $datecloture): self
+    /**
+     * @param DateTime $datecloture
+     */
+    public function setDatecloture(DateTime $datecloture): void
     {
         $this->datecloture = $datecloture;
-
-        return $this;
     }
 
-    public function getNbinscriptionsmax(): ?int
+    /**
+     * @return int
+     */
+    public function getNbinscriptionsmax(): int
     {
         return $this->nbinscriptionsmax;
     }
 
-    public function setNbinscriptionsmax(int $nbinscriptionsmax): self
+    /**
+     * @param int $nbinscriptionsmax
+     */
+    public function setNbinscriptionsmax(int $nbinscriptionsmax): void
     {
         $this->nbinscriptionsmax = $nbinscriptionsmax;
-
-        return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getDescriptioninfos(): ?string
     {
         return $this->descriptioninfos;
     }
 
-    public function setDescriptioninfos(?string $descriptioninfos): self
+    /**
+     * @param string|null $descriptioninfos
+     */
+    public function setDescriptioninfos(?string $descriptioninfos): void
     {
         $this->descriptioninfos = $descriptioninfos;
-
-        return $this;
     }
 
-    public function getEtatsortie(): ?int
-    {
-        return $this->etatsortie;
-    }
 
-    public function setEtatsortie(?int $etatsortie): self
-    {
-        $this->etatsortie = $etatsortie;
-
-        return $this;
-    }
-
-    public function getUrlphoto(): ?string
-    {
-        return $this->urlphoto;
-    }
-
-    public function setUrlphoto(?string $urlphoto): self
-    {
-        $this->urlphoto = $urlphoto;
-
-        return $this;
-    }
-
+    /**
+     * @return Etats
+     */
     public function getEtatsNoEtat(): ?Etats
     {
         return $this->etatsNoEtat;
     }
 
-    public function setEtatsNoEtat(?Etats $etatsNoEtat): self
+    /**
+     * @param Etats $etatsNoEtat
+     */
+    public function setEtatsNoEtat(Etats $etatsNoEtat): void
     {
         $this->etatsNoEtat = $etatsNoEtat;
-
-        return $this;
     }
 
-    public function getOrganisateur(): ?Participants
+    /**
+     * @return Participants
+     */
+    public function getOrganisateur(): Participants
     {
         return $this->organisateur;
     }
 
-    public function setOrganisateur(?Participants $organisateur): self
+    /**
+     * @param Participants $organisateur
+     */
+    public function setOrganisateur(Participants $organisateur): void
     {
         $this->organisateur = $organisateur;
-
-        return $this;
     }
 
+    /**
+     * @return Lieux
+     */
     public function getLieuxNoLieu(): ?Lieux
     {
         return $this->lieuxNoLieu;
     }
 
-    public function setLieuxNoLieu(?Lieux $lieuxNoLieu): self
+    /**
+     * @param Lieux $lieuxNoLieu
+     */
+    public function setLieuxNoLieu(Lieux $lieuxNoLieu): void
     {
         $this->lieuxNoLieu = $lieuxNoLieu;
-
-        return $this;
     }
 
     /**
-     * @return Collection<int, Participants>
+     * @return Collection
      */
-    public function getParticipantsNoParticipant(): Collection
+    public function getParticipantsNoParticipant(): ArrayCollection|Collection
     {
         return $this->participantsNoParticipant;
+    }
+
+    /**
+     * @param Collection $participantsNoParticipant
+     */
+    public function setParticipantsNoParticipant(ArrayCollection|Collection $participantsNoParticipant): void
+    {
+        $this->participantsNoParticipant = $participantsNoParticipant;
     }
 
     public function addParticipantsNoParticipant(Participants $participantsNoParticipant): self
@@ -294,5 +319,6 @@ class Sorties
 
         return $this;
     }
+
 
 }
