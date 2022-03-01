@@ -36,7 +36,6 @@ class Villes
      */
     private $codePostal;
 
-    public function getNoVille(): int
     public function getNoVille(): ?int
     {
         return $this->noVille;
