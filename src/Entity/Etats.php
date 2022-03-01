@@ -30,21 +30,42 @@ class Etats
      */
     private $libelle;
 
-    public function getNoEtat(): ?int
+    /**
+     * @return int
+     */
+    public function getNoEtat(): int
     {
         return $this->noEtat;
     }
 
-    public function getLibelle(): ?string
+    /**
+     * @param int $noEtat
+     */
+    public function setNoEtat(int $noEtat): void
+    {
+        $this->noEtat = $noEtat;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLibelle(): string
     {
         return $this->libelle;
     }
 
-    public function setLibelle(string $libelle): self
+    /**
+     * @param string $libelle
+     */
+    public function setLibelle(string $libelle): void
     {
         $this->libelle = $libelle;
+    }
 
-        return $this;
+
+    public function __toString():String{
+
+        return $this->getLibelle();
     }
 
 
