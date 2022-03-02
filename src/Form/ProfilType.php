@@ -4,8 +4,10 @@ namespace App\Form;
 
 use App\Entity\Participants;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RadioType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -118,11 +120,19 @@ class ProfilType extends AbstractType
                 ],
             ])
 
+            ->add('administrateur', CheckboxType::class,[
+                'required' => false
+            ])
+
+            ->add('actif', CheckboxType::class,[
+                'required' => false
+            ])
+
             ->add('submit', SubmitType::class, [
                 'attr' => [
                     'class' => 'btn btn-success'
                 ]
-            ]);
+            ]);            
     }
 
     public function configureOptions(OptionsResolver $resolver): void
