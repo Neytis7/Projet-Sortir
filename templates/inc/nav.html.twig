@@ -6,6 +6,8 @@
 {% set routeMain = constant('App\\Controller\\MainController::ROUTE_MAIN') %}
 {% set routeSortie = constant('App\\Controller\\SortieController::ROUTE_SORTIE') %}
 
+{% set routeLogout = constant('App\\Controller\\AuthentificationController::ROUTE_LOGOUT') %}
+
 {% set routeModiferProfil = constant('App\\Controller\\ProfilController::ROUTE_MODIFIER_PROFIL') %}
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -63,6 +65,19 @@
                            href="{{ path(routeModiferProfil) }}">
                             {{ constant('App\\Controller\\ProfilController::ROUTE_NAME_MODIFIER_PROFIL') }}
                         </a>
+                    </li>
+                    <li class="nav-item">
+                        <i class="glyphicon glyphicon-log-out" style="color:red"></i>
+                        {% if is_granted('ROLE_USER') %}
+                            <a class="nav-link
+                            {% if route == routeLogout%}
+                                active
+                            {% endif %}"
+                               aria-current="page"
+                               href="{{ path(routeLogout) }}">
+                                Se déconnecter
+                            </a>
+                        {% endif %}
                     </li>
                 </ul>
             </div>

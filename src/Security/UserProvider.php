@@ -15,6 +15,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Twig\Error\Error;
 
 class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
 {
@@ -40,8 +41,8 @@ class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
     {
         $participant = $this->em->getRepository(Participants::class)->findOneByIdentifier($identifier);
 
-        if ($participant == null){
-            throw new Exception('TODO: fill in loadUserByIdentifier() inside '.__FILE__);
+        if (!$participant){
+            throw new UserNotFoundException('Utlisateur inccorrect');
         }else
             return $participant;
         // Load a User object from your data source or throw UserNotFoundException.
