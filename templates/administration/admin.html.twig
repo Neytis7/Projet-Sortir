@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block subtitle %}Panneau d'administration{% endblock %}
+
+{% block body %}
+
+<div class="row mt-4">
+    <div class="col">
+        <h4 class="text-center">Insertion utilisateur par fichier</h4>
+    
+        {{ form_start(addUserWithCsv_form) }}
+            <div class="form-group">
+                {{ form_label(addUserWithCsv_form.file) }}
+                {{ form_widget(addUserWithCsv_form.file) }}
+               <div class="form-error">
+                  {{ form_errors(addUserWithCsv_form.file) }}
+               </div>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Ajouter</button>
+            </div>
+            
+        {{ form_end(addUserWithCsv_form) }}
+    </div>
+    
+    <div class="col">
+        <h4 class="text-center">Insertion utilisateur manuel</h4>
+        {{form_start(addUserManuel)}}
+           
+        {{form_end(addUserManuel)}}
+    </div>
+</div>
+
+
+{% endblock %}
