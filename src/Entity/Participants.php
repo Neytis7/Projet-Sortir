@@ -338,7 +338,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
      public function getUsername()
      {
-         // TODO: Implement getUsername() method.
+         return $this->pseudo;
      }
 
      public function __call(string $name, array $arguments)

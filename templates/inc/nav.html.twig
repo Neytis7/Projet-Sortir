@@ -9,6 +9,8 @@
 
 {% set routeModiferProfil = constant('App\\Controller\\ProfilController::ROUTE_MODIFIER_PROFIL') %}
 
+{% set routeCreerSortie = constant('App\\Controller\\SortieController::ROUTE_CREER_SORTIE') %}
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container-fluid">
         <a class="navbar-brand" href="{{ path(routeSortie) }}">
@@ -25,6 +27,8 @@
             <div class="navbar-nav ms-auto">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
+                        <i class="glyphicon glyphicon-log-out" style="color:red"></i>
+                        {% if is_granted('ROLE_ADMIN') %}
                         <a class="nav-link 
                             {% if route == routeAdmin %}
                                 active 
@@ -33,8 +37,11 @@
                             href="{{ path(routeAdmin) }}">
                             Administration
                         </a>
+                        {% endif %}
                     </li>
                     <li class="nav-item">
+                        <i class="glyphicon glyphicon-log-out" style="color:red"></i>
+                        {% if is_granted('ROLE_USER') %}
                         <a class="nav-link 
                             {% if route == routeSortie %}
                                 active
@@ -43,8 +50,11 @@
                             href="{{ path(routeSortie) }}">
                             Sorties
                         </a>
+                        {% endif %}
                     </li>
                     <li class="nav-item">
+                        <i class="glyphicon glyphicon-log-out" style="color:red"></i>
+                        {% if is_granted('ROLE_USER') %}
                         <a class="nav-link
                             {% if route == routeModiferProfil %}
                                 active
@@ -53,6 +63,20 @@
                            href="{{ path(routeModiferProfil) }}">
                             {{ constant('App\\Controller\\ProfilController::ROUTE_NAME_MODIFIER_PROFIL') }}
                         </a>
+                        {% endif %}
+                    </li>
+                    <li class="nav-item">
+                        <i class="glyphicon glyphicon-log-out" style="color:red"></i>
+                        {% if is_granted('ROLE_USER') %}
+                            <a class="nav-link
+                            {% if route == routeCreerSortie%}
+                                active
+                            {% endif %}"
+                               aria-current="page"
+                               href="{{ path(routeCreerSortie) }}">
+                                Créer une sortie
+                            </a>
+                        {% endif %}
                     </li>
                     <li class="nav-item">
                         <i class="glyphicon glyphicon-log-out" style="color:red"></i>

@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% set routeCreerSortie = constant('App\\Controller\\SortieController::ROUTE_CREER_SORTIE') %}
+{% set routeAjoutVille = constant('App\\Controller\\VilleController::ROUTE_VILLE_ADD') %}
+
+{% block title %}Ajouter lieu{% endblock %}
+
+{% block body %}
+    <h1>Ajouter un nouveau lieu</h1>
+    {{ form_start(lieuForm) }}
+    {{ form_widget(lieuForm) }}
+    <br>
+    <input type="submit" class="btn btn-primary" value="Enregistrer"></input>
+    <a href="{{ path(routeAjoutVille)}}" class="btn btn-primary" class="button">Ajouter une nouvelle ville</a>
+    <a href="{{ path(routeCreerSortie)}}" class="btn btn-primary" class="button">Annule</a>
+    {{ form_end(lieuForm) }}
+{% endblock %}

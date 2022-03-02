@@ -18,16 +18,21 @@ class SortieController extends AbstractController
 {
 
     const ROUTE_SORTIE = "app_sortie";
+    const ROUTE_CREER_SORTIE = "sortie_add";
+    const ROUTE_MODIFIED_SORTIE="sortie_modified";
+    const ROUTE_ANNULE_SORTIE="sortie_annule";
+    const ROUTE_DETAIL_SORTIE="sortie_detail";
+
     private EntityManagerInterface $em;
 
-    #[Route('/sortie/add', name: 'sortie_add')]
+    #[Route('/sortie/add', name: self::ROUTE_CREER_SORTIE)]
     public function add(EntityManagerInterface $entityManager,EtatsRepository $etatsRepository, Request $request)
     {
         // Creation de l'instance
         $sortie = new Sorties();
         $sortie->setOrganisateur($this->getUser());
 
-        // Creation d'un formulaire en fonction d'un wish
+        // Creation d'un formulaire en fonction d'une sortie
         $form = $this->createForm(SortieType::class,$sortie,['dateJour'=> (new \DateTime())->format('d/m/Y h:i:s')]);
         // Recupere ce qui été envoyé
         $form->handleRequest($request);
@@ -50,18 +55,18 @@ class SortieController extends AbstractController
         return $this->render('sortie/add.html.twig',compact('sortieForm'));
     }
 
-    #[Route('/sortie/{id}', name: 'sortie_detail',requirements: ['id'=>'\d+'])]
+    #[Route('/sortie/{id}', name: self::ROUTE_DETAIL_SORTIE,requirements: ['id'=>'\d+'])]
     public function detail($id,SortiesRepository $SortiesRepository): Response
     {
         $sortie = $SortiesRepository->find($id);
         if(!$sortie){
-            throw new NotFoundHttpException("This wish doesn't exist");
+            throw new NotFoundHttpException("This sortie doesn't exist");
         }
         return $this->render('sortie/detail.html.twig',
             compact("id",'sortie'));
     }
 
-    #[Route('/sortie/modified/{id}', name: 'sortie_modified',requirements: ['id'=>'\d+'])]
+    #[Route('/sortie/modified/{id}', name: self::ROUTE_MODIFIED_SORTIE,requirements: ['id'=>'\d+'])]
     public function modified($id,SortiesRepository $SortiesRepository,Request $request,EntityManagerInterface $entityManager): Response
     {
         $sortie = $SortiesRepository->find($id);
@@ -92,7 +97,7 @@ class SortieController extends AbstractController
             compact("id",'sortie','sortieForm'));
     }
 
-    #[Route('/sortie/annule/{id}', name: 'sortie_annule',requirements: ['id'=>'\d+'])]
+    #[Route('/sortie/annule/{id}', name: self::ROUTE_ANNULE_SORTIE,requirements: ['id'=>'\d+'])]
     public function annule($id,SortiesRepository $SortiesRepository,EtatsRepository $etatsRepository,Request $request,EntityManagerInterface $entityManager)
     {
         $sortie = $SortiesRepository->find($id);
