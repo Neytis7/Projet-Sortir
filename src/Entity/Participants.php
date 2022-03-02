@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Repository\ParticipantsRepository;
+
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -10,16 +12,17 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+
 /**
  * Participants
  *
  * @ORM\Table(name="participants", uniqueConstraints={@ORM\UniqueConstraint(name="participants_pseudo_uk", columns={"pseudo"})})
  *
- * @ORM\Entity
+ *
  * @ORM\Entity(repositoryClass="App\Repository\ParticipantsRepository")
- * @method string getUserIdentifier()
+ *
  */
- class Participants implements UserInterface, PasswordAuthenticatedUserInterface
+ class Participants  implements UserInterface, PasswordAuthenticatedUserInterface
 {
     /**
      * @var int
@@ -68,7 +71,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
     /**
      * @var string
      *
-     * @ORM\Column(name="mot_de_passe", type="string", length=20, nullable=false)
+     * @ORM\Column(name="mot_de_passe", type="string", length=100, nullable=false)
      */
     private $motDePasse;
 
@@ -99,13 +102,15 @@ use Symfony\Component\Security\Core\User\UserInterface;
      * @ORM\ManyToMany(targetEntity="Sorties", mappedBy="participantsNoParticipant")
      */
     private $sortiesNoSortie;
+     private $roles = [];
 
-    /**
+     /**
      * Constructor
      */
     public function __construct()
     {
         $this->sortiesNoSortie = new ArrayCollection();
+
     }
 
     /**
@@ -341,8 +346,16 @@ use Symfony\Component\Security\Core\User\UserInterface;
          // TODO: Implement @method string getUserIdentifier()
      }
 
-     public function getRoles()
+     public function getRoles(): array
      {
-         // TODO: Implement getRoles() method.
+         $roles = $this->roles;
+         // guarantee every user at least has ROLE_USER
+         $roles[] = 'ROLE_USER';
+         return array_unique($roles);
      }
+     public function getUserIdentifier(): String
+     {
+         return (string) $this->pseudo;
+     }
+
  }
