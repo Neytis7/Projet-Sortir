@@ -27,7 +27,7 @@ security:
                 enable_csrf: true
             logout:
                 path: logout
-                target: /login
+                target: /
             remember_me:
                 secret: '%kernel.secret%'
                 lifetime: 604800
