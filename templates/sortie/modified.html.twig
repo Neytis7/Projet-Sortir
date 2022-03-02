@@ -6,8 +6,9 @@
     <h1>Modifier la sortie</h1>
     {{ form_start(sortieForm) }}
     {{ form_widget(sortieForm) }}
-    <input type="submit" value="Enregistrer"></input>
-    {# Ajouter bouton annulé et bonton supprimer #}
-    <a href="{{ path('sortie_annule',{'id':id}) }}">Clique ici pour annulé la sortie</a>
+    <br>
+    <input type="submit" class="btn btn-primary" value="Enregistrer"></input>
+    <a href="{{ path('sortie_annule',{'id':id}) }}" class="btn btn-primary" class="button">Annuler la sortie</a>
+    <a href="{{ path('app_sortie')}}" class="btn btn-primary" class="button">Quitter</a>
     {{ form_end(sortieForm) }}
 {% endblock %}

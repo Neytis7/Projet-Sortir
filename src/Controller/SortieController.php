@@ -24,7 +24,6 @@ class SortieController extends AbstractController
     public function add(EntityManagerInterface $entityManager,EtatsRepository $etatsRepository, Request $request)
     {
         // Creation de l'instance
-        $etatsCreer = $etatsRepository->findCree();
         $sortie = new Sorties();
         //$sortie->setOrganisateur($this->getUser()->getUserIdentifier());
 
@@ -35,7 +34,10 @@ class SortieController extends AbstractController
 
         // Check si le formulaire est valide et envoyé
         if($form->isSubmitted() && $form->isValid()){
-            $sortie->setEtatsNoEtat($etatsCreer[0]);
+
+            $etat = $etatsRepository->findCree();
+            $sortie->setEtatsNoEtat($etat[0]);
+
             $entityManager->persist($sortie);
             $entityManager->flush();
             // Message flash

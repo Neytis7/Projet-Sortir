@@ -10,7 +10,8 @@
     <p>Lieu : {{ sortie.lieuxNoLieu.nomLieu }}</p>
     {{ form_start(sortieForm) }}
     {{ form_widget(sortieForm) }}
-    <input type="submit" value="Enregistrer"></input>
-    <a href="{{ path('app_sortie')}}">Annulé</a>
+    <br>
+    <input type="submit" class="btn btn-primary" value="Enregistrer"></input>
+    <a href="{{ path('app_sortie')}}" class="btn btn-primary" class="button">Quitter</a>
     {{ form_end(sortieForm) }}
 {% endblock %}

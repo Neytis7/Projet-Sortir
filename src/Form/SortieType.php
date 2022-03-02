@@ -4,7 +4,6 @@ namespace App\Form;
 
 use App\Entity\Sorties;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -40,16 +39,8 @@ class SortieType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('datecloture',null,[
-                'label'=>'Date limite d\'inscription : ',
-                'constraints' => [
-                    //Il faut changer la date du jour par la date de debut
-                    new Assert\GreaterThanOrEqual([
-                        'value' => $options['dateJour'],
-                        'message' => 'La date de cloture doit être supérieur a la date de debut'
-                    ]),
-                ],
-            ])
+            //Contrainte sur la date de cloture > date de debut
+            ->add('datecloture',null,['label'=>'Date limite d\'inscription : '])
             ->add('nbinscriptionsmax',null,[
                 'label'=>'Nombre de places : ',
                 'constraints' => [

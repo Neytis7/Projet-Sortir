@@ -62,4 +62,13 @@ class EtatsRepository extends ServiceEntityRepository
         $query = $qb->getQuery();
         return $query->getResult();
     }
+
+    public function findOuverte() {
+        //QueryBuilder
+        $qb = $this->createQueryBuilder('e');
+        $s = 'e.libelle = '."'Ouverte'";
+        $qb->andWhere($s);
+        $query = $qb->getQuery();
+        return $query->getResult();
+    }
 }
