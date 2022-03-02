@@ -4,7 +4,6 @@ namespace App\Security;
 
 use App\Entity\Participants;
 use App\Repository\ParticipantsRepository;
-use ContainerQ2rXbks\getParticipantsRepositoryService;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -39,6 +38,7 @@ class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
      */
     public function loadUserByIdentifier($identifier): UserInterface
     {
+        dump($identifier);
         $participant = $this->em->getRepository(Participants::class)->findOneByIdentifier($identifier);
 
         if (!$participant){

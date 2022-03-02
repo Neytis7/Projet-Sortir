@@ -2,16 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\ParticipantsRepository;
-
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use http\Client\Curl\User;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Participants
@@ -22,7 +18,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @ORM\Entity(repositoryClass="App\Repository\ParticipantsRepository")
  *
  */
- class Participants  implements UserInterface, PasswordAuthenticatedUserInterface
+#[UniqueEntity('mail', message: 'ce mail est déjà utilisé.')]
+#[UniqueEntity('pseudo', message: 'ce pseudo est déjà utilisé.')]
+ class Participants implements UserInterface, PasswordAuthenticatedUserInterface
 {
     /**
      * @var int
@@ -341,10 +339,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
          return $this->pseudo;
      }
 
-     public function __call(string $name, array $arguments)
-     {
-         // TODO: Implement @method string getUserIdentifier()
-     }
 
      public function getRoles(): array
      {
@@ -357,5 +351,4 @@ use Symfony\Component\Security\Core\User\UserInterface;
      {
          return (string) $this->pseudo;
      }
-
  }

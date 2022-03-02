@@ -78,7 +78,10 @@ class AdministrationController extends AbstractController
 
         //Form add user
         $user = new Participants();
-        $userFormBuilder = $this->createForm(ProfilType::class, $user);
+        $userFormBuilder = $this->createForm(ProfilType::class, $user, [
+            'isAdmin' => true,
+        ]);
+
         $userFormBuilder->handleRequest($request);
         if($userFormBuilder->isSubmitted() && $userFormBuilder->isValid()) {
             

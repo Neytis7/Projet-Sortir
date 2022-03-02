@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Participants;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -24,10 +25,6 @@ class ParticipantsRepository extends ServiceEntityRepository implements UserLoad
         parent::__construct($registry, Participants::class);
     }
 
-    /**
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
     public function add(Participants $entity, bool $flush = true): void
     {
         $this->_em->persist($entity);
@@ -37,8 +34,6 @@ class ParticipantsRepository extends ServiceEntityRepository implements UserLoad
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
      */
     public function remove(Participants $entity, bool $flush = true): void
     {
@@ -48,6 +43,9 @@ class ParticipantsRepository extends ServiceEntityRepository implements UserLoad
         }
     }
 
+    /**
+     * @throws NonUniqueResultException
+     */
     public function findOneByIdentifier(string $identifier): ?Participants
     {
         $qb = $this->createQueryBuilder('p');
@@ -60,17 +58,10 @@ class ParticipantsRepository extends ServiceEntityRepository implements UserLoad
         ->setParameter('identifiant', $identifier);
 
         return $qb->getQuery()->getOneOrNullResult();
-
-
-
     }
 
-
-    public function loadUserByUsername(string $identifier)
+    public function loadUserByUsername(string $username): ?UserInterface
     {
-        return $this->loadUserByIdentifier($identifier);
+        return $this->loadUserByIdentifier($username);
     }
-
-
-
 }

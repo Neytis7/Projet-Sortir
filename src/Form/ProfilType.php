@@ -22,6 +22,8 @@ class ProfilType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $isAdmin = !$options['isAdmin'];
+
         $builder
             ->add('pseudo',TextType::class, [
                 'attr' => [
@@ -121,11 +123,17 @@ class ProfilType extends AbstractType
             ])
 
             ->add('administrateur', CheckboxType::class,[
-                'required' => false
+                'required' => false,
+                'attr' => array(
+                    'disabled' => $isAdmin,
+                ),
             ])
 
             ->add('actif', CheckboxType::class,[
-                'required' => false
+                'required' => false,
+                'attr' => array(
+                    'disabled' => $isAdmin,
+                ),
             ])
 
             ->add('submit', SubmitType::class, [
@@ -139,6 +147,7 @@ class ProfilType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Participants::class,
+            'isAdmin' => false,
         ]);
     }
 }

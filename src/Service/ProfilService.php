@@ -15,23 +15,12 @@ class ProfilService
     }
 
     /**
-     * Verifie qu'un pseudo est unique
      *
-     * @param string $pseudo
-     * @return bool
+     * @param int $id
+     * @return Participants|null
      */
-    public function estPseudoUnique(string $pseudo) : bool
+    public function getParticipantById(int $id) : ?Participants
     {
-        $estUnique = false;
-        $pseudo = trim($pseudo);
-        $allPseudos = $this->em->getRepository(Participants::class)->findBy([
-            'pseudo' => $pseudo
-        ]);
-
-        if (count($allPseudos) <= 0) {
-            $estUnique = true;
-        }
-
-        return $estUnique;
+        return $this->em->getRepository(Participants::class)->find($id);
     }
 }
