@@ -1,5 +1,8 @@
 {% extends 'base.html.twig' %}
 
+{% set routeAfficherProfil = constant('App\\Controller\\ProfilController::ROUTE_AFFICHER_PROFIL') %}
+{% set routeSortie = constant('App\\Controller\\SortieController::ROUTE_SORTIE') %}
+
 {% block title %}Detail d'une sortie{% endblock %}
 
 {% block body %}
@@ -19,7 +22,8 @@
     <h2>Liste des participants inscrits</h2>
     {% for s in sortie.participantsNoParticipant %}
     <ul>
-        <li>{{ s.nom }} alias {{ s.pseudo }}</li>
+        <li><a href="{{path(routeAfficherProfil, {'id':s.noParticipant}) }}">{{ s.nom }} alias {{ s.pseudo }}</a></li>
     </ul>
     {% endfor %}
+    <a type="button" class="btn btn-primary" href="{{path(routeSortie)}}">Annuler</a>
 {% endblock %}

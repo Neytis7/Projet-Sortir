@@ -142,7 +142,7 @@ class Lieux
     /**
      * @return Villes
      */
-    public function getVillesNoVille(): Villes
+    public function getVillesNoVille(): ?Villes
     {
         return $this->villesNoVille;
     }

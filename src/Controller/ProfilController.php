@@ -18,6 +18,7 @@ class ProfilController extends AbstractController
     const PATH_HOME = 'app_main';
     const ROUTE_MODIFIER_PROFIL = 'modifier_profil';
     const ROUTE_NAME_MODIFIER_PROFIL = 'Profil';
+    const ROUTE_AFFICHER_PROFIL = "afficherProfile";
 
     /**
      * @var ProfilService
@@ -79,7 +80,7 @@ class ProfilController extends AbstractController
         ]);
     }
 
-    #[Route('afficher/profil/{id}', name: 'afficherProfile')]
+    #[Route('afficher/profil/{id}', name: self::ROUTE_AFFICHER_PROFIL)]
     public function voirProfil(Request $request, ParticipantsRepository $participantsRepository, int $id): Response
     {
         $leParticipant=$participantsRepository->find($id);
