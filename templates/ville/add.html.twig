@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% set routeAjoutLieu = constant('App\\Controller\\LieuController::ROUTE_LIEU_ADD') %}
+
+{% block title %}Ajouter ville{% endblock %}
+
+{% block body %}
+    <h1>Ajouter une nouvelle ville</h1>
+    {{ form_start(villeForm) }}
+    {{ form_widget(villeForm) }}
+    <br>
+    <input type="submit" class="btn btn-primary" value="Enregistrer"></input>
+    <a href="{{ path(routeAjoutLieu)}}" class="btn btn-primary" class="button">Annule</a>
+    {{ form_end(villeForm) }}
+{% endblock %}

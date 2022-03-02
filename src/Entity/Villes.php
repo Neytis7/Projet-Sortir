@@ -81,5 +81,8 @@ class Villes
         $this->codePostal = $codePostal;
     }
 
+    public function __toString() : string{
+        return $this->getNomVille();
+    }
 
 }
