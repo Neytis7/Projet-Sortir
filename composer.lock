@@ -4,11 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-<<<<<<< Updated upstream
-    "content-hash": "49737ae81b32c2ae883fdeaa2a0fe46c",
-=======
-    "content-hash": "84e41f32bd4ab7ab33c581134b2b6cb0",
->>>>>>> Stashed changes
+    "content-hash": "73b93876081803efea7da84221b80f99",
     "packages": [
         {
             "name": "doctrine/annotations",
