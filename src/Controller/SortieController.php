@@ -29,7 +29,7 @@ class SortieController extends AbstractController
         //$sortie->setOrganisateur($this->getUser()->getUserIdentifier());
 
         // Creation d'un formulaire en fonction d'un wish
-        $form = $this->createForm(SortieType::class,$sortie);
+        $form = $this->createForm(SortieType::class,$sortie,['dateJour'=> (new \DateTime())->format('d/m/Y h:i:s')]);
         // Recupere ce qui été envoyé
         $form->handleRequest($request);
 
