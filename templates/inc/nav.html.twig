@@ -3,7 +3,6 @@
 {% set routeSortie = constant('App\\Controller\\SortieController::ROUTE_SORTIE') %}
 {% set routeAdmin = constant('App\\Controller\\AdministrationController::ROUTE_ADMIN') %}
 
-{% set routeMain = constant('App\\Controller\\MainController::ROUTE_MAIN') %}
 {% set routeSortie = constant('App\\Controller\\SortieController::ROUTE_SORTIE') %}
 
 {% set routeModiferProfil = constant('App\\Controller\\ProfilController::ROUTE_MODIFIER_PROFIL') %}
@@ -23,17 +22,6 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <div class="navbar-nav ms-auto">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link 
-                            {% if route == routeMain %}
-                                active 
-                            {% endif %}"
-                            aria-current="page"
-                            href="{{ path(routeMain) }}">
-                            Accueil
-                        </a>
-                    </li> 
-
                     <li class="nav-item">
                         <a class="nav-link 
                             {% if route == routeAdmin %}

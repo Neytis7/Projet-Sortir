@@ -46,14 +46,13 @@ class ProfilController extends AbstractController
     #[Route('modifier/mon-profil', name: 'modifier_profil')]
     public function profil(Request $request): Response
     {
-        $redirectRoute = self::PATH_HOME;
+        $redirectRoute = SortieController::ROUTE_SORTIE;
         $userCourant = $this->getUser();
         $form = $this->createForm(ProfilType::class, $userCourant);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-
             if ($form->isValid()) {
                 $newPseudo = $form->get('pseudo')->getData();
                 $estUnique = $this->profilService->estPseudoUnique(
@@ -65,8 +64,6 @@ class ProfilController extends AbstractController
                     $redirectRoute = self::ROUTE_MODIFIER_PROFIL;
                 } else {
                     /** @var Participants $userCourant */
-                    //TODO theophane : verifier que cela fonctionne lorsque la classe user sera implémenté
-                    $this->em->persist($userCourant);
                     $this->em->flush();
 
                     $this->addFlash('success', 'Votre profil à été mis à jour');
@@ -90,13 +87,4 @@ class ProfilController extends AbstractController
             'leParticipant' => $leParticipant
         ]);
     }
-
-    /**
-     * @Route("/", name="accueil")
-     */
-    public function index(): Response
-    {
-        return $this->render('base.html.twig');
-    }
-    
 }
