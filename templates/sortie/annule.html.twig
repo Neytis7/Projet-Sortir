@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
 
+{% set routeSortie = constant('App\\Controller\\SortieController::ROUTE_SORTIE') %}
+
 {% block title %}Annulation de la sortie{% endblock %}
 
 {% block body %}
@@ -12,6 +14,6 @@
     {{ form_widget(sortieForm) }}
     <br>
     <input type="submit" class="btn btn-primary" value="Enregistrer"></input>
-    <a href="{{ path('app_sortie')}}" class="btn btn-primary" class="button">Quitter</a>
+    <a href="{{ path(routeSortie)}}" class="btn btn-primary" class="button">Quitter</a>
     {{ form_end(sortieForm) }}
 {% endblock %}
