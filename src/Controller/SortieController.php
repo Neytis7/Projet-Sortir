@@ -12,6 +12,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 use App\Repository\SortiesRepository;
 
 class SortieController extends AbstractController
@@ -128,8 +130,12 @@ class SortieController extends AbstractController
     }
 
     #[Route('/sortie', name: self::ROUTE_SORTIE)]
-    public function index(Request $request, SortiesRepository $SortiesRepository): Response
+    public function index(?UserInterface $userCourant,Request $request, SortiesRepository $SortiesRepository): Response
     {
+         /** @var Participants $userCourant */
+         if (is_null($userCourant)) {
+            throw new AccessDeniedException('Veuillez vous connecter pour accèder à cette page.');
+        }
         // $lesSorties=$SortiesRepository->findAll();findRecherche
         $lesSorties=$SortiesRepository->findRecherche();
 
@@ -146,7 +152,8 @@ class SortieController extends AbstractController
         
         return $this->render('sortie/index.html.twig', [
             'lesSorties' => $lesSorties,
-            'formView'=>$formView
+            'formView'=>$formView,
+            'idUserCourant'=>$userCourant->getNoParticipant()
         ]);
     }
 }

@@ -66,7 +66,7 @@ class SortiesRepository extends ServiceEntityRepository
             ->setParameter('datetime', $datetime)
 
             ->orderBy('sortie.noSortie', 'DESC');
-
+// dd($qb->getQuery()->getResult());
  
         return $qb->getQuery()->getResult();
     }

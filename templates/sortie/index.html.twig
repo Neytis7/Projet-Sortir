@@ -7,6 +7,7 @@
 
     <div class="row">
         <div class="col-sm d-flex justify-content-center">
+        {{idUserCourant}}
             <table id="table_id" class="display">
                 <thead>
                     <tr>
@@ -32,7 +33,13 @@
                             <td>{{sortie.datecloture|date("d/m/Y")}}</td>
                             <td>{{sortie.participantsNoParticipant | length}}/{{sortie.nbinscriptionsmax}}</td>
                             <td>{{sortie.etatsNoEtat.libelle}}</td>
-                            <td>si inscrit à faire</td>
+                            {% set inscrit = "" %}
+                            {% for participant in sortie.participantsNoParticipant %}
+                                {% if participant.noParticipant == idUserCourant %}  
+                                        {% set inscrit = 'X' %}
+                                {% endif %}
+                            {% endfor %}
+                            <td>{{inscrit}}</td>
                             
                             <td><a href="{{path('afficherProfile', {'id':sortie.organisateur.noParticipant}) }}">{{sortie.organisateur.prenom}}</a></td>
                             <td>action à faire</td>
