@@ -10,6 +10,7 @@ use App\Form\SortieAnnuleType;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
 use App\Service\SortieService;
+use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
@@ -29,6 +30,7 @@ class SortieController extends AbstractController
     const ROUTE_ANNULE_SORTIE = "sortie_annule";
     const ROUTE_DETAIL_SORTIE = "sortie_detail";
     const ROUTE_INSCRIPTION_SORTIE = "inscription_sortie";
+    const ROUTE_DESINSCRIPTION_SORTIE = "desinscription_sortie";
 
     /**
      * @var EntityManagerInterface
@@ -56,7 +58,9 @@ class SortieController extends AbstractController
     {
         // Creation de l'instance
         $sortie = new Sortie();
-        $sortie->setOrganisateur($this->getUser());
+        /** @var Participant $participant */
+        $participant = $this->getUser();
+        $sortie->setOrganisateur($participant);
 
         // Creation d'un formulaire en fonction d'une sortie
         $form = $this->createForm(SortieType::class, $sortie, [
@@ -74,6 +78,7 @@ class SortieController extends AbstractController
             ]);
 
             $sortie->setEtat($etat);
+            $participant->addSortie($sortie);
             $entityManager->persist($sortie);
             $entityManager->flush();
             // Message flash
@@ -190,8 +195,12 @@ class SortieController extends AbstractController
         ]);
     }
 
+    /**
+     * @throws \Exception
+     */
     #[Route('/inscription/sortie/{id}', name: self::ROUTE_INSCRIPTION_SORTIE, requirements: ['id'=>'\d+'])]
-    public function inscriptionSortie(?UserInterface $userCourant, Request $request): Response
+    #[Route('/desinscription/sortie/{id}', name: self::ROUTE_DESINSCRIPTION_SORTIE, requirements: ['id'=>'\d+'])]
+    public function inscriptionDesinscriptionSortie(?UserInterface $userCourant, Request $request): Response
     {
         /** @var Participant $userCourant */
         if (is_null($userCourant)) {
@@ -204,13 +213,28 @@ class SortieController extends AbstractController
             throw new AccessDeniedException('La sortie n\'a pas été trouvé, veuillez réessayer');
         }
 
-        $inscriptionSuccess = $this->serviceSortie->inscrireSortie($userCourant, $sortie);
+        $message = '';
+        try {
+            if ($request->get('_route') === self::ROUTE_INSCRIPTION_SORTIE) {
+                $this->serviceSortie->inscrireSortie($userCourant, $sortie);
+                $message = "Votre inscription a été prise en compte !";
+                $success = true;
+            } elseif ($request->get('_route') === self::ROUTE_DESINSCRIPTION_SORTIE) {
+                $this->serviceSortie->desisterSortie($userCourant, $sortie);
+                $message = "Votre dé-inscription a été prise en compte !";
+                $success = true;
+            } else {
+                throw new \Exception('Une erreur s\'est produite, veuillez réessayer !');
+            }
+        } catch (Exception $e) {
+            $success = false;
+        }
 
-        $message = $inscriptionSuccess === true
-            ? "Votre inscription a été prise en compte !"
-            : "L'inscription à la sortie à échouée !";
+        $message = $success === false
+            ? "Votre action n\' pas été prise en compte, réessayer"
+            : $message;
 
-        $type = $inscriptionSuccess === true
+        $type = $success === true
             ? "success"
             : "error";
 

@@ -22,11 +22,6 @@ class SortieRepository extends ServiceEntityRepository
         parent::__construct($registry, Sortie::class);
     }
 
-    public function insertInscription(int $participantId, int $sortieId) :bool
-    {
-        dd('not insert inscription implement');
-    }
-
     public function findRecherche() {
         $date=date("Y-m-d H:m:s");
         $date=date('Y-m-d H:m:s', strtotime($date. ' - 1 month'));

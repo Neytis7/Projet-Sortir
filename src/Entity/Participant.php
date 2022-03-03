@@ -68,7 +68,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
     /**
      * @var string
      *
-     * @ORM\Column(name="mail", type="string", length=20, nullable=false)
+     * @ORM\Column(name="mail", type="string", length=50, nullable=false)
      */
     private string $mail;
 
@@ -323,7 +323,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
         return $this->sorties;
     }
 
-    public function addSorties(Sortie $sortie): Participant
+    public function addSortie(Sortie $sortie): Participant
     {
         if (!$this->sorties->contains($sortie)) {
             $this->sorties[] = $sortie;
@@ -333,7 +333,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
         return $this;
     }
 
-    public function removeSortiesNoSortie(Sortie $sortie): Participant
+    public function removeSortie(Sortie $sortie): Participant
     {
         if ($this->sorties->removeElement($sortie)) {
             $sortie->removeParticipant($this);
@@ -376,5 +376,26 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
      public function getUserIdentifier(): String
      {
          return (string) $this->pseudo;
+     }
+
+     public function getAdministrateur(): ?bool
+     {
+         return $this->administrateur;
+     }
+
+     public function addSorty(Sortie $sorty): self
+     {
+         if (!$this->sorties->contains($sorty)) {
+             $this->sorties[] = $sorty;
+         }
+
+         return $this;
+     }
+
+     public function removeSorty(Sortie $sorty): self
+     {
+         $this->sorties->removeElement($sorty);
+
+         return $this;
      }
  }
