@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\Entity\Participants;
+use App\Entity\Participant;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ProfilService
@@ -17,10 +17,10 @@ class ProfilService
     /**
      *
      * @param int $id
-     * @return Participants|null
+     * @return Participant|null
      */
-    public function getParticipantById(int $id) : ?Participants
+    public function getParticipantById(int $id) : ?Participant
     {
-        return $this->em->getRepository(Participants::class)->find($id);
+        return $this->em->getRepository(Participant::class)->find($id);
     }
 }

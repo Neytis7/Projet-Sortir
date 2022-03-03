@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Sorties;
+use App\Entity\Sortie;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -12,7 +12,7 @@ class RechercheSortieType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-        ->add('lieuxNoLieu',null,
+        ->add('lieu',null,
             ['label'=>'Site : ',
             'attr' => [
                 'class' => 'form-control'
@@ -21,11 +21,11 @@ class RechercheSortieType extends AbstractType
             'attr' => [
                 'class' => 'form-control'
             ]])
-        ->add('datedebut',null,['label'=>'Entre : ',
+        ->add('dateDebut',null,['label'=>'Entre : ',
             'attr' => [
                 'class' => 'form-control'
             ]])
-        ->add('datecloture',null,['label'=>'et : ',
+        ->add('dateCloture',null,['label'=>'et : ',
             'attr' => [
                 'class' => 'form-control'
             ]])
@@ -35,7 +35,7 @@ class RechercheSortieType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Sorties::class,
+            'data_class' => Sortie::class,
         ]);
     }
 }

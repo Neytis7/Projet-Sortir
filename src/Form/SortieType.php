@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Sorties;
+use App\Entity\Sortie;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Exception\TransformationFailedException;
@@ -26,7 +26,7 @@ class SortieType extends AbstractType implements EventSubscriberInterface
                     ]),
                 ],
             ])
-            ->add('datedebut',DateTimeType::class,[
+            ->add('dateDebut',DateTimeType::class,[
                 'label'=>'Date et heure de la sortie : ',
                 'constraints' => [
                     new Assert\GreaterThanOrEqual([
@@ -44,7 +44,7 @@ class SortieType extends AbstractType implements EventSubscriberInterface
                 ],
             ])
             //Contrainte sur la date de cloture > date de debut
-            ->add('datecloture',null,['label'=>'Date limite d\'inscription : ',
+            ->add('dateCloture',null,['label'=>'Date limite d\'inscription : ',
                 'constraints' => [
                     new Assert\GreaterThan([
                         'value' => $options['dateJour'],
@@ -52,7 +52,7 @@ class SortieType extends AbstractType implements EventSubscriberInterface
                     ]),
                 ],
             ])
-            ->add('nbinscriptionsmax',null,[
+            ->add('nbInscriptionsMax',null,[
                 'label'=>'Nombre de places : ',
                 'constraints' => [
                     new Assert\PositiveOrZero([
@@ -60,8 +60,8 @@ class SortieType extends AbstractType implements EventSubscriberInterface
                     ]),
                 ],
             ])
-            ->add('descriptioninfos',null,['label'=>'Description et infos : '])
-            ->add('lieuxNoLieu',null,['label'=>'Lieux : '])
+            ->add('descriptionInfos',null,['label'=>'Description et infos : '])
+            ->add('lieu',null,['label'=>'Lieu : '])
             ->addEventSubscriber($this)
         ;
     }
@@ -70,7 +70,7 @@ class SortieType extends AbstractType implements EventSubscriberInterface
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Sorties::class,
+            'data_class' => Sortie::class,
             'dateJour' => (new \DateTime())->format('d/m/Y h:i:s'),
         ]);
     }
@@ -86,7 +86,7 @@ class SortieType extends AbstractType implements EventSubscriberInterface
     {
         $submittedData = $event->getData();
         // just checking for null here, but you may want to check for an empty string or something like that
-        if ($submittedData->getDatecloture() > $submittedData->getDatedebut()) {
+        if ($submittedData->getDateCloture() > $submittedData->getDateDebut()) {
             throw new TransformationFailedException(
                 'La date de cloture ne peut pas être supérieur à la date de debut',
                 0, // code

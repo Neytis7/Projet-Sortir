@@ -8,10 +8,9 @@
 {% block body %}
     <h1>Modifier la sortie</h1>
     {{ form_start(sortieForm) }}
-    {{ form_widget(sortieForm) }}
     <br>
-    <input type="submit" class="btn btn-primary" value="Enregistrer"></input>
-    <a href="{{ path(routeAnnuleSortie,{'id':id}) }}" class="btn btn-primary" class="button">Annuler la sortie</a>
-    <a href="{{ path(routeSortie)}}" class="btn btn-primary" class="button">Quitter</a>
+    <input type="submit" class="btn btn-primary" value="Enregistrer"/>
+    <a href="{{ path(routeAnnuleSortie,{'id':id}) }}" class="btn btn-primary">Annuler la sortie</a>
+    <a href="{{ path(routeSortie)}}" class="btn btn-primary">Quitter</a>
     {{ form_end(sortieForm) }}
 {% endblock %}

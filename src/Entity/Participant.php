@@ -10,96 +10,100 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
- * Participants
+ * Participant
  *
- * @ORM\Table(name="participants", uniqueConstraints={@ORM\UniqueConstraint(name="participants_pseudo_uk", columns={"pseudo"})})
+ * @ORM\Table(name="participant", uniqueConstraints={@ORM\UniqueConstraint(name="participant_pseudo_uk", columns={"pseudo"})})
  *
  *
- * @ORM\Entity(repositoryClass="App\Repository\ParticipantsRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\ParticipantRepository")
  *
  */
 #[UniqueEntity('mail', message: 'ce mail est déjà utilisé.')]
 #[UniqueEntity('pseudo', message: 'ce pseudo est déjà utilisé.')]
- class Participants implements UserInterface, PasswordAuthenticatedUserInterface
+ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 {
     /**
-     * @var int
+     * @var int|null
      *
-     * @ORM\Column(name="no_participant", type="integer", nullable=false)
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $noParticipant;
+    private ?int $id = null;
 
     /**
      * @var string
      *
      * @ORM\Column(name="pseudo", type="string", length=30, nullable=false, unique=true)
      */
-    private $pseudo;
+    private string $pseudo;
 
     /**
      * @var string
      *
      * @ORM\Column(name="nom", type="string", length=30, nullable=false)
      */
-    private $nom;
+    private string $nom;
 
     /**
      * @var string
      *
      * @ORM\Column(name="prenom", type="string", length=30, nullable=false)
      */
-    private $prenom;
+    private string $prenom;
 
     /**
      * @var string|null
      *
      * @ORM\Column(name="telephone", type="string", length=15, nullable=true)
      */
-    private $telephone;
+    private ?string $telephone;
 
     /**
      * @var string
      *
      * @ORM\Column(name="mail", type="string", length=20, nullable=false)
      */
-    private $mail;
+    private string $mail;
 
     /**
      * @var string
      *
      * @ORM\Column(name="mot_de_passe", type="string", length=100, nullable=false)
      */
-    private $motDePasse;
+    private string $motDePasse;
 
     /**
      * @var bool
      *
      * @ORM\Column(name="administrateur", type="boolean", nullable=false)
      */
-    private $administrateur;
+    private bool $administrateur;
 
     /**
      * @var bool
      *
      * @ORM\Column(name="actif", type="boolean", nullable=false)
      */
-    private $actif;
-
+    private bool $actif;
+    
     /**
-     * @var int
+     * @var Site|null
      *
-     * @ORM\Column(name="sites_no_site", type="integer", nullable=false)
+     * @ORM\ManyToOne(targetEntity="Site")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="site", referencedColumnName="id")
+     * })
      */
-    private $sitesNoSite;
+    private ?Site $site = null;
 
     /**
      * @var Collection
      *
-     * @ORM\ManyToMany(targetEntity="Sorties", mappedBy="participantsNoParticipant")
+     * @ORM\ManyToMany(targetEntity="Sortie", inversedBy="participants")
      */
-    private $sortiesNoSortie;
+    private Collection $sorties;
+
      private $roles = [];
 
      /**
@@ -107,24 +111,26 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
      */
     public function __construct()
     {
-        $this->sortiesNoSortie = new ArrayCollection();
-
+        $this->sorties = new ArrayCollection();
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getNoParticipant(): int
+    public function getId(): ?int
     {
-        return $this->noParticipant;
+        return $this->id;
     }
 
     /**
-     * @param int $noParticipant
+     * @param int $id
+     * @return Participant
      */
-    public function setNoParticipant(int $noParticipant): void
+    public function setId(int $id): Participant
     {
-        $this->noParticipant = $noParticipant;
+        $this->id = $id;
+
+        return $this;
     }
 
     /**
@@ -137,10 +143,13 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
     /**
      * @param string $pseudo
+     * @return Participant
      */
-    public function setPseudo(string $pseudo): void
+    public function setPseudo(string $pseudo): Participant
     {
         $this->pseudo = $pseudo;
+
+        return $this;
     }
 
     /**
@@ -153,10 +162,13 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
     /**
      * @param string $nom
+     * @return Participant
      */
-    public function setNom(string $nom): void
+    public function setNom(string $nom): Participant
     {
         $this->nom = $nom;
+
+        return $this;
     }
 
     /**
@@ -169,10 +181,13 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
     /**
      * @param string $prenom
+     * @return Participant
      */
-    public function setPrenom(string $prenom): void
+    public function setPrenom(string $prenom): Participant
     {
         $this->prenom = $prenom;
+
+        return $this;
     }
 
     /**
@@ -185,10 +200,13 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
     /**
      * @param string|null $telephone
+     * @return Participant
      */
-    public function setTelephone(?string $telephone): void
+    public function setTelephone(?string $telephone): Participant
     {
         $this->telephone = $telephone;
+
+        return $this;
     }
 
     /**
@@ -201,10 +219,13 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
     /**
      * @param string $mail
+     * @return Participant
      */
-    public function setMail(string $mail): void
+    public function setMail(string $mail): Participant
     {
         $this->mail = $mail;
+
+        return $this;
     }
 
     /**
@@ -217,10 +238,13 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
     /**
      * @param string $motDePasse
+     * @return Participant
      */
-    public function setMotDePasse(string $motDePasse): void
+    public function setMotDePasse(string $motDePasse): Participant
     {
         $this->motDePasse = $motDePasse;
+
+        return $this;
     }
 
     /**
@@ -233,10 +257,13 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
     /**
      * @param bool $administrateur
+     * @return Participant
      */
-    public function setAdministrateur(bool $administrateur): void
+    public function setAdministrateur(bool $administrateur): Participant
     {
         $this->administrateur = $administrateur;
+
+        return $this;
     }
 
     /**
@@ -247,70 +274,63 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
         return $this->actif;
     }
 
-    /**
-     * @param bool $actif
-     */
-    public function setActif(bool $actif): void
-    {
-        $this->actif = $actif;
-    }
-
-    /**
-     * @return int
-     */
-    public function getSitesNoSite(): int
-    {
-        return $this->sitesNoSite;
-    }
-
-    /**
-     * @param int $sitesNoSite
-     */
-    public function setSitesNoSite(int $sitesNoSite): void
-    {
-        $this->sitesNoSite = $sitesNoSite;
-    }
-
-    /**
-     * @return Collection
-     */
-    public function getSortiesNoSortie(): ArrayCollection|Collection
-    {
-        return $this->sortiesNoSortie;
-    }
-
-    /**
-     * @param Collection $sortiesNoSortie
-     */
-    public function setSortiesNoSortie(ArrayCollection|Collection $sortiesNoSortie): void
-    {
-        $this->sortiesNoSortie = $sortiesNoSortie;
-    }
-
-    public function getAdministrateur(): ?bool
-    {
-        return $this->administrateur;
-    }
-
     public function getActif(): ?bool
     {
         return $this->actif;
     }
 
-    public function addSortiesNoSortie(Sorties $sortiesNoSortie): self
+    /**
+     * @param bool $actif
+     * @return Participant
+     */
+    public function setActif(bool $actif): Participant
     {
-        if (!$this->sortiesNoSortie->contains($sortiesNoSortie)) {
-            $this->sortiesNoSortie[] = $sortiesNoSortie;
-            $sortiesNoSortie->addParticipantsNoParticipant($this);
+        $this->actif = $actif;
+
+        return $this;
+    }
+
+    /**
+     * @return Site|null
+     */
+    public function getSite(): ?Site
+    {
+        return $this->site;
+    }
+
+    /**
+     * @param Site|null $site
+     * @return Participant
+     */
+    public function setSite(?Site $site): Participant
+    {
+        $this->site = $site;
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection|Collection
+     */
+    public function getSorties(): ArrayCollection|Collection
+    {
+        return $this->sorties;
+    }
+
+    public function addSorties(Sortie $sortie): Participant
+    {
+        if (!$this->sorties->contains($sortie)) {
+            $this->sorties[] = $sortie;
+            $sortie->addParticipant($this);
         }
 
         return $this;
     }
 
-    public function removeSortiesNoSortie(Sorties $sortiesNoSortie): self
+    public function removeSortiesNoSortie(Sortie $sortie): Participant
     {
-        if ($this->sortiesNoSortie->removeElement($sortiesNoSortie)) {
-            $sortiesNoSortie->removeParticipantsNoParticipant($this);
+        if ($this->sorties->removeElement($sortie)) {
+            $sortie->removeParticipant($this);
         }
 
         return $this;

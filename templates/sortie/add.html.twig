@@ -6,12 +6,14 @@
 {% block title %}Ajouter Sortie{% endblock %}
 
 {% block body %}
+
     <h1>Ajouter une nouvelle sortie</h1>
+
     {{ form_start(sortieForm) }}
-    {{ form_widget(sortieForm) }}
     <br>
-    <input type="submit" class="btn btn-primary" value="Enregistrer"></input>
-    <a href="{{ path(routeAjoutLieu)}}" class="btn btn-primary" class="button">Ajouter un nouveau lieu</a>
-    <a href="{{ path(routeSortie)}}" class="btn btn-primary" class="button">Quitter</a>
+    <input type="submit" class="btn btn-primary" value="Enregistrer"/>
     {{ form_end(sortieForm) }}
+
+    <a href="{{ path(routeAjoutLieu)}}" class="btn btn-primary">Ajouter un nouveau lieu</a>
+    <a href="{{ path(routeSortie)}}" class="btn btn-primary">Quitter</a>
 {% endblock %}
