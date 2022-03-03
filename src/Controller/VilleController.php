@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Villes;
+use App\Entity\Ville;
 use App\Form\VilleType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,9 +16,10 @@ class VilleController extends AbstractController
     #[Route('/ville/add', name: self::ROUTE_VILLE_ADD)]
     public function add(EntityManagerInterface $entityManager,Request $request)
     {
-        $ville = new Villes();
-        $form = $this->createForm(VilleType::class,$ville);
+        $ville = new Ville();
+        $form = $this->createForm(VilleType::class, $ville);
         $form->handleRequest($request);
+
         if($form->isSubmitted() && $form->isValid()){
             $entityManager->persist($ville);
             $entityManager->flush();

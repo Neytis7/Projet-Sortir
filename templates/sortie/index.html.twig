@@ -26,16 +26,19 @@
                     <tr>
                     
                             <td>{{sortie.nom}}</td>
-                            {# <td>{{sortie.datedebut}}</td>
-                            <td>{{sortie.datecloture}}</td> #}
-                            <td>{{sortie.datedebut|date("d/m/Y")}}</td>
-                            <td>{{sortie.datecloture|date("d/m/Y")}}</td>
-                            <td>nombre inscrit à faire/{{sortie.nbinscriptionsmax}}</td>
-                            <td>{{sortie.etatsNoEtat.libelle}}</td>
+                            <td>{{sortie.dateDebut|date("d/m/Y")}}</td>
+                            <td>{{sortie.dateCloture|date("d/m/Y")}}</td>
+                            <td>nombre inscrit à faire/{{sortie.nbInscriptionsMax}}</td>
+                            <td>{{sortie.etat.libelle}}</td>
                             <td>si inscrit à faire</td>
                             
-                            <td><a href="{{path('afficherProfile', {'id':sortie.organisateur.noParticipant}) }}">{{sortie.organisateur.prenom}}</a></td>
-                            <td>action à faire</td>
+                            <td><a href="{{path('afficherProfile', {'id':sortie.organisateur.id}) }}">{{sortie.organisateur.prenom}}</a></td>
+                            <td>
+                                <a href="{{ path(constant('App\\Controller\\SortieController::ROUTE_INSCRIPTION_SORTIE'), {'id':sortie.id}) }}">
+                                    <input type="button" class="btn btn-primary" value="s'inscrire">
+                                </a>
+
+                            </td>
                     </tr> 
                     {% endfor %}
 

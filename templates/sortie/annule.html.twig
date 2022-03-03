@@ -7,13 +7,12 @@
 {% block body %}
     <h1>Annulation de la sortie</h1>
     <p>Nom de la sortie : {{ sortie.nom }}</p>
-    <p>Date et heure de la sortie : {{ sortie.datedebut|date("l, d-M-y H:i:s T") }}</p>
-    <p>Ville organisatrice : {{ sortie.lieuxNoLieu.villesNoVille.nomVille }}</p>
-    <p>Lieu : {{ sortie.lieuxNoLieu.nomLieu }}</p>
+    <p>Date et heure de la sortie : {{ sortie.dateDebut|date("l, d-M-y H:i:s T") }}</p>
+    <p>Ville organisatrice : {{ sortie.lieu.ville.nom }}</p>
+    <p>Lieu : {{ sortie.lieu.nom }}</p>
     {{ form_start(sortieForm) }}
-    {{ form_widget(sortieForm) }}
     <br>
-    <input type="submit" class="btn btn-primary" value="Enregistrer"></input>
-    <a href="{{ path(routeSortie)}}" class="btn btn-primary" class="button">Quitter</a>
+    <input type="submit" class="btn btn-primary" value="Enregistrer"/>
+    <a href="{{ path(routeSortie)}}" class="btn btn-primary">Quitter</a>
     {{ form_end(sortieForm) }}
 {% endblock %}
