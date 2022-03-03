@@ -15,6 +15,14 @@ use DateTime;
  */
 class Sortie
 {
+
+    const ETAT_CREEE = 'Créée';
+    const ETAT_ANNULEE = 'Annulée';
+    const ETAT_ARCHIVEE = 'Archivée';
+    const ETAT_OUVERTE = 'Ouverte';
+    const ETAT_TERMINEE = 'Terminée';
+    const ETAT_CLOTUREE = 'Cloturée';
+
     /**
      * @var int
      *
@@ -216,7 +224,7 @@ class Sortie
     /**
      * @return int
      */
-    public function getNbinscriptionsmax(): int
+    public function getNbInscriptionsMax(): int
     {
         return $this->nbInscriptionsMax;
     }

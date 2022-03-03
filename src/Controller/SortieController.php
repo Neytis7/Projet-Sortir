@@ -216,22 +216,20 @@ class SortieController extends AbstractController
         $message = '';
         try {
             if ($request->get('_route') === self::ROUTE_INSCRIPTION_SORTIE) {
-                $this->serviceSortie->inscrireSortie($userCourant, $sortie);
+                $success = $this->serviceSortie->inscrireSortie($userCourant, $sortie);
                 $message = "Votre inscription a été prise en compte !";
-                $success = true;
             } elseif ($request->get('_route') === self::ROUTE_DESINSCRIPTION_SORTIE) {
-                $this->serviceSortie->desisterSortie($userCourant, $sortie);
+                $success = $this->serviceSortie->desisterSortie($userCourant, $sortie);
                 $message = "Votre dé-inscription a été prise en compte !";
-                $success = true;
             } else {
-                throw new \Exception('Une erreur s\'est produite, veuillez réessayer !');
+                throw new \Exception("Une erreur s'est produite, veuillez réessayer !");
             }
         } catch (Exception $e) {
             $success = false;
         }
 
         $message = $success === false
-            ? "Votre action n\' pas été prise en compte, réessayer"
+            ? "Votre action n'a pas été prise en compte, réessayer"
             : $message;
 
         $type = $success === true
