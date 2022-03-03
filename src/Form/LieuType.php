@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Lieux;
+use App\Entity\Lieu;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -13,7 +13,7 @@ class LieuType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nomLieu',null,[
+            ->add('nom',null,[
                 'label'=>'Nom du lieu : ',
                 'constraints' => [
                     new Assert\NotBlank([
@@ -31,7 +31,7 @@ class LieuType extends AbstractType
             ])
             ->add('latitude',null,['label'=>'Latitude : '])
             ->add('longitude',null,['label'=>'Longitude : '])
-            ->add('villesNoVille',null,[
+            ->add('ville',null,[
                 'label'=>'Ville : ',
                 'constraints' => [
                     new Assert\NotBlank([
@@ -45,7 +45,7 @@ class LieuType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Lieux::class,
+            'data_class' => Lieu::class,
         ]);
     }
 }

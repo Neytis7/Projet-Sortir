@@ -2,8 +2,8 @@
 
 namespace App\Security;
 
-use App\Entity\Participants;
-use App\Repository\ParticipantsRepository;
+use App\Entity\Participant;
+use App\Repository\ParticipantRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -20,11 +20,9 @@ class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
 {
 
     private EntityManagerInterface $em;
-    private $participantsRepository;
-    public function __construct(EntityManagerInterface $em, ParticipantsRepository $participantsRepository)
+    public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
-        $this->participantsRepository = $participantsRepository;
     }
 
     /**
@@ -38,8 +36,7 @@ class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
      */
     public function loadUserByIdentifier($identifier): UserInterface
     {
-        dump($identifier);
-        $participant = $this->em->getRepository(Participants::class)->findOneByIdentifier($identifier);
+        $participant = $this->em->getRepository(Participant::class)->findOneByIdentifier($identifier);
 
         if (!$participant){
             throw new UserNotFoundException('Utlisateur inccorrect');
@@ -60,9 +57,9 @@ class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
         return $this->loadUserByIdentifier($username);
     }
 
-    private function findUsername(string $username): Participants
+    private function findUsername(string $username): Participant
     {
-        $user = $this->participantsRepository->findOneByIdentifier($username);
+        $user = $this->em->getRepository(Participant::class)->findOneByIdentifier($username);
         if ($user !== null) {
             return $user;
         }
@@ -85,7 +82,7 @@ class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
      */
     public function refreshUser(UserInterface $user): UserInterface
     {
-        if (!$user instanceof Participants) {
+        if (!$user instanceof Participant) {
             throw new UnsupportedUserException(sprintf('Invalid user class "%s".', get_class($user)));
         }
 
@@ -102,7 +99,7 @@ class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
      */
     public function supportsClass($class): bool
     {
-        return Participants::class === $class || is_subclass_of($class, Participants::class);
+        return Participant::class === $class || is_subclass_of($class, Participant::class);
     }
 
     /**
@@ -110,6 +107,8 @@ class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
      */
     public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
     {
+        $user->setPassword($newHashedPassword);
+
         // TODO: when hashed passwords are in use, this method should:
         // 1. persist the new password in the user storage
         // 2. update the $user object with $user->setPassword($newHashedPassword);

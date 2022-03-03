@@ -2,22 +2,22 @@
 
 namespace App\Form;
 
-use App\Entity\Sortie;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
-class SortieAnnuleType extends AbstractType
+class ResetPasswordRequestFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('motifAnnulation',null,[
-                'label'=>'Motif d\'annulation : ',
+            ->add('mail', EmailType::class, [
+                'attr' => ['autocomplete' => 'email'],
                 'constraints' => [
-                    new Assert\NotBlank([
-                        'message' => 'Il faut obligatoirement un motif'
+                    new NotBlank([
+                        'message' => 'Please enter your email',
                     ]),
                 ],
             ])
@@ -26,8 +26,6 @@ class SortieAnnuleType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults([
-            'data_class' => Sortie::class,
-        ]);
+        $resolver->setDefaults([]);
     }
 }
