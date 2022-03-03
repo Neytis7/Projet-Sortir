@@ -32,6 +32,12 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
     private ?int $id = null;
 
     /**
+     * @ORM\OneToMany(targetEntity=ResetPasswordRequest::class, mappedBy="user")
+     */
+    private Collection $resetPasswordRequests;
+
+
+    /**
      * @var string
      *
      * @ORM\Column(name="pseudo", type="string", length=30, nullable=false, unique=true)
@@ -112,6 +118,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
     public function __construct()
     {
         $this->sorties = new ArrayCollection();
+        $this->resetPasswordRequests = new ArrayCollection();
     }
 
     /**

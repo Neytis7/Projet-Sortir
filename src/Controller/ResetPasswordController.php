@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Participants;
+use App\Entity\Participant;
 use App\Form\ChangePasswordFormType;
 use App\Form\ResetPasswordRequestFormType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -144,7 +144,7 @@ class ResetPasswordController extends AbstractController
      */
     private function processSendingPasswordResetEmail( string $emailFormData, MailerInterface $mailer, TranslatorInterface $translator): RedirectResponse
     {
-        $user = $this->entityManager->getRepository(Participants::class)->findOneBy([
+        $user = $this->entityManager->getRepository(Participant::class)->findOneBy([
             'mail' => $emailFormData,
         ]);
 
