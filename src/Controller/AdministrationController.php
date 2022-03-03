@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Participants;
+use App\Repository\ParticipantsRepository;
 use App\Form\ProfilType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,6 +17,8 @@ class AdministrationController extends AbstractController
 {
 
     CONST ROUTE_ADMIN = "app_admin";
+    CONST ROUTE_ADMIN_USER_ACTIF = "app_admin_changeUserActif";
+    CONST ROUTE_ADMIN_USER_DELETE = "app_admin_DeleteUser";
 
     public function checkRole(){
         if(!$this->isGranted('ROLE_ADMIN')) {
@@ -25,7 +28,7 @@ class AdministrationController extends AbstractController
     }
 
     #[Route('/admin', name: self::ROUTE_ADMIN)]
-    public function index(Request $request, EntityManagerInterface $em , UserPasswordHasherInterface $pwdHasher ): Response
+    public function index(Request $request, EntityManagerInterface $em , UserPasswordHasherInterface $pwdHasher, ParticipantsRepository $participantsRepository ): Response
     {
         /* $this->checkRole(); */
         
@@ -78,10 +81,7 @@ class AdministrationController extends AbstractController
 
         //Form add user
         $user = new Participants();
-        $userFormBuilder = $this->createForm(ProfilType::class, $user, [
-            'isAdmin' => true,
-        ]);
-
+        $userFormBuilder = $this->createForm(ProfilType::class, $user);
         $userFormBuilder->handleRequest($request);
         if($userFormBuilder->isSubmitted() && $userFormBuilder->isValid()) {
             
@@ -92,14 +92,57 @@ class AdministrationController extends AbstractController
             $em->persist($user);
             $em->flush();
             // ajout d'un message flash
-            $userName = $user->getName();
+            $userName = $user->getNom();
             $this->addFlash('success', "L'utilisateur $userName a été ajouté");
         }
+
+        //Recuperation de tout les utilisateurs
+        $allUsers = $participantsRepository->findAll();
 
         return $this->render('administration/admin.html.twig', [
             'controller_name' => 'AdministrationController',
             'addUserWithCsv_form' => $formAddUserWithCsv->createView(),
-            'addUserManuel' => $userFormBuilder->createView()
+            'addUserManuel' => $userFormBuilder->createView(),
+            'allUsers' => $allUsers
         ]);
+    }
+
+    #[Route('/admin/changeActif/{id}', name: self::ROUTE_ADMIN_USER_ACTIF)]
+    public function changeActifUser(EntityManagerInterface $em, int $id = 0): Response
+    {
+        /* $this->checkRole(); */
+
+        if($id != 0){
+            $user = $em->getRepository(Participants::class)->find($id);
+            $user->setActif(!$user->getActif());
+            $em->persist($user);
+            $em->flush();
+
+            $msgStatus = "inactif";
+            if($user->getActif()){
+                $msgStatus = "actif";
+            }
+
+            //dd($user);
+            $this->addFlash('success', "L'utilisateur ".$user->getNoParticipant()." est désormais ".$msgStatus);
+        }
+        
+        return $this->redirectToRoute(self::ROUTE_ADMIN);
+    }
+
+    #[Route('/admin/deleteUser/{id}', name: self::ROUTE_ADMIN_USER_DELETE)]
+    public function deleteUser(EntityManagerInterface $em, int $id = 0): Response
+    {
+        /* $this->checkRole(); */
+
+        if($id != 0){
+            $user = $em->getRepository(Participants::class)->find($id);
+            $em->remove($user);
+            $em->flush();
+
+            $this->addFlash('success', "L'utilisateur ".$id." a été supprimé ");
+        }
+        
+        return $this->redirectToRoute(self::ROUTE_ADMIN);
     }
 }

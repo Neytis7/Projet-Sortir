@@ -1,11 +1,12 @@
 {% extends 'base.html.twig' %}
-
+{% set routeChangeActif = constant('App\\Controller\\AdministrationController::ROUTE_ADMIN_USER_ACTIF') %}
+{% set routeDeleteUser = constant('App\\Controller\\AdministrationController::ROUTE_ADMIN_USER_DELETE') %}
 {% block subtitle %}Panneau d'administration{% endblock %}
 
 {% block body %}
 
 <div class="row mt-4">
-    <div class="col">
+    <div class="col-lg-6">
         <h4 class="text-center">Insertion utilisateur par fichier</h4>
     
         {{ form_start(addUserWithCsv_form) }}
@@ -24,13 +25,44 @@
         {{ form_end(addUserWithCsv_form) }}
     </div>
     
-    <div class="col">
+    <div class="col-lg-6">
         <h4 class="text-center">Insertion utilisateur manuel</h4>
         {{form_start(addUserManuel)}}
            
         {{form_end(addUserManuel)}}
     </div>
 </div>
+
+<div class="row mt-4">
+    <div class="col-lg-6">
+    <h4 class="text-center">Modification actif / suppression d'utilisateur</h4>
+        <select name="select-user" id="select-user">
+        {% for user in allUsers %}
+            <option value="{{ user.noParticipant }}" {% if user.actif == false %} class="text-danger" {% endif %}> {{ user.pseudo }} </option>            
+        {% endfor %}
+        </select>
+        <br>
+        <br>
+        <button class="btn btn-warning" id="changeActifUser" onclick="editUser();"> Actif/Inactif </button>
+        <button class="btn btn-danger" id="deleteUser" onclick="deleteUser();"> Supprimer </button>
+    </div>
+</div>
+
+<script>
+    function editUser(){
+        var userId = document.getElementById('select-user').value; 
+        var baseUrl = "{{ url(routeChangeActif) }}";
+        var url = baseUrl+"/"+userId;
+        location.href = url;
+    }
+
+    function deleteUser(){
+        var userId = document.getElementById('select-user').value; 
+        var baseUrl = "{{ url(routeDeleteUser) }}";
+        var url = baseUrl+"/"+userId;
+        location.href = url;
+    }
+</script>
 
 
 {% endblock %}
