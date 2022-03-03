@@ -8,21 +8,21 @@
 {% block body %}
     <h1>Detail d'une sortie</h1>
     <p>Nom de la sortie : {{ sortie.nom }}</p>
-    <p>Date et heure de la sortie : {{ sortie.datedebut|date("l, d-M-y H:i:s T") }}</p>
-    <p>Date limite d'inscription : {{ sortie.datecloture|date("l, d-M-y H:i:s T") }}</p>
-    <p>Nombre de place : {{ sortie.nbinscriptionsmax }}</p>
+    <p>Date et heure de la sortie : {{ sortie.dateDebut|date("l, d-M-y H:i:s T") }}</p>
+    <p>Date limite d'inscription : {{ sortie.dateCloture|date("l, d-M-y H:i:s T") }}</p>
+    <p>Nombre de place : {{ sortie.nbInscriptionsMax }}</p>
     <p>Durée : {{ sortie.duree }} min</p>
-    <p>Description et infos : {{ sortie.descriptioninfos }}</p>
-    <p>Ville organisatrice : {{ sortie.lieuxNoLieu.villesNoVille.nomVille }}</p>
-    <p>Lieu : {{ sortie.lieuxNoLieu.nomLieu }}</p>
-    <p>Rue : {{ sortie.lieuxNoLieu.rue }}</p>
-    <p>Code postal : {{ sortie.lieuxNoLieu.villesNoVille.codePostal }}</p>
-    <p>Latitude : {{ sortie.lieuxNoLieu.latitude }}</p>
-    <p>Longitude : {{ sortie.lieuxNoLieu.longitude }}</p>
+    <p>Description et infos : {{ sortie.descriptionInfos }}</p>
+    <p>Ville organisatrice : {{ sortie.lieu.ville.nom }}</p>
+    <p>Lieu : {{ sortie.lieu.nom }}</p>
+    <p>Rue : {{ sortie.lieu.rue }}</p>
+    <p>Code postal : {{ sortie.lieu.ville.codePostal }}</p>
+    <p>Latitude : {{ sortie.lieu.latitude }}</p>
+    <p>Longitude : {{ sortie.lieu.longitude }}</p>
     <h2>Liste des participants inscrits</h2>
-    {% for s in sortie.participantsNoParticipant %}
+    {% for participant in sortie.participants %}
     <ul>
-        <li><a href="{{path(routeAfficherProfil, {'id':s.noParticipant}) }}">{{ s.nom }} alias {{ s.pseudo }}</a></li>
+        <li><a href="{{path(routeAfficherProfil, {'id':participant.id}) }}">{{ participant.nom }} alias {{ participant.pseudo }}</a></li>
     </ul>
     {% endfor %}
     <a type="button" class="btn btn-primary" href="{{path(routeSortie)}}">Annuler</a>

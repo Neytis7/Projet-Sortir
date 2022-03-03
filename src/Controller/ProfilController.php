@@ -2,8 +2,9 @@
 
 namespace App\Controller;
 
-use App\Repository\ParticipantsRepository;
-use App\Entity\Participants;
+use App\Entity\Site;
+use App\Repository\ParticipantRepository;
+use App\Entity\Participant;
 use App\Form\ProfilType;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Service\ProfilService;
@@ -24,11 +25,6 @@ class ProfilController extends AbstractController
     const ROUTE_AFFICHER_PROFIL = "afficherProfile";
 
     /**
-     * @var ProfilService
-     */
-    private ProfilService $profilService;
-
-    /**
      * @var EntityManagerInterface
      */
     private EntityManagerInterface $em;
@@ -39,16 +35,13 @@ class ProfilController extends AbstractController
     private UserPasswordHasherInterface $passwordEncoder;
 
     /**
-     * @param ProfilService $profilService
      * @param EntityManagerInterface $em
      * @param UserPasswordHasherInterface $passwordEncoder
      */
     public function __construct(
-        ProfilService $profilService,
         EntityManagerInterface $em,
         UserPasswordHasherInterface $passwordEncoder
     ) {
-        $this->profilService = $profilService;
         $this->em = $em;
         $this->passwordEncoder = $passwordEncoder;
     }
@@ -58,7 +51,7 @@ class ProfilController extends AbstractController
     #[Route('modifier/mon-profil', name: 'modifier_profil')]
     public function profil(?UserInterface $userCourant, Request $request): Response
     {
-        /** @var Participants $userCourant */
+        /** @var Participant $userCourant */
         if (is_null($userCourant)) {
             throw new AccessDeniedException('Veuillez vous connecter pour accèder à cette page.');
         }
@@ -66,7 +59,9 @@ class ProfilController extends AbstractController
         $isAdmin = false;
         $isActif = false;
         $redirectRoute = SortieController::ROUTE_SORTIE;
-        $utilisateurBdd = $this->em->getRepository(Participants::class)->find($userCourant->getNoParticipant());
+        $utilisateurBdd = $this->em->getRepository(Participant::class)->find($userCourant->getId());
+
+        $sites = $this->em->getRepository(Site::class)->findAll();
 
         if (!is_null($utilisateurBdd)) {
             $isAdmin = $utilisateurBdd->isAdministrateur();
@@ -74,14 +69,16 @@ class ProfilController extends AbstractController
         }
 
         $form = $this->createForm(ProfilType::class, $userCourant, [
-            'isAdmin' => $isAdmin
+            'isAdmin' => $isAdmin,
+            'sites_choices' => $sites,
+            'participant' => $userCourant
         ]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            if ($form->isValid()) {
 
+            if ($form->isValid()) {
                 $nouveauMdpHash = $this->passwordEncoder->hashPassword(
                     $userCourant,
                     $form->get('motDePasse')->getData()
@@ -101,7 +98,7 @@ class ProfilController extends AbstractController
                     $utilisateurBdd->setActif($isActif);
                 }
 
-                /** @var Participants $userCourant */
+                /** @var Participant $userCourant */
                 $this->em->flush();
                 $this->addFlash('success', 'Votre profil à été mis à jour');
                 return $this->redirectToRoute($redirectRoute);
@@ -118,10 +115,20 @@ class ProfilController extends AbstractController
     }
 
     #[Route('afficher/profil/{id}', name: self::ROUTE_AFFICHER_PROFIL)]
-    public function voirProfil(Request $request, ParticipantsRepository $participantsRepository, int $id): Response
+    public function voirProfil(Request $request, int $id): Response
     {
-        $leParticipant=$participantsRepository->find($id);
+        $leParticipant = $this->em->getRepository(Participant::class)->find($id);
+
+        $form = $this->createForm(ProfilType::class, $leParticipant, [
+            'isAdmin' => false,
+            'disabled' => true,
+            'participant' => $leParticipant
+        ]);
+
+        $form->handleRequest($request);
+
         return $this->render('profil/afficherProfil.html.twig', [
+            'form' => $form->createView(),
             'leParticipant' => $leParticipant
         ]);
     }

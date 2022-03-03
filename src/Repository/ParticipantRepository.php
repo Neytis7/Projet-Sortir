@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\Participants;
+use App\Entity\Participant;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\OptimisticLockException;
@@ -12,20 +12,20 @@ use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * @method Participants|null find($id, $lockMode = null, $lockVersion = null)
- * @method Participants|null findOneBy(array $criteria, array $orderBy = null)
- * @method Participants[]    findAll()
- * @method Participants[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Participant|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Participant|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Participant[]    findAll()
+ * @method Participant[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  *
  */
-class ParticipantsRepository extends ServiceEntityRepository implements UserLoaderInterface
+class ParticipantRepository extends ServiceEntityRepository implements UserLoaderInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Participants::class);
+        parent::__construct($registry, Participant::class);
     }
 
-    public function add(Participants $entity, bool $flush = true): void
+    public function add(Participant $entity, bool $flush = true): void
     {
         $this->_em->persist($entity);
         if ($flush) {
@@ -33,9 +33,7 @@ class ParticipantsRepository extends ServiceEntityRepository implements UserLoad
         }
     }
 
-    /**
-     */
-    public function remove(Participants $entity, bool $flush = true): void
+    public function remove(Participant $entity, bool $flush = true): void
     {
         $this->_em->remove($entity);
         if ($flush) {
@@ -46,7 +44,7 @@ class ParticipantsRepository extends ServiceEntityRepository implements UserLoad
     /**
      * @throws NonUniqueResultException
      */
-    public function findOneByIdentifier(string $identifier): ?Participants
+    public function findOneByIdentifier(string $identifier): ?Participant
     {
         $qb = $this->createQueryBuilder('p');
         $qb ->where(

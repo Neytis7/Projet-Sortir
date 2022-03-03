@@ -2,10 +2,12 @@
 
 namespace App\Controller;
 
-use App\Entity\Lieux;
+use App\Entity\Lieu;
 use App\Form\LieuType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -13,10 +15,10 @@ class LieuController extends AbstractController
 {
     const ROUTE_LIEU_ADD = "app_lieu";
 
-    #[Route('/lieu/add', name: self::ROUTE_LIEU_ADD)]
-    public function add(EntityManagerInterface $entityManager,Request $request)
+    #[Route('/lieu/add', name: LieuController::ROUTE_LIEU_ADD)]
+    public function add(EntityManagerInterface $entityManager,Request $request): RedirectResponse|Response
     {
-        $lieu = new Lieux();
+        $lieu = new Lieu();
         $form = $this->createForm(LieuType::class,$lieu);
         $form->handleRequest($request);
 

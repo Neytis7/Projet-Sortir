@@ -17,7 +17,6 @@ class AuthentificationController extends AbstractController
        $this->authenticationUtils = $authenticationUtils;
     }
 
-
     #[Route('/', name: 'login')]
     public function login(): Response
     {

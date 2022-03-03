@@ -5,45 +5,48 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Etats
+ * Etat
  *
- * @ORM\Table(name="etats")
+ * @ORM\Table(name="etat")
  *
  * @ORM\Entity
- * @ORM\Entity(repositoryClass="App\Repository\EtatsRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\EtatRepository")
  */
-class Etats
+class Etat
 {
     /**
      * @var int
      *
-     * @ORM\Column(name="no_etat", type="integer", nullable=false)
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $noEtat;
+    private int $id;
 
     /**
      * @var string
      *
      * @ORM\Column(name="libelle", type="string", length=30, nullable=false)
      */
-    private $libelle;
+    private string $libelle;
 
     /**
      * @return int
      */
-    public function getNoEtat(): int
+    public function getId(): int
     {
-        return $this->noEtat;
+        return $this->id;
     }
 
     /**
-     * @param int $noEtat
+     * @param int $id
+     * @return Etat
      */
-    public function setNoEtat(int $noEtat): void
+    public function setId(int $id): Etat
     {
-        $this->noEtat = $noEtat;
+        $this->id = $id;
+
+        return $this;
     }
 
     /**
@@ -56,17 +59,17 @@ class Etats
 
     /**
      * @param string $libelle
+     * @return Etat
      */
-    public function setLibelle(string $libelle): void
+    public function setLibelle(string $libelle): Etat
     {
         $this->libelle = $libelle;
-    }
 
+        return $this;
+    }
 
     public function __toString():String{
 
         return $this->getLibelle();
     }
-
-
 }

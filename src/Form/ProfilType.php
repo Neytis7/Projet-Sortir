@@ -2,9 +2,12 @@
 
 namespace App\Form;
 
-use App\Entity\Participants;
+use App\Entity\Participant;
+use App\Entity\Site;
+use App\Form\DataTransformer\SiteTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RadioType;
@@ -18,11 +21,20 @@ use Symfony\Component\Validator\Constraints as Assert;
 class ProfilType extends AbstractType
 {
     const VALUE_CANNOT_BE_NULL = 'La valeur %s doit être renseignée';
-    const VALUE_MUST_BE_NUMBER = 'veuillez renseigné un nombre !';
+
+    private $transformer;
+
+    public function __construct(SiteTransformer $transformer)
+    {
+        $this->transformer = $transformer;
+    }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $isAdmin = !$options['isAdmin'];
+        $sitesChoices = $options['sites_choices'];
+        $participant = $options['participant'];
+        $disabled = $options['disabled'];
 
         $builder
             ->add('pseudo',TextType::class, [
@@ -97,32 +109,46 @@ class ProfilType extends AbstractType
                         'message' => sprintf(self::VALUE_CANNOT_BE_NULL, 'mot de passe')
                     ])
                 ]
-            ])
+            ]);
 
-            ->add('sitesNoSite', IntegerType::class, [
-                'attr' => [
-                    'label' => 'site',
-                    'class' => 'form-control'
-                ],
-                'constraints' => [
-                    new Assert\NotBlank([
-                        'message' => sprintf(self::VALUE_CANNOT_BE_NULL, 'site')
-                    ]),
-                    new Assert\Positive([
-                        'message' => self::VALUE_MUST_BE_NUMBER
-                    ])
-                ]
-            ])
+            if (!$disabled) {
+                $builder->add('site', ChoiceType::class, [
+                    'attr' => [
+                        'class' => 'form-control'
+                    ],
+                    'constraints' => [
+                        new Assert\NotBlank([
+                            'message' => sprintf(self::VALUE_CANNOT_BE_NULL, 'site')
+                        ])
+                    ],
+                    'choices' => $sitesChoices,
+                    'choice_value' => 'id',
+                    'choice_label' => function(?Site $site) {
+                        return $site
+                            ? $site->getNom()
+                            : '';
+                    },
+                ]);
+            } else {
+                $builder->add('site', TextType::class, [
+                    'attr' => [
+                        'class' => 'form-control'
+                    ],
+                    'constraints' => [
+                        new Assert\NotBlank([
+                            'message' => sprintf(self::VALUE_CANNOT_BE_NULL, 'site')
+                        ])
+                    ],
+                    'data' => !is_null($participant)
+                        ? !is_null($participant->getSite())
+                            ? $participant->getSite()->getNom()
+                            : 'site non renseigné'
+                        : 'site non renseigné'
+                ]);
+            }
 
-            ->add('photo', TextType::class, [
-                'mapped' => false,
-                'required' => false,
-                'attr' => [
-                    'class' => 'form-control'
-                ],
-            ])
 
-            ->add('administrateur', CheckboxType::class,[
+            $builder->add('administrateur', CheckboxType::class,[
                 'required' => false,
                 'attr' => array(
                     'disabled' => $isAdmin,
@@ -140,14 +166,22 @@ class ProfilType extends AbstractType
                 'attr' => [
                     'class' => 'btn btn-success'
                 ]
-            ]);            
+            ]);
+
+        if(!$disabled) {
+            $builder->get('site')
+                ->addModelTransformer($this->transformer);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Participants::class,
+            'data_class' => Participant::class,
             'isAdmin' => false,
+            'sites_choices' => [],
+            'disabled' => false,
+            'participant' => null,
         ]);
     }
 }
