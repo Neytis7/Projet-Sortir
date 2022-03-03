@@ -130,7 +130,9 @@ class SortieController extends AbstractController
     #[Route('/sortie', name: self::ROUTE_SORTIE)]
     public function index(Request $request, SortiesRepository $SortiesRepository): Response
     {
-        $lesSorties=$SortiesRepository->findAll();
+        // $lesSorties=$SortiesRepository->findAll();findRecherche
+        $lesSorties=$SortiesRepository->findRecherche();
+
 
         $sorties = new Sorties();
         $form = $this->createForm(RechercheSortieType::class, $sorties);

@@ -30,7 +30,7 @@
                             <td>{{sortie.datecloture}}</td> #}
                             <td>{{sortie.datedebut|date("d/m/Y")}}</td>
                             <td>{{sortie.datecloture|date("d/m/Y")}}</td>
-                            <td>nombre inscrit à faire/{{sortie.nbinscriptionsmax}}</td>
+                            <td>{{sortie.participantsNoParticipant | length}}/{{sortie.nbinscriptionsmax}}</td>
                             <td>{{sortie.etatsNoEtat.libelle}}</td>
                             <td>si inscrit à faire</td>
                             
