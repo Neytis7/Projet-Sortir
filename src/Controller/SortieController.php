@@ -10,6 +10,7 @@ use App\Form\SortieAnnuleType;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
 use App\Service\SortieService;
+use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
@@ -204,7 +205,12 @@ class SortieController extends AbstractController
             throw new AccessDeniedException('La sortie n\'a pas été trouvé, veuillez réessayer');
         }
 
-        $inscriptionSuccess = $this->serviceSortie->inscrireSortie($userCourant, $sortie);
+        try {
+            $this->serviceSortie->inscrireSortie($userCourant, $sortie);
+            $inscriptionSuccess = true;
+        } catch (Exception $e) {
+            $inscriptionSuccess = false;
+        }
 
         $message = $inscriptionSuccess === true
             ? "Votre inscription a été prise en compte !"
