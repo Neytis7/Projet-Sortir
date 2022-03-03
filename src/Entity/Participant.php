@@ -94,14 +94,13 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
     private bool $actif;
     
     /**
-     * @var Site|null
-     *
+     * @var Site
      * @ORM\ManyToOne(targetEntity="Site")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="site", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="site", referencedColumnName="id",nullable=false)
      * })
      */
-    private ?Site $site = null;
+    private Site $site;
 
     /**
      * @var Collection
@@ -298,18 +297,18 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
     }
 
     /**
-     * @return Site|null
+     * @return Site
      */
-    public function getSite(): ?Site
+    public function getSite(): Site
     {
         return $this->site;
     }
 
     /**
-     * @param Site|null $site
+     * @param Site $site
      * @return Participant
      */
-    public function setSite(?Site $site): Participant
+    public function setSite(Site $site): Participant
     {
         $this->site = $site;
 
