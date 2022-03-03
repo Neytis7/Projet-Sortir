@@ -112,6 +112,11 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
      private $roles = [];
 
      /**
+      * @ORM\Column(type="string", length=150, nullable=true)
+      */
+     private $photo;
+
+     /**
      * Constructor
      */
     public function __construct()
@@ -395,6 +400,18 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
      public function removeSorty(Sortie $sorty): self
      {
          $this->sorties->removeElement($sorty);
+
+         return $this;
+     }
+
+     public function getPhoto(): ?string
+     {
+         return $this->photo;
+     }
+
+     public function setPhoto(?string $photo): self
+     {
+         $this->photo = $photo;
 
          return $this;
      }
