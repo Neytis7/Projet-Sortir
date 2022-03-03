@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Sortie;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -24,5 +25,30 @@ class SortieRepository extends ServiceEntityRepository
     public function insertInscription(int $participantId, int $sortieId) :bool
     {
         dd('not insert inscription implement');
+    }
+
+    public function findRecherche() {
+        $date=date("Y-m-d H:m:s");
+        $date=date('Y-m-d H:m:s', strtotime($date. ' - 1 month'));
+        $datetime = DateTime::createFromFormat('Y-m-d H:m:s', $date);
+
+        $qb = $this->createQueryBuilder('sortie');
+        $qb
+            ->select('sortie')
+            ->addSelect('organisateur')
+            ->addSelect('lieu')
+            ->addSelect('participant')
+
+            ->leftJoin('sortie.organisateur','organisateur')
+            ->leftJoin('sortie.lieuxNoLieu','lieu')
+            ->leftJoin('sortie.participantsNoParticipant','participant')
+
+
+            ->where("sortie.datedebut > :datetime")
+            ->setParameter('datetime', $datetime)
+
+            ->orderBy('sortie.noSortie', 'DESC');
+
+        return $qb->getQuery()->getResult();
     }
 }
