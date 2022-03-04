@@ -102,7 +102,6 @@
             </table>
         </div>
     </div>
-
  <script>
 
 $(document).ready(function() {
@@ -157,11 +156,13 @@ $(document).ready(function() {
     $('#table_id').on('click', 'tr' , function (){
         let id = this.id;
 
+        const urlPageActuelle = self.location.href;
+
         if ((id !== null || true) && !isNaN(id)) {
             id = parseInt(id);
 
             if (Number.isInteger(id)) {
-                window.location = `../sortie/${id}`;
+                location.href = `${urlPageActuelle}/${id}`;
             }
         }
     });
