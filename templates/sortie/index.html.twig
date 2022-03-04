@@ -1,5 +1,8 @@
 {% extends 'base.html.twig' %}
 
+{% set routeDetail = constant('App\\Controller\\SortieController::ROUTE_DETAIL_SORTIE') %}
+{% set routeModified = constant('App\\Controller\\SortieController::ROUTE_MODIFIED_SORTIE') %}
+
 {% block title %}Filtrer les sorties{% endblock %}
 {% block subtitle %}Filtrer les sorties{% endblock %}
 
@@ -54,6 +57,9 @@
 
                         <td><a href="{{path('afficherProfile', {'id':sortie.organisateur.id}) }}">{{sortie.organisateur.prenom}}</a></td>
                         <td>
+                            <a href="{{ path(routeDetail, {'id':sortie.id}) }}">
+                                <input type="button" class="btn btn-info" value="Detail">
+                            </a>
                             {% if (inscrit == 'X') %}
                                 <a href="{{ path(constant('App\\Controller\\SortieController::ROUTE_DESINSCRIPTION_SORTIE'), {'id':sortie.id}) }}">
                                     <input type="button" class="btn btn-danger" value="se désinscrire">
@@ -62,6 +68,11 @@
                                 <a href="{{ path(constant('App\\Controller\\SortieController::ROUTE_INSCRIPTION_SORTIE'), {'id':sortie.id}) }}">
                                     <input type="button" class="btn btn-primary" value="s'inscrire">
                                 </a>
+                            {% endif %}
+                            {% if (sortie.organisateur.id == idUserCourant) %}
+                            <a href="{{ path(routeModified, {'id':sortie.id}) }}">
+                                <input type="button" class="btn btn-warning" value="Modifier">
+                            </a>
                             {% endif %}
 
 

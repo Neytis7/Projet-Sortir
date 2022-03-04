@@ -10,6 +10,8 @@ use App\Form\SortieAnnuleType;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
 use App\Service\SortieService;
+use DateTime;
+use DateTimeZone;
 use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -63,9 +65,7 @@ class SortieController extends AbstractController
         $sortie->setOrganisateur($participant);
 
         // Creation d'un formulaire en fonction d'une sortie
-        $form = $this->createForm(SortieType::class, $sortie, [
-            'dateJour'=> (new \DateTime())->format('d/m/Y h:i:s')
-        ]);
+        $form = $this->createForm(SortieType::class, $sortie);
 
         // Recupere ce qui été envoyé
         $form->handleRequest($request);
@@ -155,9 +155,7 @@ class SortieController extends AbstractController
             // Check si le formulaire est valide et envoyé
             if ($form->isSubmitted() && $form->isValid()) {
 
-                $etat = $this->em->getRepository(Etat::class)->find($etatsAnnule[0]);
-
-                $sortie->setEtat($etat);
+                $sortie->setEtat($etatsAnnule);
                 $entityManager->persist($sortie);
                 $entityManager->flush();
 

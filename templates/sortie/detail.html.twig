@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 
+{% set routeSortie = constant('App\\Controller\\SortieController::ROUTE_SORTIE') %}
 {% set routeAfficherProfil = constant('App\\Controller\\ProfilController::ROUTE_AFFICHER_PROFIL') %}
 {% set routeSortie = constant('App\\Controller\\SortieController::ROUTE_SORTIE') %}
 
@@ -8,8 +9,8 @@
 {% block body %}
     <h1>Detail d'une sortie</h1>
     <p>Nom de la sortie : {{ sortie.nom }}</p>
-    <p>Date et heure de la sortie : {{ sortie.dateDebut|date("l, d-M-y H:i:s T") }}</p>
-    <p>Date limite d'inscription : {{ sortie.dateCloture|date("l, d-M-y H:i:s T") }}</p>
+    <p>Date et heure de la sortie : {{ sortie.dateDebut|date("d/m/Y h:i:s") }}</p>
+    <p>Date limite d'inscription : {{ sortie.dateCloture|date("d/m/Y h:i:s") }}</p>
     <p>Nombre de place : {{ sortie.nbInscriptionsMax }}</p>
     <p>Durée : {{ sortie.duree }} min</p>
     <p>Description et infos : {{ sortie.descriptionInfos }}</p>
