@@ -7,8 +7,40 @@
 {% block subtitle %}Filtrer les sorties{% endblock %}
 
 {% block body %}
+        {# {{ form_start(sortieForm) }}
+          
+            
+        {{ form_end(sortieForm) }} #}
 
-    <div class="row">
+    <form methode="post" action="{{path(constant('App\\Controller\\SortieController::ROUTE_SORTIE_RECHERCHER'))}}">
+        <div class="row mt-3">
+            <div class="col-4">
+                <div>
+                    <input type="checkbox" name="sortieOrgan" id="sortieOrgan">
+                    <label for="sortieOrgan">Sorties dont je suis l'organisateur/trice</label>
+                </div>
+                <div>
+                    <input type="checkbox" name="sortieInscit" id="sortieInscit">
+                    <label for="sortieInscit">Sorties auxquelles je suis inscrit/e</label>
+                </div>
+                <div>
+                    <input type="checkbox" name="sortieNonInscit" id="sortieNonInscit">
+                    <label for="sortieNonInscit">Sorties auxquelles je ne suis pas inscrit/e</label>
+                </div>
+                <div>
+                    <input type="checkbox" name="sortiePasse" id="sortiePasse">
+                    <label for="sortiePasse">Sorties passées</label>
+                </div>
+
+            </div>
+            <div class="col-4">
+                <div>
+                    <input class="btn btn-primary" type="submit" value="Rechercher">
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="row mt-3">
         <div class="col-sm d-flex justify-content-center">
             <table id="table_id" class="display table table-striped">
                 <thead>
@@ -55,11 +87,8 @@
                         {% endfor %}
                         <td>{{inscrit}}</td>
 
-                        <td><a href="{{path('afficherProfile', {'id':sortie.organisateur.id}) }}">{{sortie.organisateur.prenom}}</a></td>
+                        <td><a href="{{path('afficherProfile', {'id':sortie.organisateur.id}) }}">{{sortie.organisateur.prenom}} {{sortie.organisateur.nom}}</a></td>
                         <td>
-                            <a href="{{ path(routeDetail, {'id':sortie.id}) }}">
-                                <input type="button" class="btn btn-secondary" value="Detail">
-                            </a>
                             {% if (inscrit == 'X') %}
                                 <a href="{{ path(constant('App\\Controller\\SortieController::ROUTE_DESINSCRIPTION_SORTIE'), {'id':sortie.id}) }}">
                                     <input type="button" class="btn btn-danger" value="se désinscrire">
@@ -69,7 +98,6 @@
                                     <input type="button" class="btn btn-primary" value="s'inscrire">
                                 </a>
                             {% endif %}
-
                         </td>
                     </tr> 
                     {% endfor %}
@@ -125,6 +153,7 @@ $(document).ready(function() {
         "responsive": true,
         "info": false,
         "autoWidth": true,
+        rowId: 0
     });
 
     $('#TableauRapport').DataTable().columns.adjust().draw();
@@ -152,7 +181,5 @@ $(document).ready(function() {
         }
     );
 });
- </script>  
- 
-      
+ </script>
 {% endblock %}

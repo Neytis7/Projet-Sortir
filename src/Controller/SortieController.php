@@ -33,6 +33,7 @@ class SortieController extends AbstractController
     const ROUTE_DETAIL_SORTIE = "sortie_detail";
     const ROUTE_INSCRIPTION_SORTIE = "inscription_sortie";
     const ROUTE_DESINSCRIPTION_SORTIE = "desinscription_sortie";
+    const ROUTE_SORTIE_RECHERCHER="sortieRechercher";
 
     /**
      * @var EntityManagerInterface
@@ -177,21 +178,36 @@ class SortieController extends AbstractController
     public function index(?UserInterface $userCourant, Request $request, SortieRepository $SortiesRepository): Response
     {
         /** @var Participant $userCourant */
-        $lesSorties = $SortiesRepository->findAll();
+        $lesSorties = $SortiesRepository->findRecherche();
 
         $sorties = new Sortie();
-        $form = $this->createForm(RechercheSortieType::class, $sorties);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            // encode the plain password
-        }
-
-        $formView = $form->createView();
-        
+  
         return $this->render('sortie/index.html.twig', [
             'lesSorties' => $lesSorties,
-            'idUserCourant'=>$userCourant->getId()
+            'idUserCourant'=>$userCourant->getId(),
+
+        ]);
+    }
+
+    #[Route('/sortieRecherche', name: self::ROUTE_SORTIE_RECHERCHER)]
+    public function indexRecherche(?UserInterface $userCourant, Request $request, SortieRepository $SortiesRepository): Response
+    {
+        
+        $sortieOrgan=$request->get('sortieOrgan');
+        $sortieInscit=$request->get('sortieInscit');
+        $sortieNonInscit=$request->get('sortieNonInscit');
+        $sortiePasse=$request->get('sortiePasse');
+        $idUserCourant=$userCourant->getId();
+
+        if ($sortieOrgan===null && $sortieInscit===null && $sortieNonInscit===null && $sortiePasse===null) {
+
+            return $this->redirectToRoute(self::ROUTE_SORTIE);
+        }
+       $lesSorties=$SortiesRepository->findRechercheCheckBox($sortieOrgan,$sortieInscit,$sortieNonInscit,$sortiePasse,$idUserCourant);
+     
+        return $this->render('sortie/index.html.twig', [
+            'lesSorties' => $lesSorties,
+            'idUserCourant'=>$idUserCourant
         ]);
     }
 
