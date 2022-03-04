@@ -7,28 +7,44 @@
 {% block subtitle %}Filtrer les sorties{% endblock %}
 
 {% block body %}
-        {# {{ form_start(sortieForm) }}
-          
-            
-        {{ form_end(sortieForm) }} #}
+ {# 'sortieOrgan'=>$sortieOrgan,
+            'sortieNonInscit'=>$sortieNonInscit,
+            'sortiePasse'=>$sortiePasse,
+            'sortieInscit'=>$sortieInscit #}
 
-    <form methode="post" action="{{path(constant('App\\Controller\\SortieController::ROUTE_SORTIE_RECHERCHER'))}}">
+    <form method="post" action="{{path(constant('App\\Controller\\SortieController::ROUTE_SORTIE_RECHERCHER'))}}">
         <div class="row mt-3">
             <div class="col-4">
                 <div>
-                    <input type="checkbox" name="sortieOrgan" id="sortieOrgan">
+                    <input type="checkbox" name="sortieOrgan" id="sortieOrgan"           
+                    {% if sortieOrgan is defined and sortieOrgan is not null %}
+                        checked
+                    {% endif %}
+                    >
                     <label for="sortieOrgan">Sorties dont je suis l'organisateur/trice</label>
                 </div>
                 <div>
-                    <input type="checkbox" name="sortieInscit" id="sortieInscit">
+                    <input type="checkbox" name="sortieInscit" id="sortieInscit"
+                    {% if sortieInscit is defined and sortieInscit is not null %}
+                        checked
+                    {% endif %}
+                    >
                     <label for="sortieInscit">Sorties auxquelles je suis inscrit/e</label>
                 </div>
                 <div>
-                    <input type="checkbox" name="sortieNonInscit" id="sortieNonInscit">
+                    <input type="checkbox" name="sortieNonInscit" id="sortieNonInscit"
+                    {% if sortieNonInscit is defined and sortieNonInscit is not null %}
+                        checked
+                    {% endif %}
+                    >
                     <label for="sortieNonInscit">Sorties auxquelles je ne suis pas inscrit/e</label>
                 </div>
                 <div>
-                    <input type="checkbox" name="sortiePasse" id="sortiePasse">
+                    <input type="checkbox" name="sortiePasse" id="sortiePasse"
+                    {% if sortiePasse is defined and sortiePasse is not null %}
+                        checked
+                    {% endif %}
+                    >
                     <label for="sortiePasse">Sorties passées</label>
                 </div>
 
@@ -90,13 +106,17 @@
                         <td><a href="{{path('afficherProfile', {'id':sortie.organisateur.id}) }}">{{sortie.organisateur.prenom}} {{sortie.organisateur.nom}}</a></td>
                         <td>
                             {% if (inscrit == 'X') %}
+                                {% if sortie.etat.libelle not in ['Annulée','Archivée','Terminée','Cloturée'] %}
                                 <a href="{{ path(constant('App\\Controller\\SortieController::ROUTE_DESINSCRIPTION_SORTIE'), {'id':sortie.id}) }}">
                                     <input type="button" class="btn btn-danger" value="se désinscrire">
                                 </a>
+                                {% endif%}
                             {% else %}
+                                {% if sortie.etat.libelle not in ['Annulée','Archivée','Terminée','Cloturée'] %}
                                 <a href="{{ path(constant('App\\Controller\\SortieController::ROUTE_INSCRIPTION_SORTIE'), {'id':sortie.id}) }}">
                                     <input type="button" class="btn btn-primary" value="s'inscrire">
                                 </a>
+                                {% endif%}
                             {% endif %}
                         </td>
                     </tr> 
@@ -165,7 +185,9 @@ $(document).ready(function() {
             id = parseInt(id);
 
             if (Number.isInteger(id)) {
-                window.location = '/sortie/' + id;
+                //location.href = `/sortie/${id}`;
+                urlPageActuelle=self.location.href;
+                location.href = `${urlPageActuelle}/${id}`;
             }
         }
     });

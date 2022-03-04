@@ -79,20 +79,22 @@ class SortieRepository extends ServiceEntityRepository
                 $qb->andWhere("organisateur.id = :idOrganisateur")
                 ->setParameter('idOrganisateur', $idUserCourant);
             }
-            if ($sortieInscit!==null) {
-                $qb->andWhere("participant.id = :idParticipant")
-                ->setParameter('idParticipant', $idUserCourant);
-            }
-
-            if ($sortieNonInscit!==null) {
-                $lesIdDesSortiesUtilisateurParticipe=$qbImbrique->getQuery()->getResult();
-                if (count($lesIdDesSortiesUtilisateurParticipe)>0) {
-                    # code...
-                    // $qb->andWhere("sortie.id not IN ()");
-                    $qb->andWhere("sortie.id not IN (:requete)")
-                    ->setParameter('requete', $qbImbrique->getQuery()->getResult());
+            if ($sortieInscit===null || $sortieNonInscit===null) {
+                if ($sortieInscit!==null) {
+                    $qb->andWhere("participant.id = :idParticipant")
+                    ->setParameter('idParticipant', $idUserCourant);
                 }
-                
+    
+                if ($sortieNonInscit!==null) {
+                    $lesIdDesSortiesUtilisateurParticipe=$qbImbrique->getQuery()->getResult();
+                    if (count($lesIdDesSortiesUtilisateurParticipe)>0) {
+                        # code...
+                        // $qb->andWhere("sortie.id not IN ()");
+                        $qb->andWhere("sortie.id not IN (:requete)")
+                        ->setParameter('requete', $qbImbrique->getQuery()->getResult());
+                    }
+                    
+                }
             }
             // if ($sortieNonInscit!==null) {
             //     // dd($qbImbrique->getQuery()->getResult());

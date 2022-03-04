@@ -14,6 +14,7 @@ use DateTime;
 use DateTimeZone;
 use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,6 +24,12 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use App\Repository\SortieRepository;
 
+
+/**
+ * Require ROLE_ADMIN for all the actions of this controller
+ *
+ * @IsGranted("ROLE_USER")
+ */
 class SortieController extends AbstractController
 {
 
@@ -33,7 +40,7 @@ class SortieController extends AbstractController
     const ROUTE_DETAIL_SORTIE = "sortie_detail";
     const ROUTE_INSCRIPTION_SORTIE = "inscription_sortie";
     const ROUTE_DESINSCRIPTION_SORTIE = "desinscription_sortie";
-    const ROUTE_SORTIE_RECHERCHER="sortieRechercher";
+    const ROUTE_SORTIE_RECHERCHER = "sortieRechercher";
 
     /**
      * @var EntityManagerInterface
@@ -59,6 +66,7 @@ class SortieController extends AbstractController
     #[Route('/sortie/add', name: self::ROUTE_CREER_SORTIE)]
     public function add(EntityManagerInterface $entityManager, EtatRepository $etatsRepository, Request $request)
     {
+
         // Creation de l'instance
         $sortie = new Sortie();
         /** @var Participant $participant */
@@ -108,6 +116,7 @@ class SortieController extends AbstractController
     #[Route('/sortie/modified/{id}', name: self::ROUTE_MODIFIED_SORTIE,requirements: ['id'=>'\d+'])]
     public function modified($id, SortieRepository $SortiesRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
+
         $sortie = $SortiesRepository->find($id);
 
         if(!$sortie){
@@ -144,6 +153,8 @@ class SortieController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager
     ) {
+
+
         $sortie = $SortiesRepository->find($id);
         $etatsAnnule = $etatsRepository->findOneBy([
             'libelle' => 'Annulée'
@@ -177,15 +188,14 @@ class SortieController extends AbstractController
     #[Route('/sortie', name: self::ROUTE_SORTIE)]
     public function index(?UserInterface $userCourant, Request $request, SortieRepository $SortiesRepository): Response
     {
+
+
         /** @var Participant $userCourant */
         $lesSorties = $SortiesRepository->findRecherche();
 
-        $sorties = new Sortie();
-  
         return $this->render('sortie/index.html.twig', [
             'lesSorties' => $lesSorties,
             'idUserCourant'=>$userCourant->getId(),
-
         ]);
     }
 
@@ -207,7 +217,11 @@ class SortieController extends AbstractController
      
         return $this->render('sortie/index.html.twig', [
             'lesSorties' => $lesSorties,
-            'idUserCourant'=>$idUserCourant
+            'idUserCourant'=>$idUserCourant,
+            'sortieOrgan'=>$sortieOrgan,
+            'sortieNonInscit'=>$sortieNonInscit,
+            'sortiePasse'=>$sortiePasse,
+            'sortieInscit'=>$sortieInscit
         ]);
     }
 
@@ -218,6 +232,8 @@ class SortieController extends AbstractController
     #[Route('/desinscription/sortie/{id}', name: self::ROUTE_DESINSCRIPTION_SORTIE, requirements: ['id'=>'\d+'])]
     public function inscriptionDesinscriptionSortie(?UserInterface $userCourant, Request $request): Response
     {
+
+
         /** @var Participant $userCourant */
         if (is_null($userCourant)) {
             throw new AccessDeniedException('Veuillez vous connecter pour vous inscrire à une activité !');

@@ -3,14 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Site;
-use App\Repository\ParticipantRepository;
 use App\Entity\Participant;
 use App\Form\ProfilType;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Service\ProfilService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,7 +15,14 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
+
+/**
+ * Require ROLE_ADMIN for all the actions of this controller
+ *
+ * @IsGranted("ROLE_USER")
+ */
 class ProfilController extends AbstractController
 {
     const PATH_HOME = 'app_main';
@@ -40,6 +44,7 @@ class ProfilController extends AbstractController
     /**
      * @param EntityManagerInterface $em
      * @param UserPasswordHasherInterface $passwordEncoder
+     * @param SluggerInterface $slugger
      */
     public function __construct(
         EntityManagerInterface $em,
@@ -56,6 +61,8 @@ class ProfilController extends AbstractController
     #[Route('modifier/mon-profil', name: 'modifier_profil')]
     public function profil(?UserInterface $userCourant, Request $request): Response
     {
+
+
         /** @var Participant $userCourant */
         if (is_null($userCourant)) {
             throw new AccessDeniedException('Veuillez vous connecter pour accèder à cette page.');
@@ -118,9 +125,22 @@ class ProfilController extends AbstractController
                 }
 
                 if (!$isAdmin) {
+
                     $utilisateurBdd->setAdministrateur(false);
                     $utilisateurBdd->setActif($isActif);
+
+                    $userCourant->setRoles(array('ROLE_USER'));
+
                 }
+                if ($isAdmin) {
+
+                    $utilisateurBdd->setAdministrateur(false);
+                    $utilisateurBdd->setActif($isActif);
+
+                    $userCourant->setRoles(array('ROLE_ADMIN'));
+
+                }
+
 
                 /** @var Participant $userCourant */
                 $this->em->flush();
@@ -142,6 +162,8 @@ class ProfilController extends AbstractController
     #[Route('afficher/profil/{id}', name: self::ROUTE_AFFICHER_PROFIL)]
     public function voirProfil(Request $request, int $id): Response
     {
+
+
         $leParticipant = $this->em->getRepository(Participant::class)->find($id);
 
         $form = $this->createForm(ProfilType::class, $leParticipant, [
