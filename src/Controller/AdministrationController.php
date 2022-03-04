@@ -6,6 +6,7 @@ use App\Repository\ParticipantRepository;
 use App\Entity\Participant;
 use App\Entity\Site;
 use App\Form\ProfilType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,6 +17,12 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+
+/**
+ * Require ROLE_ADMIN for all the actions of this controller
+ *
+ * @IsGranted("ROLE_ADMIN")
+ */
 class AdministrationController extends AbstractController
 {
 
@@ -41,6 +48,8 @@ class AdministrationController extends AbstractController
 
     public function index(?UserInterface $userCourant, Request $request, UserPasswordHasherInterface $pwdHasher, ParticipantRepository $participantsRepository ): Response
     {
+
+
         /** @var Participant $userCourant */
         if (is_null($userCourant)) {
             throw new AccessDeniedException('Veuillez vous connecter en tant qu\'admin pour accèder à la page !');
