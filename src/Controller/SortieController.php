@@ -33,7 +33,7 @@ class SortieController extends AbstractController
     const ROUTE_DETAIL_SORTIE = "sortie_detail";
     const ROUTE_INSCRIPTION_SORTIE = "inscription_sortie";
     const ROUTE_DESINSCRIPTION_SORTIE = "desinscription_sortie";
-    const ROUTE_SORTIE_RECHERCHER="sortieRechercher";
+    const ROUTE_SORTIE_RECHERCHER = "sortieRechercher";
 
     /**
      * @var EntityManagerInterface
@@ -180,12 +180,9 @@ class SortieController extends AbstractController
         /** @var Participant $userCourant */
         $lesSorties = $SortiesRepository->findRecherche();
 
-        $sorties = new Sortie();
-  
         return $this->render('sortie/index.html.twig', [
             'lesSorties' => $lesSorties,
             'idUserCourant'=>$userCourant->getId(),
-
         ]);
     }
 
