@@ -12,10 +12,9 @@
             
         {{ form_end(sortieForm) }} #}
 
-    {% set pathKernelProject = app.request.getSchemeAndHttpHost() . '' . app.request.getBaseURL() %}
+    {% set pathKernelProject = app.request.getSchemeAndHttpHost() %}
 
-    {{ dump(pathKernelProject) }}
-    <form method="post" action="{{path(constant('App\\Controller\\SortieController::ROUTE_SORTIE_RECHERCHER'))}}">
+    <form method="post" action="{{path(constant('App\\Controller\\SortieController::ROUTE_SORTIE_RECHERCHER'))}}" data-url="{{pathKernelProject}}">
         <div class="row mt-3">
             <div class="col-4">
                 <div>
@@ -161,14 +160,15 @@ $(document).ready(function() {
 
     $('#TableauRapport').DataTable().columns.adjust().draw();
 
-    $('#table_id').on('click', 'tr' , function (){
+    $('#table_id').on('click', 'tr' , function (e){
         let id = this.id;
-console.log(id);
+        const url = $('form').data('url');
+
         if ((id !== null || true) && !isNaN(id)) {
             id = parseInt(id);
 
             if (Number.isInteger(id)) {
-                window.location = '/sortie/' + id;
+                window.location = url + '/sortie/' + id;
             }
         }
     });
