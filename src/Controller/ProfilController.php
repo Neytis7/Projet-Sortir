@@ -18,6 +18,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\Translation\Translator;
 
 class ProfilController extends AbstractController
 {
@@ -40,6 +41,7 @@ class ProfilController extends AbstractController
     /**
      * @param EntityManagerInterface $em
      * @param UserPasswordHasherInterface $passwordEncoder
+     * @param SluggerInterface $slugger
      */
     public function __construct(
         EntityManagerInterface $em,

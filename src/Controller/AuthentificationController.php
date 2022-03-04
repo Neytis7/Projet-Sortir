@@ -20,7 +20,6 @@ class AuthentificationController extends AbstractController
     #[Route('/', name: 'login')]
     public function login(): Response
     {
-
         // get the login error if there is one
         $error = $this->authenticationUtils->getLastAuthenticationError();
 

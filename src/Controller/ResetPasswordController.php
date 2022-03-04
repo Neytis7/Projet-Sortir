@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -36,7 +37,7 @@ class ResetPasswordController extends AbstractController
 
     /**
      * Display & process form to request a password reset.
-     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
+     * @throws TransportExceptionInterface
      */
     #[Route('', name: 'app_forgot_password_request')]
     public function request(Request $request, MailerInterface $mailer, TranslatorInterface $translator): Response
@@ -139,7 +140,7 @@ class ResetPasswordController extends AbstractController
      * @param MailerInterface $mailer
      * @param TranslatorInterface $translator
      * @return RedirectResponse
-     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
+     * @throws TransportExceptionInterface
      *
      */
     private function processSendingPasswordResetEmail( string $emailFormData, MailerInterface $mailer, TranslatorInterface $translator): RedirectResponse
@@ -150,13 +151,11 @@ class ResetPasswordController extends AbstractController
 
         // Do not reveal whether a user account was found or not.
         if (!$user) {
-
             return $this->redirectToRoute('reset-password_app_check_email');
         }
 
         try {
             $resetToken = $this->resetPasswordHelper->generateResetToken($user);
-
         } catch (ResetPasswordExceptionInterface $e) {
             // If you want to tell the user why a reset email was not sent, uncomment
             // the lines below and change the redirect to 'app_forgot_password_request'.
@@ -168,17 +167,16 @@ class ResetPasswordController extends AbstractController
 //                 $translator->trans($e->getReason(), [], 'ResetPasswordBundle')
 //             ));
             return $this->redirectToRoute('reset-password_app_check_email');
-
         }
+
         $email = (new TemplatedEmail())
-            ->from(Address::create('Bobby de Sortie.com <projet.sortieeninantes@gmail.com>'))
+            ->from(Address::create('Bobby de Sortie.com <ttestenitheo@gmail.com>'))
             ->to($user->getMail())
             ->subject('Votre demande de réintitialisation de mot de passe ')
             ->htmlTemplate('reset_password/email.html.twig')
             ->context([
                 'resetToken' => $resetToken,
-            ])
-        ;
+            ]);
 
         $mailer->send($email);
 
