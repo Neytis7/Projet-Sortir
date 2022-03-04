@@ -27,6 +27,7 @@ class SortieService
         if (
             ($sortieBdd->getEtat()->getLibelle() === Sortie::ETAT_CREEE || $sortieBdd->getEtat()->getLibelle() === Sortie::ETAT_OUVERTE)
             && ($sortieBdd->getDateDebut()->format('d/m/Y') >  (new \DateTime())->format('d/m/Y'))
+            && ($sortieBdd->getDateCloture()->format('d/m/Y') >  (new \DateTime())->format('d/m/Y'))
             && $sortieBdd->getNbInscriptionsMax() > count($sortieBdd->getParticipants())
         ) {
             $utilisateurBdd->addSortie($sortieBdd);
