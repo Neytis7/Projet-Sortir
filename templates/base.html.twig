@@ -29,7 +29,6 @@
         <header>
             {% include('inc/nav.html.twig') %}
         </header>
-
         {% for message in app.flashes('error') %}
             <div class="alert alert-danger">
                 {{ message }}
