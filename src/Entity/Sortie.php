@@ -15,6 +15,14 @@ use DateTime;
  */
 class Sortie
 {
+
+    const ETAT_CREEE = 'Créée';
+    const ETAT_ANNULEE = 'Annulée';
+    const ETAT_ARCHIVEE = 'Archivée';
+    const ETAT_OUVERTE = 'Ouverte';
+    const ETAT_TERMINEE = 'Terminée';
+    const ETAT_CLOTUREE = 'Cloturée';
+
     /**
      * @var int
      *
@@ -46,9 +54,9 @@ class Sortie
     private DateTime $dateDebut;
 
     /**
-     * @var int|null
+     * @var int
      *
-     * @ORM\Column(name="duree", type="integer", nullable=true)
+     * @ORM\Column(name="duree", type="integer", nullable=false)
      */
     private ?int $duree;
 
@@ -84,6 +92,9 @@ class Sortie
      * @var Etat
      *
      * @ORM\ManyToOne(targetEntity="Etat")
+     * * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="etat_id", referencedColumnName="id",nullable=false)
+     * })
      */
     private Etat $etat;
 
@@ -92,7 +103,7 @@ class Sortie
      *
      * @ORM\ManyToOne(targetEntity="Participant")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="organisateur", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="organisateur", referencedColumnName="id",nullable=false)
      * })
      */
     private Participant $organisateur;
@@ -101,6 +112,9 @@ class Sortie
      * @var Lieu
      *
      * @ORM\ManyToOne(targetEntity="Lieu")
+     * * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="lieu_id", referencedColumnName="id",nullable=false)
+     * })
      */
     private Lieu $lieu;
 
@@ -176,18 +190,18 @@ class Sortie
     }
 
     /**
-     * @return int|null
+     * @return int
      */
-    public function getDuree(): ?int
+    public function getDuree(): int
     {
         return $this->duree;
     }
 
     /**
-     * @param int|null $duree
+     * @param int $duree
      * @return Sortie
      */
-    public function setDuree(?int $duree): Sortie
+    public function setDuree(int $duree): Sortie
     {
         $this->duree = $duree;
 
@@ -216,7 +230,7 @@ class Sortie
     /**
      * @return int
      */
-    public function getNbinscriptionsmax(): int
+    public function getNbInscriptionsMax(): int
     {
         return $this->nbInscriptionsMax;
     }

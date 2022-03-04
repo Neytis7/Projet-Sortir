@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Sortie;
+use DateTime;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Exception\TransformationFailedException;
@@ -28,27 +29,39 @@ class SortieType extends AbstractType implements EventSubscriberInterface
             ])
             ->add('dateDebut',DateTimeType::class,[
                 'label'=>'Date et heure de la sortie : ',
+                'format' => 'd/m/Y h:i:s',
+                'model_timezone' => 'Europe/Paris',
+                'view_timezone' => 'Europe/Paris',
+                'html5' =>false,
                 'constraints' => [
                     new Assert\GreaterThanOrEqual([
                         'value' => $options['dateJour'],
-                        'message' => 'La date ne peut pas être inférieur a la date du jour'
+                        'message' => 'La date de début ne peut pas être inférieur a la date du jour'
                     ]),
                 ],
             ])
             ->add('duree',null,[
                 'label'=>'Durée (minutes) : ',
                 'constraints' => [
-                    new Assert\PositiveOrZero([
+                    new Assert\Positive([
                         'message' => 'On ne peut pas avoir de durée négatif'
+                    ]),
+                    new Assert\NotBlank([
+                        'message' => 'Il faut obligatoirement une durée'
                     ]),
                 ],
             ])
             //Contrainte sur la date de cloture > date de debut
-            ->add('dateCloture',null,['label'=>'Date limite d\'inscription : ',
+            ->add('dateCloture',null,[
+                'label'=>'Date limite d\'inscription : ',
+                'format' => 'd/m/Y h:i:s',
+                'model_timezone' => 'Europe/Paris',
+                'view_timezone' => 'Europe/Paris',
+                'html5' =>false,
                 'constraints' => [
-                    new Assert\GreaterThan([
+                    new Assert\GreaterThanOrEqual([
                         'value' => $options['dateJour'],
-                        'message' => 'La date ne peut pas être inférieur a la date du jour'
+                        'message' => 'La date de début ne peut pas être inférieur a la date du jour'
                     ]),
                 ],
             ])
@@ -56,12 +69,19 @@ class SortieType extends AbstractType implements EventSubscriberInterface
                 'label'=>'Nombre de places : ',
                 'constraints' => [
                     new Assert\PositiveOrZero([
-                        'message' => 'On ne peut pas avoir de nombre négatif'
+                        'message' => 'On ne peut pas avoir un nombre de place négatif'
                     ]),
                 ],
             ])
             ->add('descriptionInfos',null,['label'=>'Description et infos : '])
-            ->add('lieu',null,['label'=>'Lieu : '])
+            ->add('lieu',null,[
+                'label'=>'Lieu : ',
+                'constraints' => [
+                    new Assert\NotBlank([
+                        'message' => 'Il faut obligatoirement un lieu'
+                    ]),
+                ],
+            ])
             ->addEventSubscriber($this)
         ;
     }
@@ -71,7 +91,7 @@ class SortieType extends AbstractType implements EventSubscriberInterface
     {
         $resolver->setDefaults([
             'data_class' => Sortie::class,
-            'dateJour' => (new \DateTime())->format('d/m/Y h:i:s'),
+            'dateJour' => DateTime::createFromFormat('d/m/Y h:i:s',(new \DateTime())->setTimezone(new \DateTimeZone('Europe/Paris'))->format('d/m/Y h:i:s'),(new \DateTimeZone('Europe/Paris'))),
         ]);
     }
 

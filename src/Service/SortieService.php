@@ -18,23 +18,41 @@ class SortieService
         $this->em = $em;
     }
 
-    public function inscrireSortie(?Participant $userCourant, ?Sortie $sortie) :void
+    public function inscrireSortie(?Participant $userCourant, ?Sortie $sortie) :bool
     {
+        $success = false;
         $utilisateurBdd = $this->em->getRepository(Participant::class)->find($userCourant->getId());
         $sortieBdd = $this->em->getRepository(Sortie::class)->find($sortie->getId());
 
-        $utilisateurBdd->addSortie($sortieBdd);
+        if (
+            ($sortieBdd->getEtat()->getLibelle() === Sortie::ETAT_CREEE || $sortieBdd->getEtat()->getLibelle() === Sortie::ETAT_OUVERTE)
+            && ($sortieBdd->getDateDebut()->format('d/m/Y') >  (new \DateTime())->format('d/m/Y'))
+            && ($sortieBdd->getDateCloture()->format('d/m/Y') >  (new \DateTime())->format('d/m/Y'))
+            && $sortieBdd->getNbInscriptionsMax() > count($sortieBdd->getParticipants())
+        ) {
+            $utilisateurBdd->addSortie($sortieBdd);
+            $this->em->flush();
+            $success = true;
+        }
 
-        $this->em->flush();
+        return $success;
     }
 
-    public function desisterSortie(?Participant $userCourant, ?Sortie $sortie) :void
+    public function desisterSortie(?Participant $userCourant, ?Sortie $sortie) :bool
     {
+        $success = false;
         $utilisateurBdd = $this->em->getRepository(Participant::class)->find($userCourant->getId());
         $sortieBdd = $this->em->getRepository(Sortie::class)->find($sortie->getId());
 
-        $utilisateurBdd->removeSortie($sortieBdd);
+        if (
+            ($sortieBdd->getEtat()->getLibelle() === Sortie::ETAT_CREEE || $sortieBdd->getEtat()->getLibelle() === Sortie::ETAT_OUVERTE)
+            && ($sortieBdd->getDateDebut()->format('d/m/Y') >  (new \DateTime())->format('d/m/Y')))
+        {
+            $utilisateurBdd->removeSortie($sortieBdd);
+            $this->em->flush();
+            $success = true;
+        }
 
-        $this->em->flush();
+        return $success;
     }
 }

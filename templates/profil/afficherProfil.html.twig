@@ -6,7 +6,7 @@
 {% set routeSortie = constant('App\\Controller\\SortieController::ROUTE_SORTIE') %}
 <div class="container">
 
-   <h1 class="display-1 text-center">{{leParticipant.pseudo}}</h1>
+   <h1 class="display-1 text-center"><img src="{{ asset('uploads/profilePics/'~leParticipant.photo) }}" alt="" style="width: 100px; height: auto"/>{{leParticipant.pseudo}}</h1>
 
    <div class="align-items-center">
 
@@ -50,7 +50,7 @@
              </div>
         
          <div class="d-flex justify-content-between mt-2">
-             <input type="button" class="btn btn-primary" value="Annuler" onclick="history.back()">
+             <a href="{{ path(routeSortie)}}" class="btn btn-primary">Annuler</a>
          </div>
 
    </div>

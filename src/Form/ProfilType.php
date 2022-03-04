@@ -5,9 +5,12 @@ namespace App\Form;
 use App\Entity\Participant;
 use App\Entity\Site;
 use App\Form\DataTransformer\SiteTransformer;
+use PhpParser\Node\Scalar\MagicConst\File;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RadioType;
@@ -146,6 +149,26 @@ class ProfilType extends AbstractType
                         : 'site non renseigné'
                 ]);
             }
+
+            $builder->add('image',FileType::class,[
+                'label' => 'Ajouter une photo',
+                'mapped' => false,
+                'required' => false,
+                'constraints' => [
+                    new Assert\File([
+                        'maxSize' => '10000k',
+                        'mimeTypes' => [
+                            'image/jpg',
+                            'image/png',
+                            'image/gif',
+                            'image/webp'
+                        ],
+                        'mimeTypesMessage' => 'Vueillez choisir une photo valide',
+                    ])
+                ]
+
+            ]);
+
 
 
             $builder->add('administrateur', CheckboxType::class,[

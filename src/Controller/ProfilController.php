@@ -11,11 +11,13 @@ use App\Service\ProfilService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class ProfilController extends AbstractController
 {
@@ -33,6 +35,7 @@ class ProfilController extends AbstractController
      * @var UserPasswordHasherInterface
      */
     private UserPasswordHasherInterface $passwordEncoder;
+    private SluggerInterface $slugger;
 
     /**
      * @param EntityManagerInterface $em
@@ -40,10 +43,12 @@ class ProfilController extends AbstractController
      */
     public function __construct(
         EntityManagerInterface $em,
-        UserPasswordHasherInterface $passwordEncoder
+        UserPasswordHasherInterface $passwordEncoder,
+        SluggerInterface $slugger
     ) {
         $this->em = $em;
         $this->passwordEncoder = $passwordEncoder;
+        $this->slugger = $slugger;
     }
 
     /**
@@ -93,6 +98,25 @@ class ProfilController extends AbstractController
                     );
                 }
 
+                $imageProfil = $form->get('image')->getData();
+
+                if($imageProfil){
+                    $OriFilename = pathinfo($imageProfil->getClientOriginalName(), PATHINFO_FILENAME);
+
+                    $safeFilename = $this->slugger->slug($OriFilename);
+                    $newFilename = $safeFilename.'-'.uniqid().'.'.$imageProfil->guessExtension();
+                    try {
+                        $imageProfil->move(
+                            $this->getParameter('profile_directory'),
+                            $newFilename
+                        );
+
+                    }catch (FileException $e){}
+
+                    $userCourant->setPhoto($newFilename);
+
+                }
+
                 if (!$isAdmin) {
                     $utilisateurBdd->setAdministrateur(false);
                     $utilisateurBdd->setActif($isActif);
@@ -111,6 +135,7 @@ class ProfilController extends AbstractController
 
         return $this->render('profil/profil.html.twig', [
             'form' => $form->createView(),
+            'userCourant' => $userCourant
         ]);
     }
 

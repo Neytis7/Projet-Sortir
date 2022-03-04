@@ -10,6 +10,8 @@ use App\Form\SortieAnnuleType;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
 use App\Service\SortieService;
+use DateTime;
+use DateTimeZone;
 use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -63,9 +65,7 @@ class SortieController extends AbstractController
         $sortie->setOrganisateur($participant);
 
         // Creation d'un formulaire en fonction d'une sortie
-        $form = $this->createForm(SortieType::class, $sortie, [
-            'dateJour'=> (new \DateTime())->format('d/m/Y h:i:s')
-        ]);
+        $form = $this->createForm(SortieType::class, $sortie);
 
         // Recupere ce qui été envoyé
         $form->handleRequest($request);
@@ -92,14 +92,16 @@ class SortieController extends AbstractController
     }
 
     #[Route('/sortie/{id}', name: self::ROUTE_DETAIL_SORTIE,requirements: ['id'=>'\d+'])]
-    public function detail($id, SortieRepository $SortiesRepository): Response
+    public function detail($id, SortieRepository $SortiesRepository,?UserInterface $userCourant): Response
     {
+        /** @var Participant $userCourant */
         $sortie = $SortiesRepository->find($id);
+        $idUserCourant = $userCourant->getId();
         if(!$sortie){
             throw new NotFoundHttpException("This sortie doesn't exist");
         }
         return $this->render('sortie/detail.html.twig',
-            compact("id",'sortie'));
+            compact("id",'sortie','idUserCourant'));
     }
 
     #[Route('/sortie/modified/{id}', name: self::ROUTE_MODIFIED_SORTIE,requirements: ['id'=>'\d+'])]
@@ -155,9 +157,7 @@ class SortieController extends AbstractController
             // Check si le formulaire est valide et envoyé
             if ($form->isSubmitted() && $form->isValid()) {
 
-                $etat = $this->em->getRepository(Etat::class)->find($etatsAnnule[0]);
-
-                $sortie->setEtat($etat);
+                $sortie->setEtat($etatsAnnule);
                 $entityManager->persist($sortie);
                 $entityManager->flush();
 
@@ -216,22 +216,20 @@ class SortieController extends AbstractController
         $message = '';
         try {
             if ($request->get('_route') === self::ROUTE_INSCRIPTION_SORTIE) {
-                $this->serviceSortie->inscrireSortie($userCourant, $sortie);
+                $success = $this->serviceSortie->inscrireSortie($userCourant, $sortie);
                 $message = "Votre inscription a été prise en compte !";
-                $success = true;
             } elseif ($request->get('_route') === self::ROUTE_DESINSCRIPTION_SORTIE) {
-                $this->serviceSortie->desisterSortie($userCourant, $sortie);
+                $success = $this->serviceSortie->desisterSortie($userCourant, $sortie);
                 $message = "Votre dé-inscription a été prise en compte !";
-                $success = true;
             } else {
-                throw new \Exception('Une erreur s\'est produite, veuillez réessayer !');
+                throw new \Exception("Une erreur s'est produite, veuillez réessayer !");
             }
         } catch (Exception $e) {
             $success = false;
         }
 
         $message = $success === false
-            ? "Votre action n\' pas été prise en compte, réessayer"
+            ? "Votre action n'a pas été prise en compte, réessayer"
             : $message;
 
         $type = $success === true
