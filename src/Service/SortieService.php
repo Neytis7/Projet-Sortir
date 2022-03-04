@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Participant;
 use App\Entity\Sortie;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 
 class SortieService
@@ -24,12 +25,12 @@ class SortieService
         $utilisateurBdd = $this->em->getRepository(Participant::class)->find($userCourant->getId());
         $sortieBdd = $this->em->getRepository(Sortie::class)->find($sortie->getId());
 
-        $dateJour = (new \DateTime())->format('d/m/Y');
+        $dateJour = (new DateTime());
 
         if (
             ($sortieBdd->getEtat()->getLibelle() === Sortie::ETAT_CREEE || $sortieBdd->getEtat()->getLibelle() === Sortie::ETAT_OUVERTE)
-            && ($sortieBdd->getDateDebut()->format('d/m/Y') > $dateJour)
-            && ($sortieBdd->getDateCloture()->format('d/m/Y') > $dateJour)
+            && ($sortieBdd->getDateDebut() > $dateJour)
+            && ($sortieBdd->getDateCloture() > $dateJour)
             && $sortieBdd->getNbInscriptionsMax() > count($sortieBdd->getParticipants())
         ) {
             $utilisateurBdd->addSortie($sortieBdd);
@@ -48,7 +49,7 @@ class SortieService
 
         if (
             ($sortieBdd->getEtat()->getLibelle() === Sortie::ETAT_CREEE || $sortieBdd->getEtat()->getLibelle() === Sortie::ETAT_OUVERTE)
-            && ($sortieBdd->getDateDebut()->format('d/m/Y') >  (new \DateTime())->format('d/m/Y')))
+            && ($sortieBdd->getDateDebut()->format('d/m/Y') >  (new DateTime())->format('d/m/Y')))
         {
             $utilisateurBdd->removeSortie($sortieBdd);
             $this->em->flush();
