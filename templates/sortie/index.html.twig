@@ -7,9 +7,10 @@
 
     <div class="row">
         <div class="col-sm d-flex justify-content-center">
-            <table id="table_id" class="display">
+            <table id="table_id" class="display table table-striped">
                 <thead>
                     <tr>
+                        <th class="invisible">Id</th>
                         <th>Nom</th>
                         <th>Date début</th>
                         <th>Date clôture</th>
@@ -19,11 +20,25 @@
                         <th>Organisateur</th>
                         <th>Action</th>
                     </tr>
-                
                 </thead>
+                <tfoot>
+
+                <tr id="research">
+                    <th class="invisible">Id</th>
+                    <th>Nom</th>
+                    <th>Date début</th>
+                    <th>Date clôture</th>
+                    <th>Nombre inscrit/nombre max</th>
+                    <th>Etat sortie</th>
+                    <th>Inscrit</th>
+                    <th>Organisateur</th>
+                    <th>Action</th>
+                </tr>
+                </tfoot>
                 <tbody>
                     {% for sortie in lesSorties %}
                     <tr>
+                        <td class="invisible">{{ sortie.id }}</td>
                         <td>{{sortie.nom}}</td>
                         <td>{{sortie.dateDebut|date("d/m/Y")}}</td>
                         <td>{{sortie.dateCloture|date("d/m/Y")}}</td>
@@ -55,18 +70,6 @@
                     {% endfor %}
 
                 </tbody>
-                <tfoot>
-                    <tr id="research">
-                        <th>Nom</th>
-                        <th>Date début</th>
-                        <th>Date clôture</th>
-                        <th>Nombre inscrit/nombre max</th>
-                        <th>Etat sortie</th>
-                        <th>Inscrit</th>
-                        <th>Organisateur</th>
-                        <th>Action</th>
-                    </tr>
-                </tfoot>
             </table>
         </div>
     </div>
@@ -79,7 +82,7 @@ $(document).ready(function() {
         var title = $(this).text();
         $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
     } );
- 
+
     // DataTable
     var table = $('#table_id').DataTable({
         initComplete: function () {
@@ -120,7 +123,30 @@ $(document).ready(function() {
     });
 
     $('#TableauRapport').DataTable().columns.adjust().draw();
-} );
+
+    $('#table_id').on('click', 'tr' , function (){
+        let id = this.id;
+
+        if ((id !== null || true) && !isNaN(id)) {
+            id = parseInt(id);
+
+            if (Number.isInteger(id)) {
+                window.location = '/sortie/' + id;
+            }
+        }
+    });
+
+    $("#table_id tr ").hover(
+        function() {
+            if ($(this).hasClass('odd') || $(this).hasClass('even')) {
+                $(this).css("color", 'red');
+            }
+
+        }, function() {
+            $(this).css("color", 'black');
+        }
+    );
+});
  </script>  
  
       

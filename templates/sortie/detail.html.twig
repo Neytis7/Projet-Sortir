@@ -25,5 +25,7 @@
         <li><a href="{{path(routeAfficherProfil, {'id':participant.id}) }}">{{ participant.nom }} alias {{ participant.pseudo }}</a></li>
     </ul>
     {% endfor %}
-    <a type="button" class="btn btn-primary" href="{{path(routeSortie)}}">Annuler</a>
+    <a type="button" class="btn btn-info" href="{{path(routeSortie)}}">retour</a>
+
+    <a type="button" class="btn btn-danger" href="{{path(constant('App\\Controller\\SortieController::ROUTE_MODIFIED_SORTIE'), {'id':sortie.id}) }}">Modifier</a>
 {% endblock %}
