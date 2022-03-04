@@ -232,8 +232,6 @@ class SortieController extends AbstractController
     #[Route('/desinscription/sortie/{id}', name: self::ROUTE_DESINSCRIPTION_SORTIE, requirements: ['id'=>'\d+'])]
     public function inscriptionDesinscriptionSortie(?UserInterface $userCourant, Request $request): Response
     {
-
-
         /** @var Participant $userCourant */
         if (is_null($userCourant)) {
             throw new AccessDeniedException('Veuillez vous connecter pour vous inscrire à une activité !');
