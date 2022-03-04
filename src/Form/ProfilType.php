@@ -161,7 +161,13 @@ class ProfilType extends AbstractType
                             'image/jpg',
                             'image/png',
                             'image/gif',
-                            'image/webp'
+                            'image/webp',
+                            'image/jpeg',
+                            'image/JPG',
+                            'image/PNG',
+                            'image/GIF',
+                            'image/WEBP',
+                            'image/JPEG',
                         ],
                         'mimeTypesMessage' => 'Vueillez choisir une photo valide',
                     ])
