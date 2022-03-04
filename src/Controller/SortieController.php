@@ -217,7 +217,11 @@ class SortieController extends AbstractController
      
         return $this->render('sortie/index.html.twig', [
             'lesSorties' => $lesSorties,
-            'idUserCourant'=>$idUserCourant
+            'idUserCourant'=>$idUserCourant,
+            'sortieOrgan'=>$sortieOrgan,
+            'sortieNonInscit'=>$sortieNonInscit,
+            'sortiePasse'=>$sortiePasse,
+            'sortieInscit'=>$sortieInscit
         ]);
     }
 

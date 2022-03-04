@@ -7,24 +7,44 @@
 {% block subtitle %}Filtrer les sorties{% endblock %}
 
 {% block body %}
+ {# 'sortieOrgan'=>$sortieOrgan,
+            'sortieNonInscit'=>$sortieNonInscit,
+            'sortiePasse'=>$sortiePasse,
+            'sortieInscit'=>$sortieInscit #}
 
     <form method="post" action="{{path(constant('App\\Controller\\SortieController::ROUTE_SORTIE_RECHERCHER'))}}">
         <div class="row mt-3">
             <div class="col-4">
                 <div>
-                    <input type="checkbox" name="sortieOrgan" id="sortieOrgan">
+                    <input type="checkbox" name="sortieOrgan" id="sortieOrgan"           
+                    {% if sortieOrgan is defined and sortieOrgan is not null %}
+                        checked
+                    {% endif %}
+                    >
                     <label for="sortieOrgan">Sorties dont je suis l'organisateur/trice</label>
                 </div>
                 <div>
-                    <input type="checkbox" name="sortieInscit" id="sortieInscit">
+                    <input type="checkbox" name="sortieInscit" id="sortieInscit"
+                    {% if sortieInscit is defined and sortieInscit is not null %}
+                        checked
+                    {% endif %}
+                    >
                     <label for="sortieInscit">Sorties auxquelles je suis inscrit/e</label>
                 </div>
                 <div>
-                    <input type="checkbox" name="sortieNonInscit" id="sortieNonInscit">
+                    <input type="checkbox" name="sortieNonInscit" id="sortieNonInscit"
+                    {% if sortieNonInscit is defined and sortieNonInscit is not null %}
+                        checked
+                    {% endif %}
+                    >
                     <label for="sortieNonInscit">Sorties auxquelles je ne suis pas inscrit/e</label>
                 </div>
                 <div>
-                    <input type="checkbox" name="sortiePasse" id="sortiePasse">
+                    <input type="checkbox" name="sortiePasse" id="sortiePasse"
+                    {% if sortiePasse is defined and sortiePasse is not null %}
+                        checked
+                    {% endif %}
+                    >
                     <label for="sortiePasse">Sorties passées</label>
                 </div>
 
@@ -102,6 +122,7 @@
             </table>
         </div>
     </div>
+
  <script>
 
 $(document).ready(function() {
@@ -156,12 +177,12 @@ $(document).ready(function() {
     $('#table_id').on('click', 'tr' , function (){
         let id = this.id;
 
-        const urlPageActuelle = self.location.href;
-
         if ((id !== null || true) && !isNaN(id)) {
             id = parseInt(id);
 
             if (Number.isInteger(id)) {
+                //location.href = `/sortie/${id}`;
+                urlPageActuelle=self.location.href;
                 location.href = `${urlPageActuelle}/${id}`;
             }
         }
