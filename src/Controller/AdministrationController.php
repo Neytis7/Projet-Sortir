@@ -56,43 +56,69 @@ class AdministrationController extends AbstractController
         $formAddUserWithCsv->handleRequest($request);
         if ($formAddUserWithCsv->isSubmitted() && $formAddUserWithCsv->isValid()){
             $data = $formAddUserWithCsv->getData();
-            $msg = "Ajout d'utilisateur :";
+            $userMsg = "Ajout d'utilisateur :";
+            $siteMsg = "";
+            $errMsg = "";
+            $line = 0;
             //Lecture fichier
             $isFirst = true;
             if (($fp = fopen($data['file'], "r")) !== FALSE) 
             {
                 while (($row = fgetcsv($fp, 1000, ",")) !== FALSE) 
                 {
+                    $line++;
                     if($isFirst){
                         $isFirst = false;
                     } else {
-                        //dd($row);
-                        $user = new Participant();
-                        $user->setPseudo($row['0']);
-                        $user->setNom($row['1']);
-                        $user->setPrenom($row['2']);
-                        $user->setTelephone($row['3']);
-                        $user->setMail($row['4']);
+                        try{
+                            //dd($row);
+                            $user = new Participant();
+                            $user->setPseudo($row['0']);
+                            $user->setNom($row['1']);
+                            $user->setPrenom($row['2']);
+                            $user->setTelephone($row['3']);
+                            $user->setMail($row['4']);
 
-                        $user->setMotDePasse(
-                            $pwdHasher->hashPassword($user,$row['5'])
-                        );
+                            $user->setMotDePasse(
+                                $pwdHasher->hashPassword($user,$row['5'])
+                            );
 
-                        $user->setAdministrateur($row['6']);
-                        $user->setActif($row['7']);
+                            $user->setAdministrateur($row['6']);
+                            $user->setActif($row['7']);
 
-                        $site = $this->em->getRepository(Site::class)->find($row['8']);
-                        $user->setSite($site);
+                            $site = $this->em->getRepository(Site::class)->findOneBy(['nom' => $row['8']]);
 
-                        $this->em->persist($user);
-                        $this->em->flush();
-                        $msg.=" ".strval($user->getId());
+                            if($site == null){
+                                $site = new Site();
+                                $site->setNom($row['8']);
+                                $this->em->persist($site);
+                                $this->em->flush();
+                                $siteMsg.=" ".strval($site->getId());
+                            }
+                            $user->setSite($site);
+
+                            $this->em->persist($user);
+                            $this->em->flush();
+                            $userMsg.=" ".strval($user->getId());
+                        }
+                        catch(\Exception $e){
+                            
+                            $errMsg .= " erreur d'insertion sur la ligne ".strval($line);
+                            //error_log($e->getMessage());
+                        }
+                        
                     }
                 }
                 fclose($fp);
             }
             
-            $this->addFlash('success', $msg);
+            $this->addFlash('success', $userMsg);
+            if($errMsg !== null && $errMsg !== ""){
+                $this->addFlash('error', $errMsg);
+            }
+            if($siteMsg !== null && $siteMsg !== ""){
+                $this->addFlash('success', "Ajout de site :".$siteMsg);
+            }
         }
 
         $sites = $this->em->getRepository(Site::class)->findAll();
