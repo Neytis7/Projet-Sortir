@@ -39,7 +39,7 @@ class AdministrationController extends AbstractController
 
     #[Route('/admin', name: self::ROUTE_ADMIN)]
 
-    public function index(?UserInterface $userCourant, Request $request, EntityManagerInterface $em , UserPasswordHasherInterface $pwdHasher, ParticipantRepository $participantsRepository ): Response
+    public function index(?UserInterface $userCourant, Request $request, UserPasswordHasherInterface $pwdHasher, ParticipantRepository $participantsRepository ): Response
     {
         /** @var Participant $userCourant */
         if (is_null($userCourant)) {
@@ -61,11 +61,12 @@ class AdministrationController extends AbstractController
             $isFirst = true;
             if (($fp = fopen($data['file'], "r")) !== FALSE) 
             {
-                while (($row = fgetcsv($fp, 1000, ";")) !== FALSE) 
+                while (($row = fgetcsv($fp, 1000, ",")) !== FALSE) 
                 {
                     if($isFirst){
                         $isFirst = false;
                     } else {
+                        //dd($row);
                         $user = new Participant();
                         $user->setPseudo($row['0']);
                         $user->setNom($row['1']);
@@ -83,13 +84,14 @@ class AdministrationController extends AbstractController
                         $site = $this->em->getRepository(Site::class)->find($row['8']);
                         $user->setSite($site);
 
-                        $em->persist($user);
+                        $this->em->persist($user);
+                        $this->em->flush();
                         $msg.=" ".strval($user->getId());
                     }
                 }
                 fclose($fp);
             }
-            $em->flush();
+            
             $this->addFlash('success', $msg);
         }
 
@@ -111,8 +113,8 @@ class AdministrationController extends AbstractController
                 )
             );
 
-            $em->persist($user);
-            $em->flush();
+            $this->em->persist($user);
+            $this->em->flush();
             // ajout d'un message flash
             $userName = $user->getNom();
             $this->addFlash('success', "L'utilisateur $userName a été ajouté");
@@ -130,15 +132,15 @@ class AdministrationController extends AbstractController
     }
 
     #[Route('/admin/changeActif/{id}', name: self::ROUTE_ADMIN_USER_ACTIF)]
-    public function changeActifUser(EntityManagerInterface $em, int $id = 0): Response
+    public function changeActifUser(int $id = 0): Response
     {
         /* $this->checkRole(); */
 
         if($id != 0){
-            $user = $em->getRepository(Participants::class)->find($id);
+            $user = $this->em->getRepository(Participant::class)->find($id);
             $user->setActif(!$user->getActif());
-            $em->persist($user);
-            $em->flush();
+            $this->em->persist($user);
+            $this->em->flush();
 
             $msgStatus = "inactif";
             if($user->getActif()){
@@ -146,21 +148,21 @@ class AdministrationController extends AbstractController
             }
 
             //dd($user);
-            $this->addFlash('success', "L'utilisateur ".$user->getNoParticipant()." est désormais ".$msgStatus);
+            $this->addFlash('success', "L'utilisateur ".$user->getId()." est désormais ".$msgStatus);
         }
         
         return $this->redirectToRoute(self::ROUTE_ADMIN);
     }
 
     #[Route('/admin/deleteUser/{id}', name: self::ROUTE_ADMIN_USER_DELETE)]
-    public function deleteUser(EntityManagerInterface $em, int $id = 0): Response
+    public function deleteUser(int $id = 0): Response
     {
         /* $this->checkRole(); */
 
         if($id != 0){
-            $user = $em->getRepository(Participants::class)->find($id);
-            $em->remove($user);
-            $em->flush();
+            $user = $this->em->getRepository(Participant::class)->find($id);
+            $this->em->remove($user);
+            $this->em->flush();
 
             $this->addFlash('success', "L'utilisateur ".$id." a été supprimé ");
         }

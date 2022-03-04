@@ -38,7 +38,7 @@
     <h4 class="text-center">Modification actif / suppression d'utilisateur</h4>
         <select name="select-user" id="select-user">
         {% for user in allUsers %}
-            <option value="{{ user.noParticipant }}" {% if user.actif == false %} class="text-danger" {% endif %}> {{ user.pseudo }} </option>            
+            <option value="{{ user.id }}" {% if user.actif == false %} class="text-danger" {% endif %}> {{ user.pseudo }} </option>            
         {% endfor %}
         </select>
         <br>
