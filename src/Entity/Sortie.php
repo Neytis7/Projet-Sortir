@@ -82,11 +82,11 @@ class Sortie
     private ?string $descriptionInfos;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="url_photo", type="string", length=250, nullable=true)
      */
-    private string $urlPhoto;
+    private ?string $urlPhoto = null;
 
     /**
      * @var Etat
@@ -366,9 +366,9 @@ class Sortie
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getUrlphoto(): string
+    public function getUrlphoto(): ?string
     {
         return $this->urlPhoto;
     }

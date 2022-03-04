@@ -7,7 +7,8 @@
 {% block title %}Detail d'une sortie{% endblock %}
 
 {% block body %}
-    <h1>Detail d'une sortie</h1>
+    <h1 class="display-1 text-center">Detail de la sortie</h1>
+    <img  src="{{ asset('uploads/profilePics/'~sortie.urlPhoto) }}" alt=""  style="width: 100px; height: auto"/>
     <p>Nom de la sortie : {{ sortie.nom }}</p>
     <p>Date et heure de la sortie : {{ sortie.dateDebut|date("d/m/Y h:i:s") }}</p>
     <p>Date limite d'inscription : {{ sortie.dateCloture|date("d/m/Y h:i:s") }}</p>

@@ -8,6 +8,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -80,6 +81,29 @@ class SortieType extends AbstractType implements EventSubscriberInterface
                     new Assert\NotBlank([
                         'message' => 'Il faut obligatoirement un lieu'
                     ]),
+                ],
+            ]);
+            $builder->add('image',FileType::class,[
+                'label' => 'Ajouter une photo',
+                'mapped' => false,
+                'required' => false,
+                'constraints' => [
+                    new Assert\File([
+                        'maxSize' => '10000k',
+                        'mimeTypes' => [
+                            'image/jpg',
+                            'image/png',
+                            'image/gif',
+                            'image/webp',
+                            'image/jpeg',
+                            'image/JPG',
+                            'image/PNG',
+                            'image/GIF',
+                            'image/WEBP',
+                            'image/JPEG',
+                        ],
+                        'mimeTypesMessage' => 'Vueillez choisir une photo valide',
+                    ])
                 ],
             ])
             ->addEventSubscriber($this)

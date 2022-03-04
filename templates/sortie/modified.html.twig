@@ -6,7 +6,8 @@
 {% block title %}Modifier une sortie{% endblock %}
 
 {% block body %}
-    <h1>Modifier la sortie</h1>
+    <h1 class="display-1 text-center">Modifier la sortie</h1>
+    <img  src="{{ asset('uploads/profilePics/'~sortie.urlPhoto) }}" alt=""  style="width: 100px; height: auto"/>
     {{ form_start(sortieForm) }}
     {{ form_widget(sortieForm) }}
     <br>

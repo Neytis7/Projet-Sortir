@@ -17,12 +17,15 @@ use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use App\Repository\SortieRepository;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 
 /**
@@ -52,15 +55,19 @@ class SortieController extends AbstractController
      */
     private SortieService $serviceSortie;
 
+    private SluggerInterface $slugger;
+
     /**
      * @param EntityManagerInterface $em
      */
     public function __construct(
         EntityManagerInterface $em,
-        SortieService $serviceSortie
+        SortieService $serviceSortie,
+        SluggerInterface $slugger
     ) {
         $this->em = $em;
         $this->serviceSortie = $serviceSortie;
+        $this->slugger = $slugger;
     }
 
     #[Route('/sortie/add', name: self::ROUTE_CREER_SORTIE)]
@@ -85,6 +92,8 @@ class SortieController extends AbstractController
             $etat = $etatsRepository->findOneBy([
                 'libelle' => 'Créée'
             ]);
+
+            $this->extracted($form, $sortie);
 
             $sortie->setEtat($etat);
             $participant->addSortie($sortie);
@@ -130,6 +139,8 @@ class SortieController extends AbstractController
 
             // Check si le formulaire est valide et envoyé
             if ($form->isSubmitted() && $form->isValid()) {
+
+                $this->extracted($form, $sortie);
 
                 $entityManager->persist($sortie);
                 $entityManager->flush();
@@ -269,5 +280,29 @@ class SortieController extends AbstractController
         $this->addFlash($type, $message);
 
         return $this->redirectToRoute(self::ROUTE_SORTIE);
+    }
+
+    /**
+     * @param FormInterface $form
+     * @param Sortie $sortie
+     * @return void
+     */
+    public function extracted(FormInterface $form, Sortie $sortie): void
+    {
+        $imageSortie = $form->get('image')->getData();
+
+        if ($imageSortie) {
+            $OriFilename = pathinfo($imageSortie->getClientOriginalName(), PATHINFO_FILENAME);
+            $safeFilename = $this->slugger->slug($OriFilename);
+            $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageSortie->guessExtension();
+            try {
+                $imageSortie->move(
+                    $this->getParameter('profile_directory'),
+                    $newFilename
+                );
+            } catch (FileException $e) {
+            }
+            $sortie->setUrlphoto($newFilename);
+        }
     }
 }
