@@ -58,7 +58,7 @@
                         <td><a href="{{path('afficherProfile', {'id':sortie.organisateur.id}) }}">{{sortie.organisateur.prenom}}</a></td>
                         <td>
                             <a href="{{ path(routeDetail, {'id':sortie.id}) }}">
-                                <input type="button" class="btn btn-info" value="Detail">
+                                <input type="button" class="btn btn-secondary" value="Detail">
                             </a>
                             {% if (inscrit == 'X') %}
                                 <a href="{{ path(constant('App\\Controller\\SortieController::ROUTE_DESINSCRIPTION_SORTIE'), {'id':sortie.id}) }}">
@@ -69,12 +69,6 @@
                                     <input type="button" class="btn btn-primary" value="s'inscrire">
                                 </a>
                             {% endif %}
-                            {% if (sortie.organisateur.id == idUserCourant) %}
-                            <a href="{{ path(routeModified, {'id':sortie.id}) }}">
-                                <input type="button" class="btn btn-warning" value="Modifier">
-                            </a>
-                            {% endif %}
-
 
                         </td>
                     </tr> 

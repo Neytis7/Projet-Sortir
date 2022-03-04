@@ -92,14 +92,16 @@ class SortieController extends AbstractController
     }
 
     #[Route('/sortie/{id}', name: self::ROUTE_DETAIL_SORTIE,requirements: ['id'=>'\d+'])]
-    public function detail($id, SortieRepository $SortiesRepository): Response
+    public function detail($id, SortieRepository $SortiesRepository,?UserInterface $userCourant): Response
     {
+        /** @var Participant $userCourant */
         $sortie = $SortiesRepository->find($id);
+        $idUserCourant = $userCourant->getId();
         if(!$sortie){
             throw new NotFoundHttpException("This sortie doesn't exist");
         }
         return $this->render('sortie/detail.html.twig',
-            compact("id",'sortie'));
+            compact("id",'sortie','idUserCourant'));
     }
 
     #[Route('/sortie/modified/{id}', name: self::ROUTE_MODIFIED_SORTIE,requirements: ['id'=>'\d+'])]
