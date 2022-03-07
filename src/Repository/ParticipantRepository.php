@@ -4,9 +4,11 @@ namespace App\Repository;
 
 use App\Entity\Participant;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -22,7 +24,7 @@ class ParticipantRepository extends ServiceEntityRepository implements UserLoade
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Participant::class);
+        parent::__construct($registry, Participant::class, EntityManager::class);
     }
 
     public function add(Participant $entity, bool $flush = true): void
@@ -57,6 +59,25 @@ class ParticipantRepository extends ServiceEntityRepository implements UserLoade
 
         return $qb->getQuery()->getOneOrNullResult();
     }
+
+    /*public function findNonInscrit($idSortie): ?Participant
+    {
+        $rsm = new ResultSetMapping();
+
+        $query =
+
+        $conn = $this->getEntityManager()
+            ->getConnection();
+
+        $res = 'SELECT * FROM participant 
+WHERE id NOT IN (SELECT participant_id  FROM participant_sortie where sortie_id = :idSortie)';
+        $stmt = $conn->prepare($res);
+;
+        $stmt->executeQuery(array('idSortie' => $idSortie));
+
+        return $stmt->;
+
+    }*/
 
     public function loadUserByUsername(string $username): ?UserInterface
     {

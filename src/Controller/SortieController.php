@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+
+
 use App\Entity\Etat;
 use App\Entity\Participant;
 use App\Form\RechercheSortieType;
@@ -14,7 +16,12 @@ use DateTime;
 use DateTimeZone;
 use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query\ResultSetMapping;
+use Joli\JoliNotif\Notification;
+use Joli\JoliNotif\Notifier\NullNotifier;
+use Joli\JoliNotif\NotifierFactory;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\Form\FormInterface;
@@ -22,10 +29,18 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\MailerInterface;
+
+use Symfony\Component\Mercure\Hub;
+use Symfony\Component\Mercure\HubInterface;
+use Symfony\Component\Mercure\Update;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use App\Repository\SortieRepository;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 
 /**
@@ -44,6 +59,8 @@ class SortieController extends AbstractController
     const ROUTE_INSCRIPTION_SORTIE = "inscription_sortie";
     const ROUTE_DESINSCRIPTION_SORTIE = "desinscription_sortie";
     const ROUTE_SORTIE_RECHERCHER = "sortieRechercher";
+    const ROUTE_SORTIE_INVITE = "sortieInvite";
+
 
     /**
      * @var EntityManagerInterface
@@ -54,6 +71,8 @@ class SortieController extends AbstractController
      * @var SortieService
      */
     private SortieService $serviceSortie;
+    private $entityManager;
+    private Sortie $sortie;
 
     private SluggerInterface $slugger;
 
@@ -93,6 +112,8 @@ class SortieController extends AbstractController
                 'libelle' => 'Créée'
             ]);
 
+
+            $sortie->setPrive(boolval($form->getData('prive')));
             $this->extracted($form, $sortie);
 
             $sortie->setEtat($etat);
@@ -109,18 +130,88 @@ class SortieController extends AbstractController
         return $this->render('sortie/add.html.twig',compact('sortieForm'));
     }
 
+
+    /**
+     * @param MailerInterface $mailer
+     * @param SortieRepository $SortiesRepository
+     * @param UserInterface|null $userCourant
+     * @return RedirectResponse
+     * @throws TransportExceptionInterface
+     */
+    #[Route('/sortie/invite/{id}', name: self::ROUTE_SORTIE_INVITE)]
+    public function invite($id, MailerInterface $mailer,Sortie $sortie, SortieRepository $SortiesRepository,?UserInterface $userCourant): Response
+    {
+        $participant = $this->em->getRepository(Participant::class)->find($id);
+        /** @var Participant $userCourant */
+        $this->sortie = $sortie;
+        $idSortie = $sortie->getId();
+        if ($participant !== null){
+
+            $email = (new TemplatedEmail())
+                ->from(Address::create('Bobby de Sortie.com <projet.sortieeninantes@gmail.com>'))
+                ->to($participant->getMail())
+                ->subject('Vous avez reçu une invitation à une sortie ')
+                ->htmlTemplate('sortie/mail.html.twig')
+                ->context([
+                    'idSortie' => $idSortie,
+                ]);
+
+            $mailer->send($email);
+
+            $notifier = NotifierFactory::create();
+
+            if (!($notifier instanceof NullNotifier)) {
+                $notification =
+                    (new Notification())
+                        ->setTitle('Invitation envoyée')
+                        ->setBody('L\'invitation à correctement été envoyée par mail à '.$participant->getPseudo())
+                        ->setIcon(__DIR__.'/icon-success.png')
+                ;
+                $result = $notifier->send($notification);
+
+                echo 'Notification ', $result ? 'successfully sent' : 'failed', ' with ', get_class($notifier), \PHP_EOL;
+            } else {
+                echo 'No supported notifier', \PHP_EOL;}
+
+
+        }
+
+
+            return $this->redirectToRoute('sortie_detail',array('id' => $idSortie));
+    }
+
     #[Route('/sortie/{id}', name: self::ROUTE_DETAIL_SORTIE,requirements: ['id'=>'\d+'])]
     public function detail($id, SortieRepository $SortiesRepository,?UserInterface $userCourant): Response
     {
         /** @var Participant $userCourant */
         $sortie = $SortiesRepository->find($id);
         $idUserCourant = $userCourant->getId();
+
+        $rsm = new ResultSetMapping();
+        $rsm->addEntityResult(Participant::class,'participant');
+        $rsm->addFieldResult('participant', 'id', 'id');
+
+        $rsm->addFieldResult('participant', 'pseudo', 'pseudo');
+        $rsm->addFieldResult('participant', 'nom', 'nom');
+        $rsm->addFieldResult('participant', 'prenom', 'prenom');
+
+
+        $query = $this->em->createNativeQuery('SELECT participant.id, pseudo,nom,prenom FROM participant WHERE id NOT IN (SELECT participant_id FROM participant_sortie
+                                           left join participant on participant.id = participant_id
+                                           where sortie_id = ?)
+', $rsm);
+
+        $query->setParameter(1, $id);
+        $nonInscrit = $query->getResult();
+
+
         if(!$sortie){
             throw new NotFoundHttpException("This sortie doesn't exist");
         }
         return $this->render('sortie/detail.html.twig',
-            compact("id",'sortie','idUserCourant'));
+            compact("id",'sortie','idUserCourant','nonInscrit'));
     }
+
 
     #[Route('/sortie/modified/{id}', name: self::ROUTE_MODIFIED_SORTIE,requirements: ['id'=>'\d+'])]
     public function modified($id, SortieRepository $SortiesRepository, Request $request, EntityManagerInterface $entityManager): Response
@@ -209,6 +300,7 @@ class SortieController extends AbstractController
             'idUserCourant'=>$userCourant->getId(),
         ]);
     }
+
 
     #[Route('/sortieRecherche', name: self::ROUTE_SORTIE_RECHERCHER)]
     public function indexRecherche(?UserInterface $userCourant, Request $request, SortieRepository $SortiesRepository): Response

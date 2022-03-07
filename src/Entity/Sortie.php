@@ -124,6 +124,15 @@ class Sortie
      */
     private $participants;
 
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="prive", type="boolean", nullable=false)
+     */
+    private bool $prive;
+
+
     /**
      * Constructor
      */
@@ -380,4 +389,29 @@ class Sortie
     {
         $this->urlPhoto = $urlPhoto;
     }
+
+    /**
+     * @return bool
+     */
+    public function isPrive(): bool
+    {
+        return $this->prive;
+    }
+
+    /**
+     * @param bool $prive
+     * @return Sortie
+     */
+    public function setPrive(bool $Prive): Sortie
+    {
+        $this->prive = $Prive;
+
+        return $this;
+    }
+
+    public function getPrive(): ?bool
+    {
+        return $this->prive;
+    }
+
 }

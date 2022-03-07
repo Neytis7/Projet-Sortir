@@ -7,6 +7,7 @@ use DateTime;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Exception\TransformationFailedException;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -105,6 +106,13 @@ class SortieType extends AbstractType implements EventSubscriberInterface
                         'mimeTypesMessage' => 'Vueillez choisir une photo valide',
                     ])
                 ],
+            ])
+            ->add('prive', ChoiceType::class,[
+                'required' => true,
+                'choices' => [
+                    'Publique' => false,
+                    'Privé'    => true,
+                ]
             ])
             ->addEventSubscriber($this)
         ;

@@ -3,6 +3,7 @@
 {% set routeSortie = constant('App\\Controller\\SortieController::ROUTE_SORTIE') %}
 {% set routeAfficherProfil = constant('App\\Controller\\ProfilController::ROUTE_AFFICHER_PROFIL') %}
 {% set routeSortie = constant('App\\Controller\\SortieController::ROUTE_SORTIE') %}
+{% set routeInvite = constant('App\\Controller\\SortieController::ROUTE_SORTIE_INVITE') %}
 
 {% block title %}Detail d'une sortie{% endblock %}
 
@@ -24,9 +25,43 @@
     <h2>Liste des participants inscrits</h2>
     {% for participant in sortie.participants %}
     <ul>
-        <li><a href="{{path(routeAfficherProfil, {'id':participant.id}) }}">{{ participant.nom }} alias {{ participant.pseudo }}</a></li>
+        <li>
+            <a href="{{path(routeAfficherProfil, {'id':participant.id}) }}">{{ participant.nom }} alias {{ participant.pseudo }}</a>
+        </li>
+
     </ul>
     {% endfor %}
+
+    <h2>Inviter un utilisateur</h2>
+    {% for utilisateur in nonInscrit %}
+        <ul>
+            <li>
+                <a href="{{path(routeAfficherProfil, {'id':utilisateur.id}) }}">{{ utilisateur.nom }} alias {{ utilisateur.pseudo }}</a>
+                <a class="btn btn-primary" href="{{ path(routeInvite, {'id':utilisateur.id}) }}">envoyer mail</a>
+            </li>
+
+        </ul>
+    {% endfor %}
+    {% set inscrit = "" %}
+    {% for participant in sortie.participants %}
+        {% if participant.id == idUserCourant %}
+            {% set inscrit = 'X' %}
+        {% endif %}
+    {% endfor %}
+
+    {% if (inscrit == 'X') %}
+        {% if sortie.etat.libelle not in ['Annulée','Archivée','Terminée','Cloturée'] %}
+            <a href="{{ path(constant('App\\Controller\\SortieController::ROUTE_DESINSCRIPTION_SORTIE'), {'id':sortie.id}) }}">
+                <input type="button" class="btn btn-danger" value="se désinscrire">
+            </a>
+        {% endif%}
+    {% else %}
+        {% if sortie.etat.libelle not in ['Annulée','Archivée','Terminée','Cloturée'] %}
+            <a href="{{ path(constant('App\\Controller\\SortieController::ROUTE_INSCRIPTION_SORTIE'), {'id':sortie.id}) }}">
+                <input type="button" class="btn btn-primary" value="s'inscrire">
+            </a>
+        {% endif%}
+    {% endif %}
     <a type="button" class="btn btn-primary" href="{{path(routeSortie)}}">retour</a>
     {% if sortie.organisateur.id == idUserCourant %}
     <a type="button" class="btn btn-danger" href="{{path(constant('App\\Controller\\SortieController::ROUTE_MODIFIED_SORTIE'), {'id':sortie.id}) }}">Modifier</a>
