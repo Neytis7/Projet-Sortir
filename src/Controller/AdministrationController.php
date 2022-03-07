@@ -93,6 +93,14 @@ class AdministrationController extends AbstractController
                             );
 
                             $user->setAdministrateur($row['6']);
+
+                            if($row['6'] == "1"){
+                                $user->setRoles(array("ROLE_ADMIN"));
+                            }
+                            else {
+                                $user->setRoles(array("ROLE_USER"));
+                            }
+                                
                             $user->setActif($row['7']);
 
                             $site = $this->em->getRepository(Site::class)->findOneBy(['nom' => $row['8']]);
@@ -105,7 +113,7 @@ class AdministrationController extends AbstractController
                                 $siteMsg.=" ".strval($site->getId());
                             }
                             $user->setSite($site);
-
+                            
                             $this->em->persist($user);
                             $this->em->flush();
                             $userMsg.=" ".strval($user->getId());
@@ -147,6 +155,13 @@ class AdministrationController extends AbstractController
                     $userFormBuilder->get('motDePasse')->getData()
                 )
             );
+
+            if($user->isAdministrateur()){
+                $user->setRoles(array("ROLE_ADMIN"));
+            }
+            else {
+                $user->setRoles(array("ROLE_USER"));
+            }
 
             $this->em->persist($user);
             $this->em->flush();
