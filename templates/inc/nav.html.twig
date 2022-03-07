@@ -1,3 +1,4 @@
+{% set img = app.request.cookies.get('profilImg') %}
 {% set route = app.request.get('_route') %}
 
 {% set routeSortie = constant('App\\Controller\\SortieController::ROUTE_SORTIE') %}
@@ -27,7 +28,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <div class="navbar-nav ms-auto">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">   
                     <li class="nav-item">
                         <i class="glyphicon glyphicon-log-out" style="color:red"></i>
                         {% if is_granted('ROLE_ADMIN') %}
@@ -66,25 +67,29 @@
                         </li>
                         <li class="nav-item">
                             <i class="glyphicon glyphicon-log-out" style="color:red"></i>
-                                <a class="nav-link
-                                {% if route == routeCreerSortie%}
-                                    active
-                                {% endif %}"
-                                   aria-current="page"
-                                   href="{{ path(routeCreerSortie) }}">
-                                    Créer une sortie
-                                </a>
+                            <a class="nav-link
+                            {% if route == routeCreerSortie%}
+                                active
+                            {% endif %}"
+                                aria-current="page"
+                                href="{{ path(routeCreerSortie) }}">
+                                Créer une sortie
+                            </a>
                         </li>
                         <li class="nav-item">
                             <i class="glyphicon glyphicon-log-out" style="color:red"></i>
-                                <a class="nav-link
-                                {% if route == routeLogout%}
-                                    active
-                                {% endif %}"
-                                   aria-current="page"
-                                   href="{{ path(routeLogout) }}">
-                                    Se déconnecter
-                                </a>
+                            <a class="nav-link
+                            {% if route == routeLogout%}
+                                active
+                            {% endif %}"
+                                aria-current="page"
+                                href="{{ path(routeLogout) }}">
+                                Se déconnecter 
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <img src="{{ asset('uploads/profilePics/'~img) }}"
+                            alt="photoProfil" style="width: 50px; height: auto" />
                         </li>
                     {% endif %}
                 </ul>

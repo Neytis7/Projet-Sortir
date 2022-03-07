@@ -31,6 +31,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\HttpFoundation\Cookie;
 
 use Symfony\Component\Mercure\Hub;
 use Symfony\Component\Mercure\HubInterface;
@@ -294,11 +295,21 @@ class SortieController extends AbstractController
 
         /** @var Participant $userCourant */
         $lesSorties = $SortiesRepository->findRecherche();
+        //dd($userCourant);
+
+        $response = new Response(
+            'Content',
+            Response::HTTP_OK,
+            ['content-type' => 'text/html']
+        );
+        //dd($userCourant->getPhoto());
+        $response->headers->setCookie(Cookie::create('profilImg', $userCourant->getPhoto()));
 
         return $this->render('sortie/index.html.twig', [
             'lesSorties' => $lesSorties,
             'idUserCourant'=>$userCourant->getId(),
-        ]);
+        ],
+        $response);
     }
 
 
