@@ -69,7 +69,7 @@ use Symfony\Component\Validator\Constraints\Json;
     /**
      * @var string
      *
-     * @ORM\Column(name="mail", type="string", length=50, nullable=false)
+     * @ORM\Column(name="mail", type="string", length=50, nullable=false, unique=true)
      */
     private string $mail;
 
