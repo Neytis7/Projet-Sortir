@@ -2,11 +2,14 @@
 
 namespace App\Repository;
 
+use App\Entity\Participant;
 use App\Entity\Sortie;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -17,9 +20,13 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class SortieRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+
+    private EntityManagerInterface $em;
+
+    public function __construct(ManagerRegistry $registry, EntityManagerInterface $em)
     {
         parent::__construct($registry, Sortie::class);
+       $this->em = $em;
     }
 
     public function findRecherche() {
@@ -46,6 +53,26 @@ class SortieRepository extends ServiceEntityRepository
             ->orderBy('sortie.id', 'DESC');
 
         return $qb->getQuery()->getResult();
+    }
+
+    public function findNonInscrit($idSortie){
+        
+
+        $rsm = new ResultSetMapping();
+        $rsm->addEntityResult(Participant::class,'participant');
+        $rsm->addFieldResult('participant', 'id', 'id');
+
+        $rsm->addFieldResult('participant', 'pseudo', 'pseudo');
+        $rsm->addFieldResult('participant', 'nom', 'nom');
+        $rsm->addFieldResult('participant', 'prenom', 'prenom');
+
+        $query = $this->em->createNativeQuery('SELECT participant.id, pseudo,nom,prenom FROM participant WHERE id NOT IN (SELECT participant_id FROM participant_sortie
+                                           left join participant on participant.id = participant_id
+                                           where sortie_id = ?)
+        ', $rsm);
+
+        $query->setParameter(1, $idSortie);
+        return $query->getResult();
     }
 
     public function findRechercheCheckBox($sortieOrgan,$sortieInscit,$sortieNonInscit,$sortiePasse, $idUserCourant) {

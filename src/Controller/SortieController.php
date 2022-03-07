@@ -188,22 +188,7 @@ class SortieController extends AbstractController
         $sortie = $SortiesRepository->find($id);
         $idUserCourant = $userCourant->getId();
 
-        $rsm = new ResultSetMapping();
-        $rsm->addEntityResult(Participant::class,'participant');
-        $rsm->addFieldResult('participant', 'id', 'id');
-
-        $rsm->addFieldResult('participant', 'pseudo', 'pseudo');
-        $rsm->addFieldResult('participant', 'nom', 'nom');
-        $rsm->addFieldResult('participant', 'prenom', 'prenom');
-
-
-        $query = $this->em->createNativeQuery('SELECT participant.id, pseudo,nom,prenom FROM participant WHERE id NOT IN (SELECT participant_id FROM participant_sortie
-                                           left join participant on participant.id = participant_id
-                                           where sortie_id = ?)
-', $rsm);
-
-        $query->setParameter(1, $id);
-        $nonInscrit = $query->getResult();
+        $nonInscrit = $SortiesRepository->findNonInscrit($id);
 
 
         if(!$sortie){
