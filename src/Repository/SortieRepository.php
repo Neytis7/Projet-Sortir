@@ -55,7 +55,7 @@ class SortieRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    public function findNonInscrit($idSortie){
+    public function findNonInscrit($idSortie, $userCourant){
 
 
         $rsm = new ResultSetMapping();
@@ -68,10 +68,11 @@ class SortieRepository extends ServiceEntityRepository
 
         $query = $this->em->createNativeQuery('SELECT participant.id, pseudo,nom,prenom FROM participant WHERE id NOT IN (SELECT participant_id FROM participant_sortie
                                            left join participant on participant.id = participant_id
-                                           where sortie_id = ?)
+                                           where sortie_id = ? ) and participant.id <> ?
         ', $rsm);
 
         $query->setParameter(1, $idSortie);
+        $query->setParameter(2, $userCourant);
         return $query->getResult();
     }
 

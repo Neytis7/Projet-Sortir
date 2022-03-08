@@ -197,7 +197,7 @@ class SortieController extends AbstractController
         /** @var Participant $userCourant */
         $sortie = $SortiesRepository->find($id);
         $idUserCourant = $userCourant->getId();
-        $nonInscrit = $SortiesRepository->findNonInscrit($id);
+        $nonInscrit = $SortiesRepository->findNonInscrit($id, $idUserCourant);
 
 
         if(!$sortie){
