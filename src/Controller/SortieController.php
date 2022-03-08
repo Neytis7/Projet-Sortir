@@ -2,11 +2,8 @@
 
 namespace App\Controller;
 
-
-
 use App\Entity\Etat;
 use App\Entity\Participant;
-use App\Form\RechercheSortieType;
 use App\Entity\Sortie;
 use App\Form\SortieAnnuleType;
 use App\Form\SortieType;
@@ -75,12 +72,7 @@ class SortieController extends AbstractController
      * @var SortieService
      */
     private SortieService $serviceSortie;
-<<<<<<< Updated upstream
-=======
 
-    private $entityManager;
-
->>>>>>> Stashed changes
     private Sortie $sortie;
 
     private SluggerInterface $slugger;
@@ -91,27 +83,25 @@ class SortieController extends AbstractController
     private RequestStack $requestStack;
 
     /**
-     * @param EntityManagerInterface $em
      * @param SortieService $serviceSortie
      * @param SluggerInterface $slugger
      * @param RequestStack $requestStack
      */
     public function __construct(
-        EntityManagerInterface $em,
         SortieService $serviceSortie,
         SluggerInterface $slugger,
-        RequestStack $requestStack
+        RequestStack $requestStack,
+        EntityManagerInterface $em
     ) {
-        $this->em = $em;
         $this->serviceSortie = $serviceSortie;
         $this->slugger = $slugger;
         $this->requestStack = $requestStack;
+        $this->em = $em;
     }
 
     #[Route('/sortie/add', name: self::ROUTE_CREER_SORTIE)]
     public function add(EntityManagerInterface $entityManager, EtatRepository $etatsRepository, Request $request)
     {
-
         // Creation de l'instance
         $sortie = new Sortie();
         /** @var Participant $participant */
@@ -291,8 +281,6 @@ class SortieController extends AbstractController
     #[Route('/sortie', name: self::ROUTE_SORTIE)]
     public function index(?UserInterface $userCourant, Request $request, SortieRepository $SortiesRepository, EtatRepository $etatsRepository,EntityManagerInterface $entityManager): Response
     {
-<<<<<<< Updated upstream
-
         /** @var Participant $userCourant */
         $lesSorties = $SortiesRepository->findRecherche();
 
@@ -314,7 +302,8 @@ class SortieController extends AbstractController
                $s->setEtat($etatsOuverte);
            }
 
-           if(count($s->getParticipants()) == $s->getNbInscriptionsMax() && $dateDebut > $dateJour && $s->getEtat()->getLibelle() != 'Annulée' || $dateJour>=$dateCloture && $s->getEtat()->getLibelle() != 'Annulée' && $s->getEtat()->getLibelle() != 'En cours'){
+           if(count($s->getParticipants()) == $s->getNbInscriptionsMax() && $dateDebut > $dateJour && $s->getEtat()->getLibelle() != 'Annulée'
+               || $dateJour>=$dateCloture && $s->getEtat()->getLibelle() != 'Annulée' && $s->getEtat()->getLibelle() != 'En cours'){
                $etatsCloturee = $etatsRepository->findOneBy([
                    'libelle' => 'Cloturée'
                ]);
@@ -348,16 +337,13 @@ class SortieController extends AbstractController
             ['content-type' => 'text/html']
         );
         $response->headers->setCookie(Cookie::create('profilImg', $userCourant->getPhoto()));
-=======
-        /** @var Participant $userCourant */
-        $lesSorties = $SortiesRepository->findRecherche();
 
         if (!is_null($userCourant->getPhoto())) {
             $session = $this->requestStack->getSession();
             $session->setId($session->getId());
             $session->set('photo', $userCourant->getPhoto());
+
         }
->>>>>>> Stashed changes
 
         return $this->render('sortie/index.html.twig', [
             'lesSorties' => $lesSorties,

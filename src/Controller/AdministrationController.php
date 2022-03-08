@@ -98,7 +98,7 @@ class AdministrationController extends AbstractController
                             $user->setActif($info['7']);
                             $site = $this->em->getRepository(Site::class)->findOneBy(['nom' => $info['8']]);
 
-                            if($site == null){
+                            if ($site == null) {
                                 $site = new Site();
                                 $site->setNom($info['8']);
                                 $this->em->persist($site);

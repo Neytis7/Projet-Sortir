@@ -50,6 +50,7 @@ class SortieService
         if ((
             $sortieBdd->getEtat()->getLibelle() === Sortie::ETAT_CREEE || $sortieBdd->getEtat()->getLibelle() === Sortie::ETAT_OUVERTE
             ) && ($sortieBdd->getDateDebut() >  (new DateTime()))
+            && $userCourant->getId() !== $sortie->getOrganisateur()->getId()
         ) {
             $utilisateurBdd->removeSortie($sortieBdd);
             $this->em->flush();
