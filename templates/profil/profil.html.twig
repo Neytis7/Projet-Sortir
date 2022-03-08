@@ -58,7 +58,7 @@
                      {{ form_errors(form.site) }}
                </div>
          </div>
-         <div class="form-group">
+         <div class="form-group mt-5">
                {{ form_label(form.image) }}
                {{ form_widget(form.image) }}
                <div class="form-error">
@@ -67,17 +67,17 @@
 
          </div>
          <div class="form-group">
-               {{ form_label(form.administrateur) }}
-               {{ form_widget(form.administrateur) }}
-               <div class="form-error">
-                     {{ form_errors(form.administrateur) }}
-               </div>
-         </div>
-         <div class="form-group">
                {{ form_label(form.actif) }}
                {{ form_widget(form.actif) }}
                <div class="form-error">
                      {{ form_errors(form.actif) }}
+               </div>
+         </div>
+         <div class="form-group">
+               {{ form_label(form.roles) }}
+               {{ form_widget(form.roles) }}
+               <div class="form-error">
+                     {{ form_errors(form.roles) }}
                </div>
          </div>
          <div class="d-flex justify-content-between mt-2">

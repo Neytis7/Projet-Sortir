@@ -83,13 +83,6 @@ use Symfony\Component\Validator\Constraints\Json;
     /**
      * @var bool
      *
-     * @ORM\Column(name="administrateur", type="boolean", nullable=false)
-     */
-    private bool $administrateur;
-
-    /**
-     * @var bool
-     *
      * @ORM\Column(name="actif", type="boolean", nullable=false)
      */
     private bool $actif;
@@ -265,25 +258,6 @@ use Symfony\Component\Validator\Constraints\Json;
     /**
      * @return bool
      */
-    public function isAdministrateur(): bool
-    {
-        return $this->administrateur;
-    }
-
-    /**
-     * @param bool $administrateur
-     * @return Participant
-     */
-    public function setAdministrateur(bool $administrateur): Participant
-    {
-        $this->administrateur = $administrateur;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
     public function isActif(): bool
     {
         return $this->actif;
@@ -374,8 +348,6 @@ use Symfony\Component\Validator\Constraints\Json;
          return $this->pseudo;
      }
 
-
-
      public function setRoles(array $roles): self
      {
          $this->roles = $roles;
@@ -391,14 +363,19 @@ use Symfony\Component\Validator\Constraints\Json;
          //$roles[] = 'ROLE_USER';
          return array_unique($roles);
      }
+
+     public  function hasRole(string $role) : bool
+     {
+         foreach ($this->roles as $unRole) {
+             if ($role === $unRole) {
+                 return true;
+             }
+         }
+         return false;
+     }
      public function getUserIdentifier(): String
      {
-         return (string) $this->pseudo;
-     }
-
-     public function getAdministrateur(): ?bool
-     {
-         return $this->administrateur;
+         return $this->pseudo;
      }
 
      public function addSorty(Sortie $sorty): self

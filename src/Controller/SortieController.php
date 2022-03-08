@@ -27,13 +27,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Cookie;
-
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Mercure\Hub;
 use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\Mercure\Update;
@@ -73,21 +75,37 @@ class SortieController extends AbstractController
      * @var SortieService
      */
     private SortieService $serviceSortie;
+<<<<<<< Updated upstream
+=======
+
+    private $entityManager;
+
+>>>>>>> Stashed changes
     private Sortie $sortie;
 
     private SluggerInterface $slugger;
 
     /**
+     * @var RequestStack
+     */
+    private RequestStack $requestStack;
+
+    /**
      * @param EntityManagerInterface $em
+     * @param SortieService $serviceSortie
+     * @param SluggerInterface $slugger
+     * @param RequestStack $requestStack
      */
     public function __construct(
         EntityManagerInterface $em,
         SortieService $serviceSortie,
-        SluggerInterface $slugger
+        SluggerInterface $slugger,
+        RequestStack $requestStack
     ) {
         $this->em = $em;
         $this->serviceSortie = $serviceSortie;
         $this->slugger = $slugger;
+        $this->requestStack = $requestStack;
     }
 
     #[Route('/sortie/add', name: self::ROUTE_CREER_SORTIE)]
@@ -133,7 +151,9 @@ class SortieController extends AbstractController
 
 
     /**
+     * @param $id
      * @param MailerInterface $mailer
+     * @param Sortie $sortie
      * @param SortieRepository $SortiesRepository
      * @param UserInterface|null $userCourant
      * @return RedirectResponse
@@ -202,7 +222,6 @@ class SortieController extends AbstractController
     #[Route('/sortie/modified/{id}', name: self::ROUTE_MODIFIED_SORTIE,requirements: ['id'=>'\d+'])]
     public function modified($id, SortieRepository $SortiesRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
-
         $sortie = $SortiesRepository->find($id);
 
         if(!$sortie){
@@ -272,6 +291,7 @@ class SortieController extends AbstractController
     #[Route('/sortie', name: self::ROUTE_SORTIE)]
     public function index(?UserInterface $userCourant, Request $request, SortieRepository $SortiesRepository, EtatRepository $etatsRepository,EntityManagerInterface $entityManager): Response
     {
+<<<<<<< Updated upstream
 
         /** @var Participant $userCourant */
         $lesSorties = $SortiesRepository->findRecherche();
@@ -328,12 +348,22 @@ class SortieController extends AbstractController
             ['content-type' => 'text/html']
         );
         $response->headers->setCookie(Cookie::create('profilImg', $userCourant->getPhoto()));
+=======
+        /** @var Participant $userCourant */
+        $lesSorties = $SortiesRepository->findRecherche();
+
+        if (!is_null($userCourant->getPhoto())) {
+            $session = $this->requestStack->getSession();
+            $session->setId($session->getId());
+            $session->set('photo', $userCourant->getPhoto());
+        }
+>>>>>>> Stashed changes
 
         return $this->render('sortie/index.html.twig', [
             'lesSorties' => $lesSorties,
-            'idUserCourant'=>$userCourant->getId(),
-        ],
-        $response);
+            'idUserCourant' => $userCourant->getId(),
+            ]
+        );
     }
 
 

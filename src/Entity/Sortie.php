@@ -413,5 +413,4 @@ class Sortie
     {
         return $this->prive;
     }
-
 }

@@ -48,13 +48,10 @@ class AdministrationController extends AbstractController
 
     public function index(?UserInterface $userCourant, Request $request, UserPasswordHasherInterface $pwdHasher, ParticipantRepository $participantsRepository ): Response
     {
-
-
         /** @var Participant $userCourant */
         if (is_null($userCourant)) {
             throw new AccessDeniedException('Veuillez vous connecter en tant qu\'admin pour accèder à la page !');
         }
-        /* $this->checkRole(); */
         
         //Form CSV
         $defaultData = ['message' => 'Choisissez un fichier .csv valide pour l\'ajout d\'utilisateurs'];
@@ -80,60 +77,55 @@ class AdministrationController extends AbstractController
                         $isFirst = false;
                     } else {
                         try{
-                            //dd($row);
+                            $info = explode(';', $row[0]);
                             $user = new Participant();
-                            $user->setPseudo($row['0']);
-                            $user->setNom($row['1']);
-                            $user->setPrenom($row['2']);
-                            $user->setTelephone($row['3']);
-                            $user->setMail($row['4']);
+                            $user->setPseudo($info['0']);
+                            $user->setNom($info['1']);
+                            $user->setPrenom($info['2']);
+                            $user->setTelephone($info['3']);
+                            $user->setMail($info['4']);
 
                             $user->setMotDePasse(
-                                $pwdHasher->hashPassword($user,$row['5'])
+                                $pwdHasher->hashPassword($user,$info['5'])
                             );
 
-                            $user->setAdministrateur($row['6']);
-
-                            if($row['6'] == "1"){
+                            if ($info['6'] == "1") {
                                 $user->setRoles(array("ROLE_ADMIN"));
-                            }
-                            else {
+                            } else {
                                 $user->setRoles(array("ROLE_USER"));
                             }
-                                
-                            $user->setActif($row['7']);
 
-                            $site = $this->em->getRepository(Site::class)->findOneBy(['nom' => $row['8']]);
+                            $user->setActif($info['7']);
+                            $site = $this->em->getRepository(Site::class)->findOneBy(['nom' => $info['8']]);
 
                             if($site == null){
                                 $site = new Site();
-                                $site->setNom($row['8']);
+                                $site->setNom($info['8']);
                                 $this->em->persist($site);
                                 $this->em->flush();
                                 $siteMsg.=" ".strval($site->getId());
                             }
+
                             $user->setSite($site);
-                            
                             $this->em->persist($user);
                             $this->em->flush();
+
                             $userMsg.=" ".strval($user->getId());
                         }
                         catch(\Exception $e){
-                            
                             $errMsg .= " erreur d'insertion sur la ligne ".strval($line);
                             //error_log($e->getMessage());
                         }
-                        
                     }
                 }
                 fclose($fp);
             }
             
             $this->addFlash('success', $userMsg);
-            if($errMsg !== null && $errMsg !== ""){
+            if($errMsg !== ""){
                 $this->addFlash('error', $errMsg);
             }
-            if($siteMsg !== null && $siteMsg !== ""){
+            if($siteMsg !== ""){
                 $this->addFlash('success', "Ajout de site :".$siteMsg);
             }
         }
@@ -156,7 +148,7 @@ class AdministrationController extends AbstractController
                 )
             );
 
-            if($user->isAdministrateur()){
+            if($userFormBuilder->get('roles')->getData()){
                 $user->setRoles(array("ROLE_ADMIN"));
             }
             else {
@@ -184,20 +176,17 @@ class AdministrationController extends AbstractController
     #[Route('/admin/changeActif/{id}', name: self::ROUTE_ADMIN_USER_ACTIF)]
     public function changeActifUser(int $id = 0): Response
     {
-        /* $this->checkRole(); */
-
-        if($id != 0){
+        if ($id != 0) {
             $user = $this->em->getRepository(Participant::class)->find($id);
             $user->setActif(!$user->getActif());
             $this->em->persist($user);
             $this->em->flush();
 
             $msgStatus = "inactif";
-            if($user->getActif()){
+            if ($user->getActif()) {
                 $msgStatus = "actif";
             }
 
-            //dd($user);
             $this->addFlash('success', "L'utilisateur ".$user->getId()." est désormais ".$msgStatus);
         }
         

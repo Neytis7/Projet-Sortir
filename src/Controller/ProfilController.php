@@ -61,8 +61,6 @@ class ProfilController extends AbstractController
     #[Route('modifier/mon-profil', name: 'modifier_profil')]
     public function profil(?UserInterface $userCourant, Request $request): Response
     {
-
-
         /** @var Participant $userCourant */
         if (is_null($userCourant)) {
             throw new AccessDeniedException('Veuillez vous connecter pour accèder à cette page.');
@@ -76,7 +74,7 @@ class ProfilController extends AbstractController
         $sites = $this->em->getRepository(Site::class)->findAll();
 
         if (!is_null($utilisateurBdd)) {
-            $isAdmin = $utilisateurBdd->isAdministrateur();
+            $isAdmin = $utilisateurBdd->hasRole('ROLE_ADMIN');
             $isActif = $utilisateurBdd->isActif();
         }
 
@@ -120,29 +118,17 @@ class ProfilController extends AbstractController
 
                     }catch (FileException $e){}
 
-                    $userCourant->setPhoto($newFilename);
-
+                    $utilisateurBdd->setPhoto($newFilename);
                 }
+
+                $utilisateurBdd->setActif($isActif);
 
                 if (!$isAdmin) {
-
-                    $utilisateurBdd->setAdministrateur(false);
-                    $utilisateurBdd->setActif($isActif);
-
-                    $userCourant->setRoles(array('ROLE_USER'));
-
-                }
-                if ($isAdmin) {
-
-                    $utilisateurBdd->setAdministrateur(false);
-                    $utilisateurBdd->setActif($isActif);
-
-                    $userCourant->setRoles(array('ROLE_ADMIN'));
-
+                    $utilisateurBdd->setRoles(array('ROLE_USER'));
+                } else {
+                    $utilisateurBdd->setRoles(array('ROLE_ADMIN'));
                 }
 
-
-                /** @var Participant $userCourant */
                 $this->em->flush();
                 $this->addFlash('success', 'Votre profil à été mis à jour');
                 return $this->redirectToRoute($redirectRoute);
@@ -162,8 +148,6 @@ class ProfilController extends AbstractController
     #[Route('afficher/profil/{id}', name: self::ROUTE_AFFICHER_PROFIL)]
     public function voirProfil(Request $request, int $id): Response
     {
-
-
         $leParticipant = $this->em->getRepository(Participant::class)->find($id);
 
         $form = $this->createForm(ProfilType::class, $leParticipant, [

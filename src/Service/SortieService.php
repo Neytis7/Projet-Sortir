@@ -47,10 +47,10 @@ class SortieService
         $utilisateurBdd = $this->em->getRepository(Participant::class)->find($userCourant->getId());
         $sortieBdd = $this->em->getRepository(Sortie::class)->find($sortie->getId());
 
-        if (
-            ($sortieBdd->getEtat()->getLibelle() === Sortie::ETAT_CREEE || $sortieBdd->getEtat()->getLibelle() === Sortie::ETAT_OUVERTE)
-            && ($sortieBdd->getDateDebut()->format('d/m/Y') >  (new DateTime())->format('d/m/Y')))
-        {
+        if ((
+            $sortieBdd->getEtat()->getLibelle() === Sortie::ETAT_CREEE || $sortieBdd->getEtat()->getLibelle() === Sortie::ETAT_OUVERTE
+            ) && ($sortieBdd->getDateDebut() >  (new DateTime()))
+        ) {
             $utilisateurBdd->removeSortie($sortieBdd);
             $this->em->flush();
             $success = true;

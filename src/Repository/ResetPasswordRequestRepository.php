@@ -26,10 +26,6 @@ class ResetPasswordRequestRepository extends ServiceEntityRepository implements 
         parent::__construct($registry, ResetPasswordRequest::class);
     }
 
-    /**
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
     public function add(ResetPasswordRequest $entity, bool $flush = true): void
     {
         $this->_em->persist($entity);
@@ -38,10 +34,6 @@ class ResetPasswordRequestRepository extends ServiceEntityRepository implements 
         }
     }
 
-    /**
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
     public function remove(ResetPasswordRequest $entity, bool $flush = true): void
     {
         $this->_em->remove($entity);

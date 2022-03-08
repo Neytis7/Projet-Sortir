@@ -1,4 +1,4 @@
-{% set img = app.request.cookies.get('profilImg') %}
+{% set img = app.session.get('photo') %}
 {% set route = app.request.get('_route') %}
 
 {% set routeSortie = constant('App\\Controller\\SortieController::ROUTE_SORTIE') %}
@@ -87,10 +87,13 @@
                                 Se déconnecter 
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <img src="{{ asset('uploads/profilePics/'~img) }}"
-                            alt="photoProfil" style="width: 50px; height: auto" />
-                        </li>
+
+                        {% if (img is defined and img != null) %}
+                            <li class="nav-item">
+                                <img src="{{ asset('uploads/profilePics/'~img) }}"
+                                alt="photoProfil" style="width: 50px; height: auto" />
+                            </li>
+                        {% endif %}
                     {% endif %}
                 </ul>
             </div>

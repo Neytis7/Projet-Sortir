@@ -175,13 +175,14 @@ class ProfilType extends AbstractType
 
             ]);
 
-
-
-            $builder->add('administrateur', CheckboxType::class,[
+            $builder->add('roles', CheckboxType::class, [
                 'required' => false,
+                'label' => 'administrateur',
                 'attr' => array(
                     'disabled' => $isAdmin,
                 ),
+                'mapped' => false,
+                'data' => $options['isAdmin']
             ])
 
             ->add('actif', CheckboxType::class,[

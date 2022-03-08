@@ -23,7 +23,6 @@ class EtatRepository extends ServiceEntityRepository
 
     public function add(Etat $entity, bool $flush = true): void
     {
-        $d = new \DateTime();
         $this->_em->persist($entity);
         if ($flush) {
             $this->_em->flush();
