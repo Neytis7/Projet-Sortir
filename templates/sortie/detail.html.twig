@@ -37,7 +37,8 @@
         <ul>
             <li>
                 <a href="{{path(routeAfficherProfil, {'id':utilisateur.id}) }}">{{ utilisateur.nom }} alias {{ utilisateur.pseudo }}</a>
-                <a class="btn btn-primary" href="{{ path(routeInvite, {'id':utilisateur.id}) }}">envoyer mail</a>
+
+                <a class="btn btn-primary" href="{{ path(routeInvite, {'idSortie': sortie.id, 'id':utilisateur.id  }) }}">envoyer mail</a>
             </li>
 
         </ul>

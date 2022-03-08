@@ -56,7 +56,7 @@ class SortieRepository extends ServiceEntityRepository
     }
 
     public function findNonInscrit($idSortie){
-        
+
 
         $rsm = new ResultSetMapping();
         $rsm->addEntityResult(Participant::class,'participant');

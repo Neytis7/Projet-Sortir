@@ -70,6 +70,7 @@
                         <th>Etat sortie</th>
                         <th>Inscrit</th>
                         <th>Organisateur</th>
+                        <th>Publique/Privé</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -84,27 +85,36 @@
                     <th>Etat sortie</th>
                     <th>Inscrit</th>
                     <th>Organisateur</th>
+                    <th>Publique/Privé</th>
                     <th>Action</th>
                 </tr>
                 </tfoot>
                 <tbody>
                     {% for sortie in lesSorties %}
-                    <tr>
-                        <td class="invisible">{{ sortie.id }}</td>
-                        <td>{{sortie.nom}}</td>
-                        <td>{{sortie.dateDebut|date("d/m/Y")}}</td>
-                        <td>{{sortie.dateCloture|date("d/m/Y")}}</td>
-                        <td>{{sortie.participants | length}}/{{sortie.nbInscriptionsMax}}</td>
-                        <td>{{sortie.etat.libelle}}</td>
                         {% set inscrit = "" %}
                         {% for participant in sortie.participants %}
                             {% if participant.id == idUserCourant %}
                                 {% set inscrit = 'X' %}
                             {% endif %}
                         {% endfor %}
+                    <tr
+                            {% if (sortie.prive == true and inscrit == 'X') or sortie.prive == false %}
+                              //vide 
+                            {% else %}
+                                style="display:none;"
+                            {% endif %}
+                    >
+                        <td class="invisible">{{ sortie.id }}</td>
+                        <td>{{sortie.nom}}</td>
+                        <td>{{sortie.dateDebut|date("d/m/Y")}}</td>
+                        <td>{{sortie.dateCloture|date("d/m/Y")}}</td>
+                        <td>{{sortie.participants | length}}/{{sortie.nbInscriptionsMax}}</td>
+                        <td>{{sortie.etat.libelle}}</td>
                         <td>{{inscrit}}</td>
 
                         <td><a href="{{path('afficherProfile', {'id':sortie.organisateur.id}) }}">{{sortie.organisateur.prenom}} {{sortie.organisateur.nom}}</a></td>
+                        {% set prive = "" %}{% if sortie.prive == true %} {% set prive = "Privé" %} {% else %} {% set prive = "Publique" %} {% endif %}
+                        <td>{{ prive }}</td>
                         <td>
                             {% if (inscrit == 'X') %}
                                 {% if sortie.etat.libelle not in ['Annulée','Archivée','Terminée','Cloturée','En cours'] %}

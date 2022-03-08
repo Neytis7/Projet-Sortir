@@ -14,7 +14,6 @@ use DateTime;
 use DateTimeZone;
 use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Query\ResultSetMapping;
 use Joli\JoliNotif\Notification;
 use Joli\JoliNotif\Notifier\NullNotifier;
 use Joli\JoliNotif\NotifierFactory;
@@ -149,13 +148,13 @@ class SortieController extends AbstractController
      * @return RedirectResponse
      * @throws TransportExceptionInterface
      */
-    #[Route('/sortie/invite/{id}', name: self::ROUTE_SORTIE_INVITE)]
-    public function invite($id, MailerInterface $mailer,Sortie $sortie, SortieRepository $SortiesRepository,?UserInterface $userCourant): Response
+    #[Route('/sortie/{idSortie}/invite/{id}', name: self::ROUTE_SORTIE_INVITE)]
+    public function invite($id, MailerInterface $mailer,Request $request): Response
     {
         $participant = $this->em->getRepository(Participant::class)->find($id);
         /** @var Participant $userCourant */
-        $this->sortie = $sortie;
-        $idSortie = $sortie->getId();
+        $sortie = $this->em->getRepository(Sortie::class)->find($request->get('idSortie'));
+
         if ($participant !== null){
 
             $email = (new TemplatedEmail())
@@ -164,7 +163,7 @@ class SortieController extends AbstractController
                 ->subject('Vous avez reçu une invitation à une sortie ')
                 ->htmlTemplate('sortie/mail.html.twig')
                 ->context([
-                    'idSortie' => $idSortie,
+                    'idSortie' => $sortie->getId(),
                 ]);
 
             $mailer->send($email);
@@ -188,22 +187,23 @@ class SortieController extends AbstractController
         }
 
 
-            return $this->redirectToRoute('sortie_detail',array('id' => $idSortie));
+            return $this->redirectToRoute('sortie_detail',array('id' => $sortie->getId()));
     }
 
     #[Route('/sortie/{id}', name: self::ROUTE_DETAIL_SORTIE,requirements: ['id'=>'\d+'])]
     public function detail($id, SortieRepository $SortiesRepository,?UserInterface $userCourant): Response
     {
+
         /** @var Participant $userCourant */
         $sortie = $SortiesRepository->find($id);
         $idUserCourant = $userCourant->getId();
-
         $nonInscrit = $SortiesRepository->findNonInscrit($id);
 
 
         if(!$sortie){
             throw new NotFoundHttpException("This sortie doesn't exist");
         }
+
         return $this->render('sortie/detail.html.twig',
             compact("id",'sortie','idUserCourant','nonInscrit'));
     }

@@ -33,10 +33,15 @@ class AuthentificationController extends AbstractController
         // last username entered by the user
         $lastUsername = $this->authenticationUtils->getLastUsername();
 
-        return $this->render('security/login.html.twig', [
-            'last_username' => $lastUsername,
-            'error'         => $error,
-        ]);
+        if ($this->isGranted('IS_AUTHENTICATED_REMEMBERED')){
+           return $this->redirectToRoute("app_sortie");
+        }else{
+            return $this->render('security/login.html.twig', [
+                'last_username' => $lastUsername,
+                'error'         => $error,
+            ]);
+        }
+
     }
 
     #[Route('/logout',name: self::ROUTE_LOGOUT)]
