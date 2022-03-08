@@ -108,13 +108,13 @@
                         <td><a href="{{path('afficherProfile', {'id':sortie.organisateur.id}) }}">{{sortie.organisateur.prenom}} {{sortie.organisateur.nom}}</a></td>
                         <td>
                             {% if (inscrit == 'X') %}
-                                {% if sortie.etat.libelle not in ['Annulée','Archivée','Terminée','Cloturée'] %}
+                                {% if sortie.etat.libelle not in ['Annulée','Archivée','Terminée','Cloturée','En cours'] %}
                                 <a href="{{ path(constant('App\\Controller\\SortieController::ROUTE_DESINSCRIPTION_SORTIE'), {'id':sortie.id}) }}">
                                     <input type="button" class="btn btn-danger" value="se désinscrire">
                                 </a>
                                 {% endif%}
                             {% else %}
-                                {% if sortie.etat.libelle not in ['Annulée','Archivée','Terminée','Cloturée'] %}
+                                {% if sortie.etat.libelle not in ['Annulée','Archivée','Terminée','Cloturée','En cours'] %}
                                 <a href="{{ path(constant('App\\Controller\\SortieController::ROUTE_INSCRIPTION_SORTIE'), {'id':sortie.id}) }}">
                                     <input type="button" class="btn btn-primary" value="s'inscrire">
                                 </a>

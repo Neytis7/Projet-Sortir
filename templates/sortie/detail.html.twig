@@ -50,13 +50,13 @@
     {% endfor %}
 
     {% if (inscrit == 'X') %}
-        {% if sortie.etat.libelle not in ['Annulée','Archivée','Terminée','Cloturée'] %}
+        {% if sortie.etat.libelle not in ['Annulée','Archivée','Terminée','Cloturée','En cours'] %}
             <a href="{{ path(constant('App\\Controller\\SortieController::ROUTE_DESINSCRIPTION_SORTIE'), {'id':sortie.id}) }}">
                 <input type="button" class="btn btn-danger" value="se désinscrire">
             </a>
         {% endif%}
     {% else %}
-        {% if sortie.etat.libelle not in ['Annulée','Archivée','Terminée','Cloturée'] %}
+        {% if sortie.etat.libelle not in ['Annulée','Archivée','Terminée','Cloturée','En cours'] %}
             <a href="{{ path(constant('App\\Controller\\SortieController::ROUTE_INSCRIPTION_SORTIE'), {'id':sortie.id}) }}">
                 <input type="button" class="btn btn-primary" value="s'inscrire">
             </a>
@@ -64,6 +64,8 @@
     {% endif %}
     <a type="button" class="btn btn-primary" href="{{path(routeSortie)}}">retour</a>
     {% if sortie.organisateur.id == idUserCourant %}
+        {% if sortie.etat.libelle not in ['Annulée','Archivée','Terminée','Cloturée','En cours'] %}
     <a type="button" class="btn btn-danger" href="{{path(constant('App\\Controller\\SortieController::ROUTE_MODIFIED_SORTIE'), {'id':sortie.id}) }}">Modifier</a>
+            {% endif %}
     {% endif %}
 {% endblock %}

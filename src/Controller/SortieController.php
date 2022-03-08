@@ -12,6 +12,7 @@ use App\Form\SortieAnnuleType;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
 use App\Service\SortieService;
+use DateInterval;
 use DateTime;
 use DateTimeZone;
 use Doctrine\DBAL\Exception;
@@ -72,7 +73,6 @@ class SortieController extends AbstractController
      * @var SortieService
      */
     private SortieService $serviceSortie;
-    private $entityManager;
     private Sortie $sortie;
 
     private SluggerInterface $slugger;
@@ -234,15 +234,8 @@ class SortieController extends AbstractController
     }
 
     #[Route('/sortie/annule/{id}', name: self::ROUTE_ANNULE_SORTIE,requirements: ['id'=>'\d+'])]
-    public function annule(
-        $id,
-        SortieRepository $SortiesRepository,
-        EtatRepository $etatsRepository,
-        Request $request,
-        EntityManagerInterface $entityManager
-    ) {
-
-
+    public function annule($id, SortieRepository $SortiesRepository, EtatRepository $etatsRepository, Request $request, EntityManagerInterface $entityManager)
+    {
         $sortie = $SortiesRepository->find($id);
         $etatsAnnule = $etatsRepository->findOneBy([
             'libelle' => 'Annulée'
@@ -273,21 +266,67 @@ class SortieController extends AbstractController
             compact("id",'sortie','sortieForm'));
     }
 
+    /**
+     * @throws \Exception
+     */
     #[Route('/sortie', name: self::ROUTE_SORTIE)]
-    public function index(?UserInterface $userCourant, Request $request, SortieRepository $SortiesRepository): Response
+    public function index(?UserInterface $userCourant, Request $request, SortieRepository $SortiesRepository, EtatRepository $etatsRepository,EntityManagerInterface $entityManager): Response
     {
-
 
         /** @var Participant $userCourant */
         $lesSorties = $SortiesRepository->findRecherche();
-        //dd($userCourant);
+
+        //GESTION DES ETATS
+        $checkSorties = $SortiesRepository->findAll();
+        $dateJour = DateTime::createFromFormat('d/m/Y h:i:s',(new \DateTime())->setTimezone(new \DateTimeZone('Europe/Paris'))->format('d/m/Y h:i:s'),(new \DateTimeZone('Europe/Paris')));
+
+       foreach ($checkSorties as $s){
+
+           $dateDebut = $s->getDatedebut()->setTimezone(new \DateTimeZone('Europe/Paris'));
+           $dateDebut->sub(new DateInterval('PT1H'));
+           $dateCloture = $s->getDatecloture()->setTimezone(new \DateTimeZone('Europe/Paris'));
+           $dateCloture->sub(new DateInterval('PT1H'));
+
+           if($dateDebut <= $dateJour && $s->getEtat()->getLibelle() != 'Annulée'){
+               $etatsOuverte = $etatsRepository->findOneBy([
+                   'libelle' => 'En cours'
+               ]);
+               $s->setEtat($etatsOuverte);
+           }
+
+           if(count($s->getParticipants()) == $s->getNbInscriptionsMax() && $dateDebut > $dateJour && $s->getEtat()->getLibelle() != 'Annulée' || $dateJour>=$dateCloture && $s->getEtat()->getLibelle() != 'Annulée' && $s->getEtat()->getLibelle() != 'En cours'){
+               $etatsCloturee = $etatsRepository->findOneBy([
+                   'libelle' => 'Cloturée'
+               ]);
+               $s->setEtat($etatsCloturee);
+           }
+
+           $dateFin = $s->getDatedebut()->add(new DateInterval('PT'.$s->getDuree().'M'))->setTimezone(new \DateTimeZone('Europe/Paris'));
+           if($dateJour >= $dateFin && $s->getEtat()->getLibelle() != 'Annulée'){
+
+               $etatsTerminee = $etatsRepository->findOneBy([
+                   'libelle' => 'Terminée'
+               ]);
+               $s->setEtat($etatsTerminee);
+           }
+
+           $dateArchivee = $dateFin->add(new DateInterval('P1M'));
+           if($dateJour >= $dateArchivee && $s->getEtat()->getLibelle() != 'Annulée'){
+               $etatsArchivee = $etatsRepository->findOneBy([
+                   'libelle' => 'Archivée'
+               ]);
+               $s->setEtat($etatsArchivee);
+           }
+
+           $entityManager->persist($s);
+           $entityManager->flush();
+       }
 
         $response = new Response(
             'Content',
             Response::HTTP_OK,
             ['content-type' => 'text/html']
         );
-        //dd($userCourant->getPhoto());
         $response->headers->setCookie(Cookie::create('profilImg', $userCourant->getPhoto()));
 
         return $this->render('sortie/index.html.twig', [
@@ -301,7 +340,6 @@ class SortieController extends AbstractController
     #[Route('/sortieRecherche', name: self::ROUTE_SORTIE_RECHERCHER)]
     public function indexRecherche(?UserInterface $userCourant, Request $request, SortieRepository $SortiesRepository): Response
     {
-        
         $sortieOrgan=$request->get('sortieOrgan');
         $sortieInscit=$request->get('sortieInscit');
         $sortieNonInscit=$request->get('sortieNonInscit');

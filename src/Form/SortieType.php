@@ -108,6 +108,7 @@ class SortieType extends AbstractType implements EventSubscriberInterface
                 ],
             ])
             ->add('prive', ChoiceType::class,[
+                'label'=> 'Prive : ',
                 'required' => true,
                 'choices' => [
                     'Publique' => false,
