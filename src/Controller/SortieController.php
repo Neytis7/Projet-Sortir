@@ -250,9 +250,9 @@ class SortieController extends AbstractController
             'libelle' => 'Annulée'
         ]);
 
-        if(!$sortie){
-            throw new NotFoundHttpException("This sortie doesn't exist");
-        }else {
+        if (!$sortie || $sortie->getEtat()->getLibelle() === Sortie::ETAT_ANNULEE) {
+            throw new NotFoundHttpException("This sortie doesn't exist or is already dismiss");
+        } else {
             $form = $this->createForm(SortieAnnuleType::class,$sortie);
             $form->handleRequest($request);
 

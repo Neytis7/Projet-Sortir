@@ -65,7 +65,10 @@
     <a type="button" class="btn btn-primary" href="{{path(routeSortie)}}">retour</a>
     {% if sortie.organisateur.id == idUserCourant %}
         {% if sortie.etat.libelle not in ['Annulée','Archivée','Terminée','Cloturée','En cours'] %}
-    <a type="button" class="btn btn-danger" href="{{path(constant('App\\Controller\\SortieController::ROUTE_MODIFIED_SORTIE'), {'id':sortie.id}) }}">Modifier</a>
-            {% endif %}
+            <a type="button" class="btn btn-danger" href="{{path(constant('App\\Controller\\SortieController::ROUTE_MODIFIED_SORTIE'), {'id':sortie.id}) }}">Modifier</a>
+        {% endif %}
+    {% endif %}
+    {% if is_granted('ROLE_ADMIN') and sortie.etat.libelle not in ['Annulée','Archivée','Terminée'] %}
+        <a type="button" class="btn btn-danger" href="{{path(constant('App\\Controller\\SortieController::ROUTE_ANNULE_SORTIE'), {'id':sortie.id}) }}">Annuler</a>
     {% endif %}
 {% endblock %}
