@@ -286,7 +286,7 @@ class SortieController extends AbstractController
 
         //GESTION DES ETATS
         $checkSorties = $SortiesRepository->findAll();
-        $dateJour = DateTime::createFromFormat('d/m/Y h:i:s',(new \DateTime())->setTimezone(new \DateTimeZone('Europe/Paris'))->format('d/m/Y h:i:s'),(new \DateTimeZone('Europe/Paris')));
+        $dateJour = DateTime::createFromFormat('g:iA',(new \DateTime())->setTimezone(new \DateTimeZone('Europe/Paris'))->format('g:iA'),(new \DateTimeZone('Europe/Paris')));
 
        foreach ($checkSorties as $s){
 
@@ -294,6 +294,7 @@ class SortieController extends AbstractController
            $dateDebut->sub(new DateInterval('PT1H'));
            $dateCloture = $s->getDatecloture()->setTimezone(new \DateTimeZone('Europe/Paris'));
            $dateCloture->sub(new DateInterval('PT1H'));
+
 
            if($dateDebut <= $dateJour && $s->getEtat()->getLibelle() != 'Annulée'){
                $etatsOuverte = $etatsRepository->findOneBy([

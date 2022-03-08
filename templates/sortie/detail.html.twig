@@ -11,8 +11,8 @@
     <h1 class="display-1 text-center">Detail de la sortie</h1>
     <img  src="{{ asset('uploads/profilePics/'~sortie.urlPhoto) }}" alt=""  style="width: 100px; height: auto"/>
     <p>Nom de la sortie : {{ sortie.nom }}</p>
-    <p>Date et heure de la sortie : {{ sortie.dateDebut|date("d/m/Y h:i:s") }}</p>
-    <p>Date limite d'inscription : {{ sortie.dateCloture|date("d/m/Y h:i:s") }}</p>
+    <p>Date et heure de la sortie : {{ sortie.dateDebut|format_datetime(locale='fr') }}</p>
+    <p>Date limite d'inscription : {{ sortie.dateCloture|format_datetime(locale='fr') }}</p>
     <p>Nombre de place : {{ sortie.nbInscriptionsMax }}</p>
     <p>Durée : {{ sortie.duree }} min</p>
     <p>Description et infos : {{ sortie.descriptionInfos }}</p>
