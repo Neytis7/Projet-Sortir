@@ -7,8 +7,6 @@ use App\Entity\Sortie;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -126,12 +124,6 @@ class SortieRepository extends ServiceEntityRepository
                     
                 }
             }
-            // if ($sortieNonInscit!==null) {
-            //     // dd($qbImbrique->getQuery()->getResult());
-            //     $qb->expr()->notIn('sortie.id', $qbImbrique->getQuery()->getDQL());
-            //     // $qb->expr()->notIn('sortie.id', 1);
-
-            // }
 
                 
             if ($sortiePasse!==null) {
@@ -145,9 +137,6 @@ class SortieRepository extends ServiceEntityRepository
             }
 
             $qb->orderBy('sortie.id', 'DESC');
-            //  dd($qb->getQuery()->getSQL(), $qb->getQuery()->getParameters());
-            // dd($qb->getQuery()->getResult());
-
             
         return $qb->getQuery()->getResult();
     }
