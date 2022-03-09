@@ -64,6 +64,7 @@
                     <tr>
                         <th class="invisible">Id</th>
                         <th>Nom</th>
+                        <th>Site</th>
                         <th>Date début</th>
                         <th>Date clôture</th>
                         <th>Nombre inscrit/nombre max</th>
@@ -79,6 +80,7 @@
                 <tr id="research">
                     <th class="invisible">Id</th>
                     <th>Nom</th>
+                    <th>Site</th>
                     <th>Date début</th>
                     <th>Date clôture</th>
                     <th>Nombre inscrit/nombre max</th>
@@ -106,6 +108,7 @@
                     >
                         <td class="invisible">{{ sortie.id }}</td>
                         <td>{{sortie.nom}}</td>
+                        <td>{{sortie.organisateur.site.nom}}</td>
                         <td>{{sortie.dateDebut|date("d/m/Y")}}</td>
                         <td>{{sortie.dateCloture|date("d/m/Y")}}</td>
                         <td>{{sortie.participants | length}}/{{sortie.nbInscriptionsMax}}</td>
@@ -162,7 +165,7 @@ $(document).ready(function() {
                     }
                 } );
             } );
-            this.api().columns(0).every( function () {
+            this.api().columns([1,2]).every( function () {
               var column = this;
                 var select = $('<select><option value=""></option></select>')
                     .appendTo( $(column.footer()).empty() )
@@ -199,7 +202,12 @@ $(document).ready(function() {
             if (Number.isInteger(id)) {
                 //location.href = `/sortie/${id}`;
                 urlPageActuelle=self.location.href;
-                location.href = `${urlPageActuelle}/${id}`;
+                tableauUrl=urlPageActuelle.split('/');
+                let url="";
+                for (let i = 0; i < (tableauUrl.length-1); i++) {
+                    url+=tableauUrl[i]+"/";
+                }
+                location.href = `${url}sortie/${id}`;
             }
         }
     });

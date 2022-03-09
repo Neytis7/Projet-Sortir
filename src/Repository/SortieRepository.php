@@ -41,10 +41,12 @@ class SortieRepository extends ServiceEntityRepository
             ->addSelect('organisateur')
             ->addSelect('lieu')
             ->addSelect('participant')
+            ->addSelect('site')
 
             ->leftJoin('sortie.organisateur','organisateur')
             ->leftJoin('sortie.lieu','lieu')
             ->leftJoin('sortie.participants','participant')
+            ->leftJoin('participant.site','site')
 
 
             ->where("sortie.dateDebut > :datetime")
