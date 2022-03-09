@@ -84,11 +84,13 @@ class ProfilController extends AbstractController
             'participant' => $userCourant
         ]);
 
+        dump('dump');
         $form->handleRequest($request);
-
+        //dd('stop');
         if ($form->isSubmitted()) {
 
             if ($form->isValid()) {
+                dd('lalalal');
                 $nouveauMdpHash = $this->passwordEncoder->hashPassword(
                     $userCourant,
                     $form->get('motDePasse')->getData()
@@ -129,12 +131,14 @@ class ProfilController extends AbstractController
                     $utilisateurBdd->setRoles(array('ROLE_ADMIN'));
                 }
 
+                dd('laaaaa');
                 $this->em->flush();
                 $this->addFlash('success', 'Votre profil à été mis à jour');
                 return $this->redirectToRoute($redirectRoute);
                 
             } else {
-                $this->em->refresh($userCourant);
+                dd('ici');
+                $this->em->refresh($utilisateurBdd);
                 $this->addFlash('error', 'Impossible de modifier le profil, veuillez vérifier les données saisies !');
             }
         }

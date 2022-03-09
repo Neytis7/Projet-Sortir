@@ -28,6 +28,9 @@ class SortieType extends AbstractType implements EventSubscriberInterface
                         'message' => 'Le nom ne peut pas être vide'
                     ]),
                 ],
+                'attr' => [
+                    'class' => 'form-control'
+                ],
             ])
             ->add('dateDebut',DateTimeType::class,[
                 'label'=>'Date et heure de la sortie : ',
@@ -41,6 +44,10 @@ class SortieType extends AbstractType implements EventSubscriberInterface
                         'message' => 'La date de début ne peut pas être inférieur a la date du jour'
                     ]),
                 ],
+                'attr' => [
+                    'class' => 'form-control'
+                ],
+                'data' => new DateTime()
             ])
             ->add('duree',null,[
                 'label'=>'Durée (minutes) : ',
@@ -51,6 +58,9 @@ class SortieType extends AbstractType implements EventSubscriberInterface
                     new Assert\NotBlank([
                         'message' => 'Il faut obligatoirement une durée'
                     ]),
+                ],
+                'attr' => [
+                    'class' => 'form-control'
                 ],
             ])
             //Contrainte sur la date de cloture > date de debut
@@ -66,6 +76,10 @@ class SortieType extends AbstractType implements EventSubscriberInterface
                         'message' => 'La date de début ne peut pas être inférieur a la date du jour'
                     ]),
                 ],
+                'attr' => [
+                    'class' => 'form-control'
+                ],
+                'data' => new DateTime()
             ])
             ->add('nbInscriptionsMax',null,[
                 'label'=>'Nombre de places : ',
@@ -74,14 +88,27 @@ class SortieType extends AbstractType implements EventSubscriberInterface
                         'message' => 'On ne peut pas avoir un nombre de place négatif'
                     ]),
                 ],
+                'attr' => [
+                    'class' => 'form-control'
+                ],
             ])
-            ->add('descriptionInfos',null,['label'=>'Description et infos : '])
+            ->add('descriptionInfos',null, [
+                    'label'=>'Description et infos : ',
+                    'attr' => [
+                        'class' => 'form-control'
+                    ],
+                ]
+            )
+
             ->add('lieu',null,[
                 'label'=>'Lieu : ',
                 'constraints' => [
                     new Assert\NotBlank([
                         'message' => 'Il faut obligatoirement un lieu'
                     ]),
+                ],
+                'attr' => [
+                    'class' => 'form-control'
                 ],
             ]);
             $builder->add('image',FileType::class,[
@@ -106,6 +133,9 @@ class SortieType extends AbstractType implements EventSubscriberInterface
                         'mimeTypesMessage' => 'Vueillez choisir une photo valide',
                     ])
                 ],
+                'attr' => [
+                    'class' => 'form-control'
+                ],
             ])
             ->add('prive', ChoiceType::class,[
                 'label'=> 'Prive : ',
@@ -113,7 +143,10 @@ class SortieType extends AbstractType implements EventSubscriberInterface
                 'choices' => [
                     'Publique' => false,
                     'Privé'    => true,
-                ]
+                ],
+                'attr' => [
+                    'class' => 'form-control'
+                ],
             ])
             ->addEventSubscriber($this)
         ;

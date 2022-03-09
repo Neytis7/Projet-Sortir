@@ -120,17 +120,21 @@ class SortieController extends AbstractController
                 'libelle' => 'Créée'
             ]);
 
-
             $sortie->setPrive(boolval($form->getData('prive')));
             $this->extracted($form, $sortie);
 
+
             $sortie->setEtat($etat);
+
             $participant->addSortie($sortie);
             $entityManager->persist($sortie);
+
             $entityManager->flush();
+
             // Message flash
             $this->addFlash('success','Sortie successfully added !');
             // Redirection vers la page des Sortie
+
             return $this->redirectToRoute(self::ROUTE_SORTIE);
         }
         // Affichage du formulaire
