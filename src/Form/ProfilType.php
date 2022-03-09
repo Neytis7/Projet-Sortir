@@ -43,8 +43,8 @@ class ProfilType extends AbstractType
                 'constraints' => [
                     new Assert\NotBlank([
                         'message' => sprintf(self::VALUE_CANNOT_BE_NULL, 'pseudo')
-                    ])
-                ]
+                    ]),
+                ],
             ])
 
             ->add('nom',TextType::class, [

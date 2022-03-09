@@ -11,9 +11,9 @@
     {{ form_start(sortieForm) }}
     {{ form_widget(sortieForm) }}
     <br>
-    <input type="submit" class="btn btn-primary" value="Comfirmer"/>
+    <input type="submit" class="btn btn-success" value="Comfirmer"/>
     <a href="{{ path(routeAnnuleSortie,{'id':id}) }}" class="btn btn-danger">Annuler la sortie</a>
-    <a href="{{ path(routeSortie)}}" class="btn btn-primary">Retour</a>
+    <a href="{{ path(routeSortie)}}" class="btn btn-secondary">Retour</a>
     {{ form_end(sortieForm) }}
 
     <div>

@@ -78,28 +78,26 @@ class ProfilController extends AbstractController
             $isActif = $utilisateurBdd->isActif();
         }
 
-        $form = $this->createForm(ProfilType::class, $userCourant, [
+        $form = $this->createForm(ProfilType::class, $utilisateurBdd, [
             'isAdmin' => $isAdmin,
             'sites_choices' => $sites,
-            'participant' => $userCourant
+            'participant' => $utilisateurBdd
         ]);
 
-        dump('dump');
         $form->handleRequest($request);
-        //dd('stop');
+
         if ($form->isSubmitted()) {
 
             if ($form->isValid()) {
-                dd('lalalal');
                 $nouveauMdpHash = $this->passwordEncoder->hashPassword(
-                    $userCourant,
+                    $utilisateurBdd,
                     $form->get('motDePasse')->getData()
                 );
 
                 if (!is_null($nouveauMdpHash)) {
-                    $userCourant->setMotDePasse(
+                    $utilisateurBdd->setMotDePasse(
                         $this->passwordEncoder->hashPassword(
-                            $userCourant,
+                            $utilisateurBdd,
                             $form->get('motDePasse')->getData()
                         )
                     );
@@ -131,13 +129,11 @@ class ProfilController extends AbstractController
                     $utilisateurBdd->setRoles(array('ROLE_ADMIN'));
                 }
 
-                dd('laaaaa');
                 $this->em->flush();
                 $this->addFlash('success', 'Votre profil à été mis à jour');
                 return $this->redirectToRoute($redirectRoute);
                 
             } else {
-                dd('ici');
                 $this->em->refresh($utilisateurBdd);
                 $this->addFlash('error', 'Impossible de modifier le profil, veuillez vérifier les données saisies !');
             }
@@ -145,7 +141,7 @@ class ProfilController extends AbstractController
 
         return $this->render('profil/profil.html.twig', [
             'form' => $form->createView(),
-            'userCourant' => $userCourant
+            'userCourant' => $utilisateurBdd
         ]);
     }
 

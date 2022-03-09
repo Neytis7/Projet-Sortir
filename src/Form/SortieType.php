@@ -111,7 +111,7 @@ class SortieType extends AbstractType implements EventSubscriberInterface
                     'class' => 'form-control'
                 ],
             ]);
-            $builder->add('image',FileType::class,[
+            $builder->add('image',FileType::class, [
                 'label' => 'Ajouter une photo',
                 'mapped' => false,
                 'required' => false,

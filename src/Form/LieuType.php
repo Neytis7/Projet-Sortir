@@ -15,6 +15,9 @@ class LieuType extends AbstractType
         $builder
             ->add('nom',null,[
                 'label'=>'Nom du lieu : ',
+                'attr' => [
+                    'class' => 'form-control'
+                ],
                 'constraints' => [
                     new Assert\NotBlank([
                         'message' => 'Le nom ne peut pas être vide'
@@ -23,23 +26,38 @@ class LieuType extends AbstractType
             ])
             ->add('rue',null,[
                 'label'=>'Rue : ',
+                'attr' => [
+                    'class' => 'form-control'
+                ],
                 'constraints' => [
                     new Assert\NotBlank([
                         'message' => 'La rue ne peut pas être vide'
                     ]),
                 ],
             ])
-            ->add('latitude',null,['label'=>'Latitude : '])
-            ->add('longitude',null,['label'=>'Longitude : '])
+            ->add('latitude',null,[
+                'label'=>'Latitude : ',
+                'attr' => [
+                    'class' => 'form-control'
+                ],
+            ])
+            ->add('longitude',null,[
+                'label'=>'Longitude : ',
+                'attr' => [
+                    'class' => 'form-control'
+                ],
+            ])
             ->add('ville',null,[
                 'label'=>'Ville : ',
+                'attr' => [
+                    'class' => 'form-control'
+                ],
                 'constraints' => [
                     new Assert\NotBlank([
                         'message' => 'Il faut obligatoirement une ville'
                     ]),
                 ],
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

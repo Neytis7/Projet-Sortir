@@ -115,7 +115,7 @@ class SortieController extends AbstractController
                 'libelle' => 'Créée'
             ]);
 
-            $sortie->setPrive(boolval($form->getData('prive')));
+            $sortie->setPrive(boolval($form->get('prive')->getData()));
             $this->extracted($form, $sortie);
 
 

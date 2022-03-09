@@ -5,7 +5,7 @@
 {% block title %}Annulation de la sortie{% endblock %}
 
 {% block body %}
-    <h1>Annulation de la sortie</h1>
+    <h1 class="display-1 text-center">Annulation de la sortie</h1>
     <p>Nom de la sortie : {{ sortie.nom }}</p>
     <p>Date et heure de la sortie : {{ sortie.dateDebut|date("d/m/Y h:i:s") }}</p>
     <p>Ville organisatrice : {{ sortie.lieu.ville.nom }}</p>

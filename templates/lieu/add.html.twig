@@ -6,12 +6,56 @@
 {% block title %}Ajouter lieu{% endblock %}
 
 {% block body %}
-    <h1>Ajouter un nouveau lieu</h1>
+    <h1 class="display-1 text-center">Ajouter un nouveau lieu</h1>
+
     {{ form_start(lieuForm) }}
-    {{ form_widget(lieuForm) }}
-    <br>
-    <input type="submit" class="btn btn-primary" value="Enregistrer"/>
-    <a href="{{ path(routeAjoutVille)}}" class="btn btn-primary">Ajouter une nouvelle ville</a>
-    <a href="{{ path(routeCreerSortie)}}" class="btn btn-primary">Annule</a>
+
+    <div class="form-group">
+        {{ form_label(lieuForm.nom) }}
+        {{ form_widget(lieuForm.nom) }}
+        <div class="form-error">
+            {{ form_errors(lieuForm.nom) }}
+        </div>
+    </div>
+
+    <div class="form-group">
+        {{ form_label(lieuForm.rue) }}
+        {{ form_widget(lieuForm.rue) }}
+        <div class="form-error">
+            {{ form_errors(lieuForm.rue) }}
+        </div>
+    </div>
+
+    <div class="form-group">
+        {{ form_label(lieuForm.latitude) }}
+        {{ form_widget(lieuForm.latitude) }}
+        <div class="form-error">
+            {{ form_errors(lieuForm.latitude) }}
+        </div>
+    </div>
+
+    <div class="form-group">
+        {{ form_label(lieuForm.longitude) }}
+        {{ form_widget(lieuForm.longitude) }}
+        <div class="form-error">
+            {{ form_errors(lieuForm.longitude) }}
+        </div>
+    </div>
+
+    <div class="form-group">
+        {{ form_label(lieuForm.ville) }}
+        {{ form_widget(lieuForm.ville) }}
+        <div class="form-error">
+            {{ form_errors(lieuForm.ville) }}
+        </div>
+    </div>
+
+    <div class="form-group mt-3 d-flex justify-content-between">
+        <input type="submit" class="btn btn-success" value="Enregistrer"/>
+        <a href="{{ path(routeAjoutVille)}}" class="btn btn-primary">Ajouter une nouvelle ville</a>
+        <a href="{{ path(routeCreerSortie)}}" class="btn btn-secondary">Retour</a>
+    </div>
+
+
     {{ form_end(lieuForm) }}
 {% endblock %}

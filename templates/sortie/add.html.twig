@@ -19,7 +19,7 @@
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group mt-3">
         {{ form_label(sortieForm.dateDebut) }}
         {{ form_widget(sortieForm.dateDebut) }}
         <div class="form-error">
@@ -27,15 +27,15 @@
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group mt-3">
         {{ form_label(sortieForm.duree) }}
         {{ form_widget(sortieForm.duree) }}
-        <div class="form-error">
+        <div class="form-error mt-3">
             {{ form_errors(sortieForm.duree) }}
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group mt-3">
         {{ form_label(sortieForm.dateCloture) }}
         {{ form_widget(sortieForm.dateCloture) }}
         <div class="form-error">
@@ -43,7 +43,7 @@
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group mt-3">
         {{ form_label(sortieForm.nbInscriptionsMax) }}
         {{ form_widget(sortieForm.nbInscriptionsMax) }}
         <div class="form-error">
@@ -51,7 +51,7 @@
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group mt-3">
         {{ form_label(sortieForm.descriptionInfos) }}
         {{ form_widget(sortieForm.descriptionInfos) }}
         <div class="form-error">
@@ -59,7 +59,7 @@
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group mt-3">
         {{ form_label(sortieForm.image) }}
         {{ form_widget(sortieForm.image) }}
         <div class="form-error">
@@ -67,18 +67,27 @@
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group mt-3">
         {{ form_label(sortieForm.prive) }}
         {{ form_widget(sortieForm.prive) }}
         <div class="form-error">
             {{ form_errors(sortieForm.prive) }}
         </div>
     </div>
-    {{ form_rest(sortieForm) }}
 
-    <br>
-    <input type="submit" class="btn btn-primary" value="Enregistrer"/>
-    <a href="{{ path(routeAjoutLieu)}}" class="btn btn-primary">Ajouter un nouveau lieu</a>
-    <a href="{{ path(routeSortie)}}" class="btn btn-primary">Quitter</a>
-    {{ form_end(sortieForm) }}
+    <div class="form-group mt-3">
+        {{ form_label(sortieForm.lieu) }}
+        {{ form_widget(sortieForm.lieu) }}
+        <div class="form-error">
+            {{ form_errors(sortieForm.lieu) }}
+        </div>
+    </div>
+    
+    <div class="form-group mt-1 d-flex justify-content-between">
+        <input type="submit" class="btn btn-success" value="Enregistrer"/>
+        <a href="{{ path(routeAjoutLieu)}}" class="btn btn-primary">Ajouter un nouveau lieu</a>
+        <a href="{{ path(routeSortie)}}" class="btn btn-secondary">Retour</a>
+        {{ form_end(sortieForm) }}
+    </div>
+
 {% endblock %}

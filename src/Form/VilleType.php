@@ -15,6 +15,9 @@ class VilleType extends AbstractType
         $builder
             ->add('nom',null,[
                 'label'=>'Nom de la ville : ',
+                'attr' => [
+                    'class' => 'form-control'
+                ],
                 'constraints' => [
                     new Assert\NotBlank([
                         'message' => 'Le nom ne peut pas être vide'
@@ -23,6 +26,9 @@ class VilleType extends AbstractType
             ])
             ->add('codePostal',null,[
                 'label'=>'Code postal : ',
+                'attr' => [
+                    'class' => 'form-control'
+                ],
                 'constraints' => [
                     new Assert\NotBlank([
                         'message' => 'Il faut obligatoirement un code postal'
