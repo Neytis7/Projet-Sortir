@@ -6,63 +6,77 @@
 {% block title %}Filtrer les sorties{% endblock %}
 {% block subtitle %}Filtrer les sorties{% endblock %}
 
-{% block body %}
+{% block tableBody %}
+
+<style>
+.inputTest {
+    width: 120px !important;
+}
+
+#table_id_filter{
+    margin-right:100px;
+}
+</style>
  {# 'sortieOrgan'=>$sortieOrgan,
             'sortieNonInscit'=>$sortieNonInscit,
             'sortiePasse'=>$sortiePasse,
             'sortieInscit'=>$sortieInscit #}
 
     </form>
-    <form method="post" action="{{path(constant('App\\Controller\\SortieController::ROUTE_SORTIE_RECHERCHER'))}}">
-        <div class="row mt-3">
-            <div class="col-4">
-                <div>
-                    <input type="checkbox" name="sortieOrgan" id="sortieOrgan"           
-                    {% if sortieOrgan is defined and sortieOrgan is not null %}
-                        checked
-                    {% endif %}
-                    >
-                    <label for="sortieOrgan">Sorties dont je suis l'organisateur/trice</label>
-                </div>
-                <div>
-                    <input type="checkbox" name="sortieInscit" id="sortieInscit"
-                    {% if sortieInscit is defined and sortieInscit is not null %}
-                        checked
-                    {% endif %}
-                    >
-                    <label for="sortieInscit">Sorties auxquelles je suis inscrit/e</label>
-                </div>
-                <div>
-                    <input type="checkbox" name="sortieNonInscit" id="sortieNonInscit"
-                    {% if sortieNonInscit is defined and sortieNonInscit is not null %}
-                        checked
-                    {% endif %}
-                    >
-                    <label for="sortieNonInscit">Sorties auxquelles je ne suis pas inscrit/e</label>
-                </div>
-                <div>
-                    <input type="checkbox" name="sortiePasse" id="sortiePasse"
-                    {% if sortiePasse is defined and sortiePasse is not null %}
-                        checked
-                    {% endif %}
-                    >
-                    <label for="sortiePasse">Sorties passées</label>
-                </div>
+    <div class="container">
+        <form method="post" action="{{path(constant('App\\Controller\\SortieController::ROUTE_SORTIE_RECHERCHER'))}}">
+            <div class="row mt-3">
+                <div class="col-4">
+                    <div>
+                        <input type="checkbox" name="sortieOrgan" id="sortieOrgan"           
+                        {% if sortieOrgan is defined and sortieOrgan is not null %}
+                            checked
+                        {% endif %}
+                        >
+                        <label for="sortieOrgan">Sorties dont je suis l'organisateur/trice</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="sortieInscit" id="sortieInscit"
+                        {% if sortieInscit is defined and sortieInscit is not null %}
+                            checked
+                        {% endif %}
+                        >
+                        <label for="sortieInscit">Sorties auxquelles je suis inscrit/e</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="sortieNonInscit" id="sortieNonInscit"
+                        {% if sortieNonInscit is defined and sortieNonInscit is not null %}
+                            checked
+                        {% endif %}
+                        >
+                        <label for="sortieNonInscit">Sorties auxquelles je ne suis pas inscrit/e</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="sortiePasse" id="sortiePasse"
+                        {% if sortiePasse is defined and sortiePasse is not null %}
+                            checked
+                        {% endif %}
+                        >
+                        <label for="sortiePasse">Sorties passées</label>
+                    </div>
 
-            </div>
-            <div class="col-4">
-                <div>
-                    <input class="btn btn-primary" type="submit" value="Rechercher">
+                </div>
+                <div class="col-4">
+                    <div>
+                        <input class="btn btn-primary" type="submit" value="Rechercher">
+                    </div>
                 </div>
             </div>
-        </div>
-    </form>
-    <div class="row mt-3">
-        <div class="col-sm d-flex justify-content-center">
-            <table id="table_id" class="display responsive table table-striped" width="100%">
+        </form>
+    </div>
+
+    
+    {# <div class="row mt-3">#}
+        <div width="90%"> 
+            <table id="table_id" class="display responsive table table-striped p-2" width="100%">
                 <thead>
                     <tr>
-                        <th class="invisible">Id</th>
+                        <th class="invisible" hidden>Id</th>
                         <th>Nom</th>
                         <th>Site</th>
                         <th>Date début</th>
@@ -78,7 +92,7 @@
                 <tfoot>
 
                 <tr id="research">
-                    <th class="invisible">Id</th>
+                    <th class="invisible" hidden>Id</th>
                     <th>Nom</th>
                     <th>Site</th>
                     <th>Date début</th>
@@ -106,7 +120,7 @@
                                 style="display:none;"
                             {% endif %}
                     >
-                        <td class="invisible">{{ sortie.id }}</td>
+                        <td class="invisible" hidden>{{ sortie.id }}</td>
                         <td>{{sortie.nom}}</td>
                         <td>{{sortie.organisateur.site.nom}}</td>
                         <td>{{sortie.dateDebut|date("d/m/Y")}}</td>
@@ -139,7 +153,9 @@
                 </tbody>
             </table>
         </div>
-    </div>
+    {# </div> #}
+
+
 
  <script>
 
@@ -147,11 +163,20 @@ $(document).ready(function() {
     // Setup - add a text input to each footer cell
     $('#table_id #research th').each( function () {
         var title = $(this).text();
-        $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+        $(this).html( '<input class="inputTest" type="text" placeholder="Search '+title+'"  />' );
     } );
 
     // DataTable
     var table = $('#table_id').DataTable({
+        "autoWidth": true,
+        "responsive": true,
+        "info": false,
+        scrollY:        "300px",
+        scrollX:        true,
+        scrollCollapse: true,
+        paging:         false,
+        fixedColumns:   false,
+        rowId: 0,
         initComplete: function () {
             // Apply the search
             this.api().columns().every( function () {
@@ -167,7 +192,7 @@ $(document).ready(function() {
             } );
             this.api().columns([1,2]).every( function () {
               var column = this;
-                var select = $('<select><option value=""></option></select>')
+                var select = $('<select class="inputTest"><option value=""></option></select>')
                     .appendTo( $(column.footer()).empty() )
                     .on( 'change', function () {
                         var val = $.fn.dataTable.util.escapeRegex(
@@ -185,13 +210,10 @@ $(document).ready(function() {
             });
         },
 
-        "responsive": true,
-        "info": false,
-        "autoWidth": true,
-        rowId: 0
+        
     });
 
-    $('#TableauRapport').DataTable().columns.adjust().draw();
+    $('#table_id').DataTable().columns.adjust().draw();
 
     $('#table_id').on('click', 'tr' , function (){
         let id = this.id;
@@ -222,6 +244,8 @@ $(document).ready(function() {
             $(this).css("color", 'black');
         }
     );
+
+    
 });
  </script>
 

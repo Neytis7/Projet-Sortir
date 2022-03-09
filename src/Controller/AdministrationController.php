@@ -196,7 +196,6 @@ class AdministrationController extends AbstractController
     #[Route('/admin/deleteUser/{id}', name: self::ROUTE_ADMIN_USER_DELETE)]
     public function deleteUser(int $id = 0): Response
     {
-        /* $this->checkRole(); */
 
         if($id != 0){
             $user = $this->em->getRepository(Participant::class)->find($id);

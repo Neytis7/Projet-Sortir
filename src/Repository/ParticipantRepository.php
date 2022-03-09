@@ -60,25 +60,6 @@ class ParticipantRepository extends ServiceEntityRepository implements UserLoade
         return $qb->getQuery()->getOneOrNullResult();
     }
 
-    /*public function findNonInscrit($idSortie): ?Participant
-    {
-        $rsm = new ResultSetMapping();
-
-        $query =
-
-        $conn = $this->getEntityManager()
-            ->getConnection();
-
-        $res = 'SELECT * FROM participant 
-WHERE id NOT IN (SELECT participant_id  FROM participant_sortie where sortie_id = :idSortie)';
-        $stmt = $conn->prepare($res);
-;
-        $stmt->executeQuery(array('idSortie' => $idSortie));
-
-        return $stmt->;
-
-    }*/
-
     public function loadUserByUsername(string $username): ?UserInterface
     {
         return $this->loadUserByIdentifier($username);
