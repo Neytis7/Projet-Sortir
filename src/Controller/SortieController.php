@@ -278,7 +278,7 @@ class SortieController extends AbstractController
      * @throws \Exception
      */
     #[Route('/sortie', name: self::ROUTE_SORTIE)]
-    public function index(?UserInterface $userCourant, Request $request, SortieRepository $SortiesRepository, EtatRepository $etatsRepository,EntityManagerInterface $entityManager): Response
+    public function index(?UserInterface $userCourant, SortieRepository $SortiesRepository, EtatRepository $etatsRepository,EntityManagerInterface $entityManager): Response
     {
         /** @var Participant $userCourant */
         $lesSorties = $SortiesRepository->findRecherche();
@@ -287,49 +287,48 @@ class SortieController extends AbstractController
         $checkSorties = $SortiesRepository->findAll();
         $dateJour = DateTime::createFromFormat('g:iA',(new \DateTime())->setTimezone(new \DateTimeZone('Europe/Paris'))->format('g:iA'),(new \DateTimeZone('Europe/Paris')));
 
-       foreach ($checkSorties as $s){
+        foreach ($checkSorties as $s){
 
-           $dateDebut = $s->getDatedebut()->setTimezone(new \DateTimeZone('Europe/Paris'));
-           $dateDebut->sub(new DateInterval('PT1H'));
-           $dateCloture = $s->getDatecloture()->setTimezone(new \DateTimeZone('Europe/Paris'));
-           $dateCloture->sub(new DateInterval('PT1H'));
+            $dateDebut = $s->getDatedebut()->setTimezone(new \DateTimeZone('Europe/Paris'));
+            $dateDebut->sub(new DateInterval('PT1H'));
+            $dateCloture = $s->getDatecloture()->setTimezone(new \DateTimeZone('Europe/Paris'));
+            $dateCloture->sub(new DateInterval('PT1H'));
 
+            if($dateDebut <= $dateJour && $s->getEtat()->getLibelle() != 'Annulée'){
+                $etatsOuverte = $etatsRepository->findOneBy([
+                    'libelle' => 'En cours'
+                ]);
+                $s->setEtat($etatsOuverte);
+            }
 
-           if($dateDebut <= $dateJour && $s->getEtat()->getLibelle() != 'Annulée'){
-               $etatsOuverte = $etatsRepository->findOneBy([
-                   'libelle' => 'En cours'
-               ]);
-               $s->setEtat($etatsOuverte);
-           }
+            if(count($s->getParticipants()) == $s->getNbInscriptionsMax() && $dateDebut > $dateJour && $s->getEtat()->getLibelle() != 'Annulée' || $dateJour>=$dateCloture && $s->getEtat()->getLibelle() != 'Annulée' && $s->getEtat()->getLibelle() != 'En cours'){
+                $etatsCloturee = $etatsRepository->findOneBy([
+                    'libelle' => 'Cloturée'
+                ]);
+                $s->setEtat($etatsCloturee);
+            }
 
-           if(count($s->getParticipants()) == $s->getNbInscriptionsMax() && $dateDebut > $dateJour && $s->getEtat()->getLibelle() != 'Annulée'
-               || $dateJour>=$dateCloture && $s->getEtat()->getLibelle() != 'Annulée' && $s->getEtat()->getLibelle() != 'En cours'){
-               $etatsCloturee = $etatsRepository->findOneBy([
-                   'libelle' => 'Cloturée'
-               ]);
-               $s->setEtat($etatsCloturee);
-           }
+            $dateFin = $s->getDatedebut()->add(new DateInterval('PT'.$s->getDuree().'M'))->setTimezone(new \DateTimeZone('Europe/Paris'));
+            if($dateJour >= $dateFin && $s->getEtat()->getLibelle() != 'Annulée'){
 
-           $dateFin = $s->getDatedebut()->add(new DateInterval('PT'.$s->getDuree().'M'))->setTimezone(new \DateTimeZone('Europe/Paris'));
-           if($dateJour >= $dateFin && $s->getEtat()->getLibelle() != 'Annulée'){
+                $etatsTerminee = $etatsRepository->findOneBy([
+                    'libelle' => 'Terminée'
+                ]);
+                $s->setEtat($etatsTerminee);
+            }
 
-               $etatsTerminee = $etatsRepository->findOneBy([
-                   'libelle' => 'Terminée'
-               ]);
-               $s->setEtat($etatsTerminee);
-           }
+            $dateJourCondition = DateTime::createFromFormat('g:iA',(new \DateTime())->setTimezone(new \DateTimeZone('Europe/Paris'))->format('g:iA'),(new \DateTimeZone('Europe/Paris')));
+            $dateArchivee = $dateJourCondition->sub(new DateInterval('P1M'));
+            if($dateArchivee >= $dateFin && $s->getEtat()->getLibelle() != 'Annulée'){
+            $etatsArchivee = $etatsRepository->findOneBy([
+                'libelle' => 'Archivée'
+            ]);
+            $s->setEtat($etatsArchivee);
+        }
 
-           $dateArchivee = $dateFin->add(new DateInterval('P1M'));
-           if($dateJour >= $dateArchivee && $s->getEtat()->getLibelle() != 'Annulée'){
-               $etatsArchivee = $etatsRepository->findOneBy([
-                   'libelle' => 'Archivée'
-               ]);
-               $s->setEtat($etatsArchivee);
-           }
-
-           $entityManager->persist($s);
-           $entityManager->flush();
-       }
+            $entityManager->persist($s);
+            $entityManager->flush();
+        }
 
         $response = new Response(
             'Content',
@@ -447,4 +446,12 @@ class SortieController extends AbstractController
             $sortie->setUrlphoto($newFilename);
         }
     }
+
+//$dateArchivee = $dateJour->sub($dateIntervalArchive);
+//if($dateArchivee >= $dateFin && $s->getEtat()->getLibelle() != 'Annulée'){
+//$etatsArchivee = $etatsRepository->findOneBy([
+//'libelle' => 'Archivée'
+//]);
+//$s->setEtat($etatsArchivee);
+//}
 }
