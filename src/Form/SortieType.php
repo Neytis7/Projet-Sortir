@@ -157,7 +157,7 @@ class SortieType extends AbstractType implements EventSubscriberInterface
     {
         $resolver->setDefaults([
             'data_class' => Sortie::class,
-            'dateJour' => DateTime::createFromFormat('d/m/Y h:i:s',(new \DateTime())->setTimezone(new \DateTimeZone('Europe/Paris'))->format('d/m/Y h:i:s'),(new \DateTimeZone('Europe/Paris'))),
+            'dateJour' => DateTime::createFromFormat('g:iA',(new \DateTime())->setTimezone(new \DateTimeZone('Europe/Paris'))->format('g:iA'),(new \DateTimeZone('Europe/Paris'))),
         ]);
     }
 

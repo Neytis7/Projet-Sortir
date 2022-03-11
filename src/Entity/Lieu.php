@@ -29,9 +29,9 @@ class Lieu
     private string $nom;
 
     /**
-     * @var string|null
+     * @var string
      *
-     * @ORM\Column(name="rue", type="string", length=30, nullable=true)
+     * @ORM\Column(name="rue", type="string", length=30, nullable=false)
      */
     private ?string $rue;
 
@@ -98,18 +98,18 @@ class Lieu
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getRue(): ?string
+    public function getRue(): string
     {
         return $this->rue;
     }
 
     /**
-     * @param string|null $rue
+     * @param string $rue
      * @return Lieu
      */
-    public function setRue(?string $rue): Lieu
+    public function setRue(string $rue): Lieu
     {
         $this->rue = $rue;
 
