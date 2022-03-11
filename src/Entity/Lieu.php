@@ -52,6 +52,7 @@ class Lieu
     /**
      * @var Ville
      *
+     * @ORM\Column(name="ville_id",type="integer", nullable=false)
      * @ORM\ManyToOne(targetEntity="Ville")
      */
     private Ville $ville;
