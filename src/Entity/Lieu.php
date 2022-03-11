@@ -52,8 +52,10 @@ class Lieu
     /**
      * @var Ville
      *
-     * @ORM\Column(name="ville_id",type="integer", nullable=false)
      * @ORM\ManyToOne(targetEntity="Ville")
+     * * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="ville_id", referencedColumnName="id",nullable=false)
+     * })
      */
     private Ville $ville;
 
