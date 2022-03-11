@@ -80,6 +80,7 @@ class SortieController extends AbstractController
      * @param SortieService $serviceSortie
      * @param SluggerInterface $slugger
      * @param RequestStack $requestStack
+     * @param EntityManagerInterface $em
      */
     public function __construct(
         SortieService $serviceSortie,
@@ -141,9 +142,7 @@ class SortieController extends AbstractController
     /**
      * @param $id
      * @param MailerInterface $mailer
-     * @param Sortie $sortie
-     * @param SortieRepository $SortiesRepository
-     * @param UserInterface|null $userCourant
+     * @param Request $request
      * @return RedirectResponse
      * @throws TransportExceptionInterface
      */
@@ -192,12 +191,10 @@ class SortieController extends AbstractController
     #[Route('/sortie/{id}', name: self::ROUTE_DETAIL_SORTIE,requirements: ['id'=>'\d+'])]
     public function detail($id, SortieRepository $SortiesRepository,?UserInterface $userCourant): Response
     {
-
         /** @var Participant $userCourant */
         $sortie = $SortiesRepository->find($id);
         $idUserCourant = $userCourant->getId();
         $nonInscrit = $SortiesRepository->findNonInscrit($id, $idUserCourant);
-
 
         if(!$sortie){
             throw new NotFoundHttpException("This sortie doesn't exist");
@@ -280,9 +277,6 @@ class SortieController extends AbstractController
     #[Route('/sortie', name: self::ROUTE_SORTIE)]
     public function index(?UserInterface $userCourant, SortieRepository $SortiesRepository, EtatRepository $etatsRepository,EntityManagerInterface $entityManager): Response
     {
-        /** @var Participant $userCourant */
-        $lesSorties = $SortiesRepository->findRecherche();
-
         //GESTION DES ETATS
         $checkSorties = $SortiesRepository->findAll();
         $dateJour = DateTime::createFromFormat('g:iA',(new \DateTime())->setTimezone(new \DateTimeZone('Europe/Paris'))->format('g:iA'),(new \DateTimeZone('Europe/Paris')));
@@ -344,6 +338,8 @@ class SortieController extends AbstractController
 
         }
 
+        $lesSorties = $SortiesRepository->findRecherche();
+        
         return $this->render('sortie/index.html.twig', [
             'lesSorties' => $lesSorties,
             'idUserCourant' => $userCourant->getId(),
